@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SELECT – Spalten auswählen · SQL-Kurs</title>
+<meta name="description" content="Lektion 3 im SQL-Lernpfad: Die erste Abfrage. Mit SELECT nur die Spalten holen, die du brauchst, mit * alle, mit DISTINCT jeden Wert nur einmal – mit echtem SQLite direkt im Browser, Rückmeldung zu jedem Fehler und viel Training.">
+<link rel="canonical" href="https://sql.herrseibert.de/teil2/03-select.html">
+<!-- vorschau -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SQL-Kurs">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://sql.herrseibert.de/teil2/03-select.html">
+<meta property="og:title" content="SELECT – Spalten auswählen · SQL-Kurs">
+<meta property="og:description" content="Lektion 3 im SQL-Lernpfad: Die erste Abfrage. Mit SELECT nur die Spalten holen, die du brauchst, mit * alle, mit DISTINCT jeden Wert nur einmal – mit echtem SQLite direkt im Browser, Rückmeldung zu jedem Fehler und viel Training.">
+<meta property="og:image" content="https://sql.herrseibert.de/vorschau.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SQL-Kurs – Datenbanken und SQL Schritt für Schritt, mit SQL-Labor im Browser">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /vorschau -->
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/kurs.css?v=2b9f3c7d0f">
+<link rel="stylesheet" href="../assets/labor.css?v=6a1d489de7">
+<script src="../assets/i18n.js?v=2890af4da9" data-page="teil2-03-select" data-langs="de en"></script>
+<script src="../assets/kurs.js?v=c26439e733"></script>
+<script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
+<script src="../assets/labor.js?v=b6bfaa57ea"></script>
+<script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
+<script src="../assets/daten/nutzer.js?v=533561c012"></script>
+<script src="../assets/daten/azubi.js?v=5b1356cc35"></script>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html"><img class="logo" src="../favicon.svg" alt="" width="34" height="34"> SQL-Kurs <span>· Datenbanken verstehen</span></a>
+    <span class="spacer"></span>
+    <button class="theme-btn" type="button" aria-label="Hell oder dunkel umschalten">◐ Hell/Dunkel</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="path" aria-label="Lernpfad">
+    <strong class="t">Lernpfad:</strong>
+    <ol>
+      <li class="soon"><span title="1 · Datenbanken sind überall (in Arbeit)">1</span></li>
+      <li class="soon"><span title="2 · IDs und Verknüpfung (in Arbeit)">2</span></li>
+      <li class="now"><span title="3 · SELECT – Spalten auswählen" aria-current="step">3</span></li>
+      <li class="done"><a href="04-where.html" title="4 · WHERE – Zeilen filtern">4</a></li>
+      <li class="done"><a href="05-and-or-not.html" title="5 · AND, OR, NOT">5</a></li>
+      <li class="done"><a href="06-like-in-between.html" title="6 · LIKE, IN, BETWEEN">6</a></li>
+      <li class="done"><a href="07-sortieren-rechnen.html" title="7 · Sortieren und rechnen">7</a></li>
+      <li class="done"><a href="08-group-by.html" title="8 · GROUP BY – Gruppen bilden">8</a></li>
+      <li class="soon"><span title="9 · Zwei Tabellen: JOIN (in Arbeit)">9</span></li>
+      <li class="soon"><span title="10 · JOIN mit WHERE und GROUP BY (in Arbeit)">10</span></li>
+      <li class="soon"><span title="11 · Der Fall (in Arbeit)">11</span></li>
+      <li class="soon"><span title="12 · Projekt planen (in Arbeit)">12</span></li>
+      <li class="soon"><span title="13 · Tabellen anlegen und füllen (in Arbeit)">13</span></li>
+      <li class="soon"><span title="14 · Ändern und löschen (in Arbeit)">14</span></li>
+      <li class="soon"><span title="15 · Suchformular (in Arbeit)">15</span></li>
+      <li class="soon"><span title="16 · Eingabeformular (in Arbeit)">16</span></li>
+    </ol>
+  </nav>
+
+  <section class="hero">
+    <h1>SELECT – nur die Spalten, die du brauchst</h1>
+    <div class="meta">
+      <span class="chip">Teil 2 · Lektion 3</span>
+      <span class="chip">⏱ ca. 35 Minuten</span>
+    </div>
+    <p class="erklaerung">Eine Tabelle hat oft viele Spalten: Name, E-Mail, Geburtsjahr, Wohnort … Für eine Frage brauchst du meist nur zwei oder drei.
+      Mit <code>SELECT</code> sagst du der Datenbank, welche Spalten sie dir zeigen soll. Damit beginnt jede Abfrage – und es schützt Daten:
+      Wer nur die Titel braucht, bekommt auch nur die Titel.</p>
+  </section>
+
+  <section class="card wdh">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
+  <details class="card woerter">
+    <summary>📖 Wörter für diese Lektion</summary>
+    <p class="note">Die SQL-Befehle bleiben englisch – so heißen sie in jeder Datenbank der Welt.</p>
+    <div class="tbl-scroll"><table class="plain">
+      <tr><th class="wort">die Abfrage <small>die Abfragen</small></th><td>Eine Frage an die Datenbank, geschrieben in SQL. Die Antwort ist wieder eine Tabelle.</td></tr>
+      <tr><th class="wort">die Spalte <small>die Spalten</small></th><td>Eine Eigenschaft, die jede Zeile hat, z. B. <code>titel</code> oder <code>jahr</code>.</td></tr>
+      <tr><th class="wort">der Spaltenname <small>die Spaltennamen</small></th><td>Der Name oben über der Spalte. Er muss in der Abfrage genau so stehen.</td></tr>
+      <tr><th class="wort">das Ergebnis <small>die Ergebnisse</small></th><td>Die Tabelle, die nach dem Ausführen herauskommt.</td></tr>
+      <tr><th class="wort">doppelt</th><td>Zweimal oder öfter da. <code>DISTINCT</code> zeigt jeden Wert nur einmal.</td></tr>
+      <tr><th class="wort">das Komma <small>die Kommas</small></th><td>Das Zeichen <code>,</code>. Es trennt die Spalten nach <code>SELECT</code>.</td></tr>
+    </table></div>
+  </details>
+
+  <section class="card szenario">
+    <h2><span class="step-no">🎧</span> Szenario</h2>
+    <p>Erster Tag im Praktikum bei <strong>Tonspur</strong>, einer Musik-App. Alle Songs stehen in der Tabelle <code>songs</code>.
+      Heute sollst du Listen für verschiedene Abteilungen ziehen – jede will andere Spalten.</p>
+  </section>
+
+  <!-- 1 · Überleg -->
+  <section class="card">
+    <h2><span class="step-no">1</span> Überleg: Was zeigt die Abfrage? <span class="chip">4 Minuten</span></h2>
+    <div id="tab-songs"></div>
+    <p>Das ist deine erste Abfrage:</p>
+    <pre class="sql" data-farbe>SELECT titel, kuenstler FROM songs</pre>
+    <p><strong>Überleg:</strong> Was steht im Ergebnis? Führ noch nichts aus!</p>
+    <div class="choices" id="pred1">
+      <button type="button" class="choice">alle 7 Spalten der Tabelle</button>
+      <button type="button" class="choice">2 Spalten – für alle 36 Songs</button>
+      <button type="button" class="choice">2 Spalten – nur für den ersten Song</button>
+      <button type="button" class="choice">nur die Songs, die einen Künstler haben</button>
+    </div>
+    <p class="fb" id="fb1"></p>
+    <div id="probe1" hidden>
+      <p><strong>Probier es aus:</strong></p>
+      <div id="l1"></div>
+      <p class="rule">Nach <code>SELECT</code> stehen die <strong>Spalten</strong>, nach <code>FROM</code> die <strong>Tabelle</strong>.<br>
+        Zwischen zwei Spalten steht ein Komma.</p>
+    </div>
+  </section>
+
+  <!-- 2 · Puzzle -->
+  <section class="card">
+    <h2><span class="step-no">2</span> Puzzle: die Startseite der App <span class="chip">4 Minuten</span></h2>
+    <p>Die Startseite soll <strong>Titel und Jahr aller Songs</strong> aus der Tabelle <code>songs</code> zeigen.
+      Leg die Abfrage aus den Bausteinen. Zwei Bausteine brauchst du nicht.</p>
+    <div id="l2"></div>
+  </section>
+
+  <!-- 3 · Lücken -->
+  <section class="card">
+    <h2><span class="step-no">3</span> Lücken: die Rechtsabteilung <span class="chip">5 Minuten</span></h2>
+    <p>Die Rechtsabteilung prüft Verträge. Sie braucht aus der Tabelle <code>songs</code> nur <strong>Künstler und Genre</strong> aller Songs.
+      Schreib in die gelben Lücken, was fehlt – die beiden Spalten in die erste Lücke, die Tabelle in die zweite.</p>
+    <div id="l3"></div>
+    <p class="rule">Spaltennamen genau so schreiben, wie sie in der Tabelle stehen.<br>Sie haben keine Umlaute: <code>kuenstler</code> statt künstler.</p>
+  </section>
+
+  <!-- 4 · Datenschutz -->
+  <section class="card">
+    <h2><span class="step-no">4</span> Alles oder nur das Nötige? <span class="chip">5 Minuten</span></h2>
+    <p>Mit <code>*</code> bekommst du <strong>alle</strong> Spalten: <code>SELECT * FROM nutzer</code>. Bequem – aber nicht immer erlaubt.</p>
+    <p>Tonspur hat auch eine Tabelle <code>nutzer</code> mit den Konten der App. Eine Werbeagentur will wissen, <strong>aus welchen Orten</strong> die Nutzer kommen.
+      Aus Datenschutzgründen darf sie nur <strong>Benutzername und Ort</strong> bekommen – sonst nichts.</p>
+    <div id="l4"></div>
+    <div id="hints4"></div>
+    <p class="rule"><code>*</code> nur, wenn du wirklich alles brauchst.<br>Persönliche Daten gibt man nur heraus, wenn sie nötig sind.</p>
+  </section>
+
+  <!-- 5 · DISTINCT -->
+  <section class="card">
+    <h2><span class="step-no">5</span> Jeden Wert nur einmal: DISTINCT <span class="chip">6 Minuten</span></h2>
+    <p>Die Chefin fragt: <em>„Welche Genres haben wir eigentlich?“</em> Ein Kollege führt diese Abfrage aus:</p>
+    <div id="l5a"></div>
+    <p><strong>Überleg:</strong> Wie viele <strong>verschiedene</strong> Genres gibt es wirklich?</p>
+    <div class="choices" id="pred5">
+      <button type="button" class="choice">36</button>
+      <button type="button" class="choice">12</button>
+      <button type="button" class="choice">5</button>
+      <button type="button" class="choice">1</button>
+    </div>
+    <p class="fb" id="fb5"></p>
+    <div id="probe5" hidden>
+      <p>Mit <code>DISTINCT</code> direkt nach <code>SELECT</code> kommt jeder Wert nur einmal:</p>
+      <div id="l5b"></div>
+      <p><strong>Jetzt du:</strong> Für ein Plakat braucht das Team <strong>alle Künstler – jeden Namen nur einmal</strong>.</p>
+      <div id="l5c"></div>
+      <div id="hints5"></div>
+    </div>
+  </section>
+
+  <!-- 6 · Fehlerdetektiv -->
+  <section class="card">
+    <h2><span class="step-no">6</span> Fehlerdetektiv: die seltsame Spalte <span class="chip">5 Minuten</span></h2>
+    <p>Jonas wollte <strong>Titel und Jahr</strong> aller Songs. Seine Abfrage meldet keinen Fehler – aber das Ergebnis ist komisch.
+      Führ sie aus und schau genau hin.</p>
+    <ol class="howto">
+      <li>Wie viele Spalten hat das Ergebnis? Wie viele sollten es sein?</li>
+      <li>Wie heißt die Spalte – und was steht darin?</li>
+      <li>Was fehlt in der Abfrage?</li>
+    </ol>
+    <div id="l6"></div>
+    <div id="hints6"></div>
+  </section>
+
+  <!-- Plus -->
+  <section class="card">
+    <h2><span class="badge plus">Plus</span> Die Reihenfolge der Spalten <span class="chip">für Schnelle</span></h2>
+    <p>Für eine Liste zum Ausdrucken will die Chefin <strong>zuerst den Künstler, dann den Titel</strong> – für alle Songs.</p>
+    <div id="lplus"></div>
+  </section>
+
+  <!-- Kurz-Check -->
+  <section class="card">
+    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">4 Minuten</span></h2>
+    <div id="quiz"></div>
+  </section>
+
+  <section class="card merke">
+    <h2>Merke</h2>
+    <ul>
+      <li>Jede Abfrage beginnt so: <code>SELECT spalten FROM tabelle</code></li>
+      <li>Mehrere Spalten trennt ein Komma: <code>SELECT titel, jahr FROM songs</code>. Nach der letzten Spalte kommt kein Komma.</li>
+      <li><code>*</code> heißt: alle Spalten. Nur benutzen, wenn du wirklich alles brauchst.</li>
+      <li><code>DISTINCT</code> zeigt jeden Wert nur einmal: <code>SELECT DISTINCT genre FROM songs</code></li>
+    </ul>
+  </section>
+
+  <!-- Training -->
+  <section class="card frei" id="training">
+    <h2><span class="step-no">🏋</span> Training</h2>
+    <p class="lead">Je mehr Abfragen du schreibst, desto sicherer wirst du. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
+
+    <h3 class="sub"><span class="badge ueben">● Basis</span> Listen für Tonspur</h3>
+    <div id="tr1"></div>
+
+    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Azubi-Börse</h3>
+    <p>Eine Webseite sammelt Ausbildungsstellen in Bayern. Die Redaktion braucht verschiedene Übersichten aus der Tabelle <code>stellen</code>.</p>
+    <div id="tr2"></div>
+
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Die Datenschutz-Abteilung</h3>
+    <p>Du arbeitest jetzt mit den Nutzerkonten von Tonspur (Tabelle <code>nutzer</code>). Jede Abteilung bekommt <strong>genau</strong> die Spalten,
+      die sie braucht – keine mehr.</p>
+    <div id="tr3"></div>
+  </section>
+
+  <nav class="pager">
+    <span>← Lektion 2: IDs und Verknüpfung (in Arbeit)</span>
+    <a href="04-where.html">Lektion 4: WHERE – Zeilen filtern →</a>
+  </nav>
+</main>
+
+<footer>
+  <div class="wrap t">Lernmaterial von <a href="https://herrseibert.de">herrseibert.de</a> · Lizenz <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">CC BY-SA 4.0</a> · ohne Tracking, ohne Cookies<br>Erstellt von der KI Claude von Anthropic.</div>
+  <div class="wrap t gh">Fehler gefunden oder eine Idee? → <a href="https://github.com/baumlaube/sql-course">Kurs auf GitHub</a></div>
+  <div class="wrap t gh">Das SQL-Labor nutzt SQLite (gemeinfrei) über sql.js (MIT-Lizenz) – alles läuft in deinem Browser.</div>
+  <div class="wrap legal"><a href="../impressum.html">Impressum</a> · <a href="../datenschutz.html">Datenschutz</a></div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { pick, quiz, hints } = window.Kurs;
+  const L = window.Labor;
+  const $ = (id) => document.getElementById(id);
+  /** Prüft, ob die Spalten in genau dieser Reihenfolge stehen (sonst Hinweis). */
+  const spaltenFolge = (soll) => ({ res, cmp }) => {
+    if (!cmp || !cmp.gleich) return null;
+    const ist = res.spalten.map((c) => c.toLowerCase());
+    const liste = soll.map((c) => "<code>" + c + "</code>").join(", ");
+    return ist.join() === soll.join() ? true
+      : `Die Spalten stimmen – aber die Reihenfolge noch nicht. Gewünscht: ${liste}. Die Spalten erscheinen so, wie du sie nach <code>SELECT</code> schreibst.`;
+  };
+
+  L.tabelle($("tab-songs"), { db: "tonspur", offen: true });
+
+  /* Weißt du noch? (Lektion 1 und 2) */
+  quiz($("wdh"), [
+    { q: "In der Tabelle <code>songs</code> steht jeder Song in einer eigenen …",
+      options: ["Spalte", "Zeile", "Datenbank", "Zelle"], right: 1,
+      miss: ["Eine Spalte ist eine Eigenschaft, z. B. alle Titel untereinander.", null,
+        "Die Datenbank ist das Ganze – darin stecken die Tabellen.", "Eine Zelle ist nur ein einzelner Wert, z. B. ein Titel."],
+      why: "Jeder Song ist eine Zeile (ein Datensatz). Die Spalten sind seine Eigenschaften: titel, kuenstler, jahr …" },
+    { q: "Wozu hat jeder Song eine <code>id</code>?",
+      options: ["Damit die Tabelle sortiert ist", "Damit man jeden Song eindeutig findet – auch wenn zwei gleich heißen", "Damit man weiß, wie beliebt er ist", "Damit die Tabelle schöner aussieht"], right: 1,
+      miss: ["Sortieren kann man auch ohne ID. Die ID ist ein Erkennungszeichen.", null,
+        "Wie beliebt ein Song ist, steht in <code>likes</code>.", "Die ID hat eine Aufgabe: Sie macht jede Zeile eindeutig."],
+      why: "Die ID kommt nur einmal vor. So kann man jede Zeile sicher finden und verknüpfen." },
+  ]);
+
+  /* 1 · Überleg */
+  pick($("pred1"), { right: 1, fb: $("fb1"),
+    miss: ["Alle Spalten bekommst du mit <code>*</code>. Hier stehen nur zwei Spaltennamen.", null,
+      "<code>SELECT</code> wählt Spalten aus, nicht Zeilen. Es kommen alle Songs.",
+      "<code>SELECT</code> sortiert keine Zeilen aus. Das macht später <code>WHERE</code>."],
+    why: "<code>SELECT</code> wählt die Spalten <code>titel</code> und <code>kuenstler</code>. Zeilen kommen alle – 36 Songs.",
+    onDone() { $("probe1").hidden = false; } });
+  L.create($("l1"), { db: "tonspur", modus: "lesen", sql: "SELECT titel, kuenstler FROM songs", tabellen: false });
+
+  /* 2 · Puzzle */
+  L.create($("l2"), { db: "tonspur", modus: "puzzle", tabellen: false,
+    bausteine: ["SELECT", "titel", ",", "jahr", "FROM", "songs", "genre", "*"],
+    loesung: "SELECT titel, jahr FROM songs",
+    pruefe({ sql }) {
+      const s = sql.toUpperCase();
+      if (!s.startsWith("SELECT")) return "Eine Abfrage beginnt immer mit <code>SELECT</code>.";
+      if (/FROM\s+(TITEL|JAHR)/.test(s)) return "Nach <code>FROM</code> kommt der Name der <strong>Tabelle</strong>, nicht einer Spalte.";
+      if (/\*/.test(s)) return "<code>*</code> holt alle Spalten. Gefragt sind nur Titel und Jahr.";
+      if (/TITEL\s+JAHR|JAHR\s+TITEL/.test(s)) return "Zwischen zwei Spalten fehlt das Komma.";
+      return null;
+    },
+    ok: "✔ Geschafft! Zwei Spalten, alle 36 Songs." });
+
+  /* 3 · Lücken */
+  L.create($("l3"), { db: "tonspur", modus: "luecke", tabellen: false,
+    sql: "SELECT [[18]] FROM [[6]]",
+    loesung: "SELECT kuenstler, genre FROM songs",
+    fallen: [
+      { muster: /künstler|kunstler/i, text: "Fast! In Spaltennamen gibt es keine Umlaute. Aus ü wird ue: <code>kuenstler</code>." },
+      { muster: /FROM\s+song\s*$/i, text: "Die Tabelle heißt <code>songs</code> – mit s am Ende." },
+      { muster: /^SELECT\s+\w+\s+\w+\s+FROM/i, text: "Zwischen den beiden Spalten fehlt das Komma. Ohne Komma wird die zweite Spalte nur zum neuen Namen der ersten." },
+      { sql: "SELECT kuenstler FROM songs", text: "Der Künstler stimmt. Es fehlt noch die zweite Spalte: <code>genre</code> – mit Komma dazwischen." },
+      { sql: "SELECT genre FROM songs", text: "Das Genre stimmt. Es fehlt noch die Spalte für den Künstler – mit Komma dazwischen." },
+    ],
+    ok: "✔ Richtig! Die Rechtsabteilung hat ihre Liste." });
+
+  /* 4 · Datenschutz */
+  L.create($("l4"), { db: "nutzer", modus: "frei",
+    loesung: "SELECT benutzername, ort FROM nutzer",
+    fallen: [
+      { muster: /\*/, text: "Stopp – Datenschutz! <code>*</code> gibt auch E-Mail-Adressen und Geburtsjahre heraus. Die Agentur darf nur Benutzername und Ort bekommen." },
+      { muster: /email|geburtsjahr/i, text: "Datenschutz! Die Agentur darf nur <code>benutzername</code> und <code>ort</code> bekommen." },
+    ],
+    ok: "✔ Genau richtig: nur die Spalten, die nötig sind." });
+  hints($("hints4"), [
+    "Klapp die Tabelle <code>nutzer</code> auf und such die beiden Spaltennamen.",
+    "Die Tabelle heißt <code>nutzer</code>. Die Spalten: <code>benutzername</code> und <code>ort</code>.",
+    "Lösung: <code>SELECT benutzername, ort FROM nutzer</code>",
+  ]);
+
+  /* 5 · DISTINCT */
+  L.create($("l5a"), { db: "tonspur", modus: "lesen", sql: "SELECT genre FROM songs", tabellen: false });
+  pick($("pred5"), { right: 2, fb: $("fb5"),
+    miss: ["36 Zeilen kommen heraus – aber viele davon sind gleich. Pop steht zum Beispiel 10-mal da.",
+      "12 ist die Zahl der Künstler. Zähl die verschiedenen Genres.", null, "Es gibt mehr als ein Genre: Pop, Rock …"],
+    why: "Es gibt 5 Genres: Pop, Rock, Hip-Hop, Elektro und Indie. Im Ergebnis stehen sie aber 36-mal – für jeden Song einmal.",
+    onDone() { $("probe5").hidden = false; } });
+  L.create($("l5b"), { db: "tonspur", modus: "lesen", sql: "SELECT DISTINCT genre FROM songs", tabellen: false });
+  L.create($("l5c"), { db: "tonspur", modus: "frei", tabellen: false,
+    loesung: "SELECT DISTINCT kuenstler FROM songs",
+    fallen: [
+      { sql: "SELECT kuenstler FROM songs", text: "Da steht Juna 4-mal und Die Kaltfront 5-mal. Jeden Namen nur einmal: <code>DISTINCT</code>." },
+      { muster: /SELECT\s+kuenstler\s+DISTINCT/i, text: "<code>DISTINCT</code> steht direkt nach <code>SELECT</code>, vor der Spalte." },
+    ],
+    ok: "✔ Richtig: 12 Künstler, jeder genau einmal." });
+  hints($("hints5"), [
+    "Die Spalte heißt <code>kuenstler</code>. Wohin gehört <code>DISTINCT</code>?",
+    "Lösung: <code>SELECT DISTINCT kuenstler FROM songs</code>",
+  ]);
+
+  /* 6 · Fehlerdetektiv: fehlendes Komma macht aus „jahr“ einen neuen Namen für die Spalte titel */
+  L.create($("l6"), { db: "tonspur", modus: "frei", tabellen: false, zeilen: 2, erkunden: true,
+    sql: "SELECT titel jahr FROM songs",
+    loesung: "SELECT titel, jahr FROM songs",
+    pruefe({ res }) {
+      if (res.ok && res.spalten.length === 1 && res.spalten[0].toLowerCase() === "jahr")
+        return "Genau das ist der Fehler: Die Spalte heißt <code>jahr</code>, aber darin stehen Titel. Ohne Komma denkt SQL, <code>jahr</code> sei ein neuer Name für die Spalte <code>titel</code>.";
+      return null;
+    },
+    ok: "✔ Fall gelöst! Ohne Komma hat SQL die Spalte <code>titel</code> nur umbenannt. Mit Komma sind es zwei Spalten." });
+  hints($("hints6"), [
+    "Das Ergebnis hat nur <strong>eine</strong> Spalte. Sie heißt <code>jahr</code> – aber darin stehen Songtitel.",
+    "Zwischen zwei Spalten muss ein Zeichen stehen. Welches?",
+    "Lösung: <code>SELECT titel, jahr FROM songs</code>",
+  ]);
+
+  /* Plus · Reihenfolge der Spalten */
+  L.create($("lplus"), { db: "tonspur", modus: "frei", tabellen: false,
+    loesung: "SELECT kuenstler, titel FROM songs",
+    pruefe: spaltenFolge(["kuenstler", "titel"]),
+    ok: "✔ Genau: Die Spalten erscheinen in der Reihenfolge, in der du sie nach SELECT schreibst." });
+
+  /* Kurz-Check */
+  quiz($("quiz"), [
+    { q: "Welche Abfrage zeigt Titel und Likes aller Songs?",
+      options: ["<code>SELECT titel likes FROM songs</code>", "<code>SELECT songs FROM titel, likes</code>", "<code>SELECT titel, likes FROM songs</code>", "<code>FROM songs SELECT titel, likes</code>"], right: 2,
+      miss: ["Ohne Komma wird <code>likes</code> zum neuen Namen der Spalte <code>titel</code>. Du bekommst nur eine Spalte.",
+        "Andersherum: Nach <code>SELECT</code> die Spalten, nach <code>FROM</code> die Tabelle.", null,
+        "Eine Abfrage beginnt immer mit <code>SELECT</code>."],
+      why: "<code>SELECT</code> Spalten mit Komma, dann <code>FROM</code> Tabelle." },
+    { q: "Was zeigt <code>SELECT * FROM songs</code>?",
+      options: ["Nur die Songs mit Stern-Bewertung", "Alle Spalten aller Songs", "Nur die erste Spalte", "Einen Fehler – * ist kein Spaltenname"], right: 1,
+      miss: ["Eine Stern-Bewertung gibt es nicht. <code>*</code> ist eine Abkürzung.", null,
+        "<code>*</code> steht für <strong>alle</strong> Spalten.", "<code>*</code> ist erlaubt – es heißt „alle Spalten“."],
+      why: "<code>*</code> steht für alle Spalten." },
+    { q: "<code>SELECT DISTINCT ort FROM nutzer</code> – was kommt heraus?",
+      options: ["Alle Nutzer mit ihrem Ort", "Jeder Ort genau einmal", "Nur der häufigste Ort", "Die Anzahl der Orte"], right: 1,
+      miss: ["Das wäre <code>SELECT benutzername, ort …</code> ohne <code>DISTINCT</code>.", null,
+        "<code>DISTINCT</code> zählt nicht, welcher Ort am häufigsten ist. Es streicht nur doppelte Werte.",
+        "Zählen kommt später (<code>COUNT</code>). <code>DISTINCT</code> zeigt die Orte selbst – jeden einmal."],
+      why: "<code>DISTINCT</code> streicht doppelte Werte. Jeder Ort steht genau einmal im Ergebnis." },
+    { q: "Ein Online-Shop gibt einer Werbefirma <code>SELECT * FROM kunden</code>. Was ist das Problem?",
+      options: ["Die Abfrage ist zu langsam", "Die Werbefirma bekommt alle Daten – auch solche, die sie nicht braucht", "* funktioniert nur bei kleinen Tabellen", "Es gibt kein Problem"], right: 1,
+      miss: ["Schnell ist die Abfrage schon. Das Problem sind die Daten.", null,
+        "<code>*</code> funktioniert bei jeder Tabelle.", "Doch: Adressen, Geburtsdaten, E-Mails gehen raus, obwohl sie nicht nötig sind."],
+      why: "Mit <code>*</code> gehen alle Spalten raus. Persönliche Daten gibt man nur heraus, wenn sie nötig sind." },
+  ]);
+
+  /* ---------- Training ---------- */
+  L.training($("tr1"), { db: "tonspur", key: "l03-basis", tabelle: false, aufgaben: [
+    { text: "Nur die <strong>Titel</strong> aller Songs.",
+      loesung: "SELECT titel FROM songs",
+      hints: ["Eine Spalte: <code>titel</code>. Die Tabelle: <code>songs</code>.", "Lösung: <code>SELECT titel FROM songs</code>"] },
+    { text: "<strong>Titel und Likes</strong> aller Songs.",
+      loesung: "SELECT titel, likes FROM songs",
+      hints: ["Zwei Spalten, dazwischen ein Komma.", "Lösung: <code>SELECT titel, likes FROM songs</code>"] },
+    { text: "<strong>Titel, Künstler und Dauer</strong> aller Songs.",
+      loesung: "SELECT titel, kuenstler, dauer_sek FROM songs",
+      fallen: [{ muster: /\bdauer\b(?!_)/i, text: "Die Spalte für die Dauer heißt <code>dauer_sek</code> – mit Unterstrich." }],
+      hints: ["Schau oben in der Tabelle nach, wie die Spalte für die Dauer heißt.", "Lösung: <code>SELECT titel, kuenstler, dauer_sek FROM songs</code>"] },
+    { text: "Die Technik will die <strong>ganze Tabelle</strong> sehen – alle Spalten.",
+      loesung: "SELECT * FROM songs",
+      hints: ["Für „alle Spalten“ gibt es eine Abkürzung.", "Lösung: <code>SELECT * FROM songs</code>"] },
+    { text: "Aus welchen <strong>Jahren</strong> gibt es Songs? Jedes Jahr nur einmal.",
+      loesung: "SELECT DISTINCT jahr FROM songs",
+      fallen: [{ sql: "SELECT jahr FROM songs", text: "Manche Jahre stehen mehrfach da. Jedes nur einmal: <code>DISTINCT</code>." }],
+      hints: ["Jeden Wert nur einmal: <code>DISTINCT</code>.", "Lösung: <code>SELECT DISTINCT jahr FROM songs</code>"] },
+    { text: "Welche <strong>Genres</strong> gibt es? Jedes nur einmal.",
+      loesung: "SELECT DISTINCT genre FROM songs",
+      fallen: [{ sql: "SELECT genre FROM songs", text: "Das sind 36 Zeilen mit vielen gleichen Genres. Jedes nur einmal: <code>DISTINCT</code>." }],
+      hints: ["Lösung: <code>SELECT DISTINCT genre FROM songs</code>"] },
+  ]});
+
+  L.training($("tr2"), { db: "azubi", key: "l03-sicher", aufgaben: [
+    { text: "<strong>Beruf und Ort</strong> aller Stellen.",
+      loesung: "SELECT beruf, ort FROM stellen",
+      fallen: [{ muster: /FROM\s+azubi/i, text: "Die Tabelle heißt <code>stellen</code>. „Azubi-Börse“ ist nur der Name der Webseite." }],
+      hints: ["Die Tabelle heißt <code>stellen</code>.", "Lösung: <code>SELECT beruf, ort FROM stellen</code>"] },
+    { text: "In welchen <strong>Orten</strong> gibt es Stellen? Jeden Ort nur einmal.",
+      loesung: "SELECT DISTINCT ort FROM stellen",
+      fallen: [{ sql: "SELECT ort FROM stellen", text: "Augsburg steht hier 7-mal. Jeden Ort nur einmal: <code>DISTINCT</code>." }],
+      hints: ["Lösung: <code>SELECT DISTINCT ort FROM stellen</code>"] },
+    { text: "Welche <strong>Abschlüsse</strong> werden verlangt? Jeden nur einmal.",
+      loesung: "SELECT DISTINCT abschluss FROM stellen",
+      hints: ["Lösung: <code>SELECT DISTINCT abschluss FROM stellen</code>"] },
+    { text: "Für eine Übersicht: <strong>Betrieb, Beruf und Vergütung</strong> – genau in dieser Reihenfolge.",
+      loesung: "SELECT betrieb, beruf, verguetung FROM stellen",
+      pruefe: spaltenFolge(["betrieb", "beruf", "verguetung"]),
+      fallen: [{ muster: /vergütung/i, text: "Keine Umlaute in Spaltennamen: <code>verguetung</code>." }],
+      hints: ["Die Spalten erscheinen in der Reihenfolge, in der du sie schreibst.", "Lösung: <code>SELECT betrieb, beruf, verguetung FROM stellen</code>"] },
+    { text: "Welche <strong>Betriebe</strong> bilden aus? Jeden Betrieb nur einmal.",
+      loesung: "SELECT DISTINCT betrieb FROM stellen",
+      fallen: [{ sql: "SELECT betrieb FROM stellen", text: "Logistik Huber steht doppelt da – der Betrieb hat zwei Stellen. Jeden nur einmal: <code>DISTINCT</code>." }],
+      hints: ["Lösung: <code>SELECT DISTINCT betrieb FROM stellen</code>"] },
+    { text: "Wie lange dauern die Ausbildungen? Zeig jede <strong>Dauer</strong> nur einmal.",
+      loesung: "SELECT DISTINCT dauer_monate FROM stellen",
+      fallen: [{ muster: /\bdauer\b(?!_)/i, text: "Die Spalte heißt <code>dauer_monate</code>." }],
+      hints: ["Die Spalte heißt <code>dauer_monate</code>.", "Lösung: <code>SELECT DISTINCT dauer_monate FROM stellen</code>"] },
+  ]});
+
+  L.training($("tr3"), { db: "nutzer", key: "l03-profi", aufgaben: [
+    { text: "Der Newsletter wird verschickt. Die Versandfirma bekommt <strong>nur die E-Mail-Adressen</strong>.",
+      loesung: "SELECT email FROM nutzer",
+      fallen: [{ muster: /\*/, text: "Datenschutz! Die Versandfirma braucht nur <code>email</code>." },
+        { muster: /\be_mail\b|\be-mail\b|\bmail\b/i, text: "Die Spalte heißt <code>email</code> – ohne Bindestrich." }],
+      hints: ["Lösung: <code>SELECT email FROM nutzer</code>"] },
+    { text: "Eine Statistik für Werbepartner: <strong>Geburtsjahr und Ort</strong> – ohne Namen, ohne E-Mail.",
+      loesung: "SELECT geburtsjahr, ort FROM nutzer",
+      fallen: [{ muster: /benutzername|email|\*/i, text: "Datenschutz! Ohne Namen und E-Mail: nur <code>geburtsjahr</code> und <code>ort</code>." }],
+      hints: ["Lösung: <code>SELECT geburtsjahr, ort FROM nutzer</code>"] },
+    { text: "Welche <strong>Abo-Arten</strong> gibt es? Jede nur einmal.",
+      loesung: "SELECT DISTINCT abo FROM nutzer",
+      hints: ["Lösung: <code>SELECT DISTINCT abo FROM nutzer</code>"] },
+    { text: "Die App soll eine Auswahlliste mit allen <strong>Lieblingsgenres</strong> bekommen. Jedes nur einmal.",
+      loesung: "SELECT DISTINCT lieblingsgenre FROM nutzer",
+      fallen: [{ muster: /\bgenre\b/i, text: "In dieser Tabelle heißt die Spalte <code>lieblingsgenre</code>." }],
+      hints: ["Schau in die Tabelle: Wie heißt die Spalte genau?", "Lösung: <code>SELECT DISTINCT lieblingsgenre FROM nutzer</code>"] },
+    { text: "Welche <strong>Kombinationen aus Ort und Abo</strong> gibt es? Jede Kombination nur einmal.",
+      loesung: "SELECT DISTINCT ort, abo FROM nutzer",
+      fallen: [{ sql: "SELECT ort, abo FROM nutzer", text: "Manche Kombinationen kommen doppelt vor, z. B. Augsburg + Free. Jede nur einmal: <code>DISTINCT</code>." },
+        { sql: "SELECT DISTINCT ort FROM nutzer", text: "Gefragt sind zwei Spalten: Ort <strong>und</strong> Abo." },
+        { muster: /DISTINCT\s+ort\s*,\s*DISTINCT/i, text: "<code>DISTINCT</code> steht nur einmal, direkt nach <code>SELECT</code>. Es gilt dann für alle Spalten zusammen." }],
+      hints: ["<code>DISTINCT</code> wirkt auf alle Spalten zusammen: Doppelt ist eine Zeile nur, wenn Ort <strong>und</strong> Abo gleich sind.",
+        "Lösung: <code>SELECT DISTINCT ort, abo FROM nutzer</code>"] },
+    { text: "Der Support will die Konten durchsehen: <strong>id, Benutzername und Abo</strong> – in genau dieser Reihenfolge.",
+      loesung: "SELECT id, benutzername, abo FROM nutzer",
+      pruefe: spaltenFolge(["id", "benutzername", "abo"]),
+      hints: ["Lösung: <code>SELECT id, benutzername, abo FROM nutzer</code>"] },
+  ]});
+});
+</script>
+</body>
+</html>

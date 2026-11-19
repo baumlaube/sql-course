@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WHERE – Zeilen filtern · SQL-Kurs</title>
+<meta name="description" content="Lektion 4 im SQL-Lernpfad: Mit WHERE nur die Zeilen holen, die du brauchst. Vergleiche mit =, &lt;&gt;, &lt;, &gt;, Text in Anführungszeichen – mit echtem SQLite direkt im Browser, Rückmeldung zu jedem Fehler und viel Training.">
+<link rel="canonical" href="https://sql.herrseibert.de/teil2/04-where.html">
+<!-- vorschau -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SQL-Kurs">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://sql.herrseibert.de/teil2/04-where.html">
+<meta property="og:title" content="WHERE – Zeilen filtern · SQL-Kurs">
+<meta property="og:description" content="Lektion 4 im SQL-Lernpfad: Mit WHERE nur die Zeilen holen, die du brauchst. Vergleiche mit =, &lt;&gt;, &lt;, &gt;, Text in Anführungszeichen – mit echtem SQLite direkt im Browser, Rückmeldung zu jedem Fehler und viel Training.">
+<meta property="og:image" content="https://sql.herrseibert.de/vorschau.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SQL-Kurs – Datenbanken und SQL Schritt für Schritt, mit SQL-Labor im Browser">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /vorschau -->
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/kurs.css?v=2b9f3c7d0f">
+<link rel="stylesheet" href="../assets/labor.css?v=6a1d489de7">
+<script src="../assets/i18n.js?v=2890af4da9" data-page="teil2-04-where" data-langs="de en"></script>
+<script src="../assets/kurs.js?v=c26439e733"></script>
+<script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
+<script src="../assets/labor.js?v=b6bfaa57ea"></script>
+<script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
+<script src="../assets/daten/azubi.js?v=5b1356cc35"></script>
+<script src="../assets/daten/konzerte.js?v=51212600cc"></script>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html"><img class="logo" src="../favicon.svg" alt="" width="34" height="34"> SQL-Kurs <span>· Datenbanken verstehen</span></a>
+    <span class="spacer"></span>
+    <button class="theme-btn" type="button" aria-label="Hell oder dunkel umschalten">◐ Hell/Dunkel</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="path" aria-label="Lernpfad">
+    <strong class="t">Lernpfad:</strong>
+    <ol>
+      <li class="soon"><span title="1 · Datenbanken sind überall (in Arbeit)">1</span></li>
+      <li class="soon"><span title="2 · IDs und Verknüpfung (in Arbeit)">2</span></li>
+      <li class="done"><a href="03-select.html" title="3 · SELECT – Spalten auswählen">3</a></li>
+      <li class="now"><span title="4 · WHERE – Zeilen filtern" aria-current="step">4</span></li>
+      <li class="done"><a href="05-and-or-not.html" title="5 · AND, OR, NOT">5</a></li>
+      <li class="done"><a href="06-like-in-between.html" title="6 · LIKE, IN, BETWEEN">6</a></li>
+      <li class="done"><a href="07-sortieren-rechnen.html" title="7 · Sortieren und rechnen">7</a></li>
+      <li class="done"><a href="08-group-by.html" title="8 · GROUP BY – Gruppen bilden">8</a></li>
+      <li class="soon"><span title="9 · Zwei Tabellen: JOIN (in Arbeit)">9</span></li>
+      <li class="soon"><span title="10 · JOIN mit WHERE und GROUP BY (in Arbeit)">10</span></li>
+      <li class="soon"><span title="11 · Der Fall (in Arbeit)">11</span></li>
+      <li class="soon"><span title="12 · Projekt planen (in Arbeit)">12</span></li>
+      <li class="soon"><span title="13 · Tabellen anlegen und füllen (in Arbeit)">13</span></li>
+      <li class="soon"><span title="14 · Ändern und löschen (in Arbeit)">14</span></li>
+      <li class="soon"><span title="15 · Suchformular (in Arbeit)">15</span></li>
+      <li class="soon"><span title="16 · Eingabeformular (in Arbeit)">16</span></li>
+    </ol>
+  </nav>
+
+
+  <section class="hero">
+    <h1>WHERE – nur die Zeilen, die du brauchst</h1>
+    <div class="meta">
+      <span class="chip">Teil 2 · Lektion 4</span>
+      <span class="chip">⏱ ca. 35 Minuten</span>
+    </div>
+    <p class="erklaerung">Eine Tabelle kann Tausende Zeilen haben – die will niemand durchscrollen. Mit <code>WHERE</code> sagst du der
+      Datenbank, welche Zeilen du sehen willst: nur die Rock-Songs, nur die Stellen in Regensburg, nur die Konzerte ab heute.
+      Genau das passiert jedes Mal, wenn du in einer App einen Filter antippst.</p>
+  </section>
+
+  <section class="card wdh">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
+  <details class="card woerter">
+    <summary>📖 Wörter für diese Lektion</summary>
+    <p class="note">Die SQL-Befehle bleiben englisch – so heißen sie in jeder Datenbank der Welt.</p>
+    <div class="tbl-scroll"><table class="plain">
+      <tr><th class="wort">die Zeile <small>die Zeilen</small></th><td>Ein Eintrag in der Tabelle, hier: ein Song. Man sagt auch <em>Datensatz</em>.</td></tr>
+      <tr><th class="wort">die Spalte <small>die Spalten</small></th><td>Eine Eigenschaft, die jede Zeile hat, z. B. <code>jahr</code> oder <code>genre</code>.</td></tr>
+      <tr><th class="wort">die Bedingung <small>die Bedingungen</small></th><td>Eine Regel, die für eine Zeile stimmt oder nicht stimmt, z. B. <code>jahr = 2025</code>.</td></tr>
+      <tr><th class="wort">filtern <small>er filtert</small></th><td>Nur das behalten, was passt. Der Rest wird nicht angezeigt.</td></tr>
+      <tr><th class="wort">vergleichen <small>der Vergleich</small></th><td>Prüfen, ob etwas gleich, größer oder kleiner ist.</td></tr>
+      <tr><th class="wort">das Anführungszeichen <small>die Anführungszeichen</small></th><td>Das Zeichen <code>'</code>. In SQL steht Text immer zwischen zwei davon: <code>'Rock'</code>.</td></tr>
+      <tr><th class="wort">ungleich</th><td>Nicht gleich. In SQL: <code>&lt;&gt;</code></td></tr>
+    </table></div>
+  </details>
+
+  <section class="card szenario">
+    <h2><span class="step-no">🎧</span> Szenario</h2>
+    <p>Du machst ein Praktikum bei <strong>Tonspur</strong>, einer Musik-App. Alle Songs stehen in der Tabelle <code>songs</code>.
+      Das Team stellt dir den ganzen Tag Fragen – und du beantwortest sie mit SQL.</p>
+  </section>
+
+
+  <!-- 1 · Überleg -->
+  <section class="card">
+    <h2><span class="step-no">1</span> Überleg: Wie viele Zeilen kommen heraus? <span class="chip">4 Minuten</span></h2>
+    <div id="tab-songs"></div>
+    <p>Die Chefin will eine Rock-Playlist. Jemand hat schon diese Abfrage geschrieben:</p>
+    <pre class="sql" data-farbe>SELECT titel FROM songs WHERE genre = 'Rock'</pre>
+    <p><strong>Überleg:</strong> Wie viele Zeilen zeigt das Ergebnis? Schau dafür in die Tabelle. Führ noch nichts aus!</p>
+    <div class="choices" id="pred1">
+      <button type="button" class="choice">alle 36 Zeilen</button>
+      <button type="button" class="choice">genau 1 Zeile</button>
+      <button type="button" class="choice">5 Zeilen</button>
+      <button type="button" class="choice">0 Zeilen</button>
+    </div>
+    <p class="fb" id="fb1"></p>
+    <div id="probe1" hidden>
+      <p><strong>Probier es aus:</strong> Klick auf ▶ Ausführen.</p>
+      <div id="l1"></div>
+    </div>
+  </section>
+
+  <!-- 2 · Zeitlupe -->
+  <section class="card">
+    <h2><span class="step-no">2</span> In Zeitlupe: Was macht WHERE? <span class="chip">5 Minuten</span></h2>
+    <p>Neue Frage aus dem Team: <em>„Welche Songs sind ab 2024 erschienen?“</em> Schau zu, wie die Datenbank das löst.
+      Tipp auf <strong>👣 Nächste Zeile</strong> – ein paar Mal. Dann auf <strong>⏩ Alle Zeilen</strong>.</p>
+    <div id="zl"></div>
+    <p class="rule"><code>WHERE</code> prüft <strong>jede Zeile</strong> einzeln.<br>Passt die Bedingung, bleibt die Zeile. Sonst fliegt sie raus.</p>
+    <p>Danach zeigt <code>SELECT</code> von den übrigen Zeilen nur die gewünschten Spalten. Die Reihenfolge in der Abfrage ist immer gleich:</p>
+    <pre class="sql" data-farbe>SELECT spalten FROM tabelle WHERE bedingung</pre>
+  </section>
+
+  <!-- 3 · Puzzle -->
+  <section class="card">
+    <h2><span class="step-no">3</span> Puzzle: Playlist „Neu 2025“ <span class="chip">5 Minuten</span></h2>
+    <p>Das Marketing braucht <strong>die Titel aller Songs aus dem Jahr 2025</strong> aus der Tabelle <code>songs</code>.
+      Tipp die Bausteine in der richtigen Reihenfolge an. Ein Baustein in deiner Zeile wandert beim Antippen zurück.
+      Zwei Bausteine brauchst du nicht.</p>
+    <div id="l3"></div>
+  </section>
+
+  <!-- 4 · Lücken -->
+  <section class="card">
+    <h2><span class="step-no">4</span> Vergleichen: größer, kleiner, gleich <span class="chip">6 Minuten</span></h2>
+    <p>So vergleicht SQL:</p>
+    <div class="tbl-scroll"><table class="plain vergleich">
+      <tr><th><code>=</code></th><td>gleich</td><th><code>&lt;&gt;</code></th><td>ungleich</td></tr>
+      <tr><th><code>&lt;</code></th><td>kleiner als</td><th><code>&gt;</code></th><td>größer als</td></tr>
+      <tr><th><code>&lt;=</code></th><td>kleiner oder gleich (höchstens)</td><th><code>&gt;=</code></th><td>größer oder gleich (mindestens, ab)</td></tr>
+    </table></div>
+    <p><strong>a)</strong> Für die Playlist „Durchhalten“ sucht das Team <strong>Songs, die länger als 5 Minuten sind</strong>.
+      Die Spalte <code>dauer_sek</code> zählt Sekunden. Füll die gelben Lücken aus.</p>
+    <div id="l4a"></div>
+    <p><strong>b)</strong> Jetzt ein Text: <strong>alle Songs von Juna</strong>. Schreib den Wert in die Lücke.</p>
+    <div id="l4b"></div>
+    <p class="rule">Text steht in Anführungszeichen: <code>'Juna'</code><br>Zahlen stehen ohne: <code>300</code></p>
+  </section>
+
+  <!-- 5 · Fehlerdetektiv -->
+  <section class="card">
+    <h2><span class="step-no">5</span> Fehlerdetektiv: Die Abfrage vom Kollegen <span class="chip">5 Minuten</span></h2>
+    <p>Dein Kollege Jonas wollte <strong>alle Indie-Songs mit Titel und Künstler</strong>. Seine Abfrage meldet einen Fehler.
+      Führ sie aus, lies die Meldung – und repariere die Abfrage.</p>
+    <ol class="howto">
+      <li>Was sagt die Fehlermeldung genau?</li>
+      <li>Welches Wort hält SQL für etwas anderes, als es ist?</li>
+      <li>Was fehlt, damit SQL es richtig versteht?</li>
+    </ol>
+    <div id="l5"></div>
+    <div id="hints5"></div>
+  </section>
+
+  <!-- 6 · Selbst schreiben -->
+  <section class="card">
+    <h2><span class="step-no">6</span> Jetzt du: die Hits <span class="chip">5 Minuten</span></h2>
+    <p>Die Chefin fragt: <em>„Welche Songs haben mehr als 50 000 Likes? Ich brauche Titel, Künstler und Likes.“</em>
+      Schreib die Abfrage selbst. Die Bausteine unter dem Feld helfen dir.</p>
+    <div id="l6"></div>
+    <div id="hints6"></div>
+  </section>
+
+  <!-- Plus -->
+  <section class="card">
+    <h2><span class="badge plus">Plus</span> Alles außer Pop <span class="chip">für Schnelle</span></h2>
+    <p>Ein DJ will <strong>alle Songs, die nicht Pop sind</strong> – mit Titel und Genre. Welcher Vergleich passt?</p>
+    <div id="lplus"></div>
+    <div id="hintsplus"></div>
+  </section>
+
+  <!-- Kurz-Check -->
+  <section class="card">
+    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
+    <div id="quiz"></div>
+  </section>
+
+  <section class="card merke">
+    <h2>Merke</h2>
+    <ul>
+      <li><code>WHERE</code> steht nach <code>FROM</code>: <code>SELECT … FROM … WHERE …</code></li>
+      <li><code>WHERE</code> prüft jede Zeile. Nur Zeilen, bei denen die Bedingung stimmt, kommen ins Ergebnis.</li>
+      <li>Vergleiche: <code>=</code> <code>&lt;&gt;</code> <code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code> – „ab“ und „mindestens“ heißt <code>&gt;=</code>.</li>
+      <li>Text in Anführungszeichen, genau so geschrieben wie in der Tabelle. Zahlen ohne Anführungszeichen und ohne Tausenderpunkt.</li>
+    </ul>
+  </section>
+
+
+  <!-- Training -->
+  <section class="card frei" id="training">
+    <h2><span class="step-no">🏋</span> Training</h2>
+    <p class="lead">Je mehr Abfragen du schreibst, desto sicherer wirst du. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.
+      Jede Aufgabe hat Tipps – und das Labor sagt dir, was noch nicht stimmt.</p>
+
+    <h3 class="sub"><span class="badge ueben">● Basis</span> Noch mehr Fragen bei Tonspur</h3>
+    <div id="tr1"></div>
+
+    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Azubi-Börse</h3>
+    <p>Eine Webseite sammelt Ausbildungsstellen in Bayern. Hilf den Jugendlichen, die passende Stelle zu finden.
+      <code>verguetung</code> ist das Geld pro Monat im 1. Ausbildungsjahr in Euro.</p>
+    <div id="tr2"></div>
+
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Konzertkalender</h3>
+    <p>Die Künstler aus Tonspur gehen auf Tour. <strong>Heute ist der 15. März 2026.</strong>
+      Achtung: Hier warten ein paar Fallen – genau wie in echten Datenbanken.</p>
+    <div id="tr3"></div>
+  </section>
+
+  <nav class="pager">
+    <a href="03-select.html">← Lektion 3: SELECT – Spalten auswählen</a>
+    <a href="05-and-or-not.html">Lektion 5: AND, OR, NOT →</a>
+  </nav>
+</main>
+
+<footer>
+  <div class="wrap t">Lernmaterial von <a href="https://herrseibert.de">herrseibert.de</a> · Lizenz <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">CC BY-SA 4.0</a> · ohne Tracking, ohne Cookies<br>Erstellt von der KI Claude von Anthropic.</div>
+  <div class="wrap t gh">Fehler gefunden oder eine Idee? → <a href="https://github.com/baumlaube/sql-course">Kurs auf GitHub</a></div>
+  <div class="wrap t gh">Das SQL-Labor nutzt SQLite (gemeinfrei) über sql.js (MIT-Lizenz) – alles läuft in deinem Browser.</div>
+  <div class="wrap legal"><a href="../impressum.html">Impressum</a> · <a href="../datenschutz.html">Datenschutz</a></div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { pick, quiz, hints } = window.Kurs;
+  const L = window.Labor;
+  const $ = (id) => document.getElementById(id);
+  const ROH = (sql) => sql.replace(/'[^']*'/g, "''");   // Abfrage ohne Texte in Anführungszeichen
+
+  L.tabelle($("tab-songs"), { db: "tonspur", offen: true });
+
+  /* Weißt du noch? (Lektion 3) */
+  quiz($("wdh"), [
+    { q: "Was zeigt <code>SELECT titel, jahr FROM songs</code>?",
+      options: ["Alle Spalten der Tabelle", "Nur die Spalten titel und jahr – für alle Songs", "Nur den ersten Song", "Nur Songs mit einem Jahr"], right: 1,
+      miss: ["Alle Spalten bekommst du mit <code>*</code>.", null,
+        "<code>SELECT</code> wählt Spalten aus, keine Zeilen. Es kommen alle Songs.",
+        "Jeder Song hat ein Jahr. <code>SELECT</code> sortiert keine Zeilen aus."],
+      why: "Nach <code>SELECT</code> stehen die Spalten, die du sehen willst. Zeilen kommen alle." },
+    { q: "Wofür steht das <code>*</code> in <code>SELECT * FROM songs</code>?",
+      options: ["für alle Spalten", "für alle Zeilen mit einem Stern", "für Multiplizieren", "für die wichtigste Spalte"], right: 0,
+      miss: [null, "Sterne-Bewertungen gibt es hier nicht. <code>*</code> ist eine Abkürzung.",
+        "Beim Rechnen ja – direkt nach <code>SELECT</code> heißt <code>*</code> aber: alle Spalten.",
+        "Eine „wichtigste Spalte“ kennt SQL nicht."],
+      why: "<code>*</code> ist die Abkürzung für „alle Spalten“." },
+  ]);
+
+  /* 1 · Überleg */
+  pick($("pred1"), { right: 2, fb: $("fb1"),
+    miss: ["Ohne <code>WHERE</code> wären es alle 36. Aber <code>WHERE</code> lässt nur die Zeilen durch, bei denen die Bedingung stimmt.",
+      "<code>WHERE</code> hört nicht beim ersten Treffer auf. Es prüft <strong>jede</strong> Zeile.", null,
+      "Es gibt Rock-Songs in der Tabelle – zum Beispiel von Die Kaltfront."],
+    why: "In der Spalte <code>genre</code> steht bei 5 Songs <code>Rock</code>. Genau diese 5 Zeilen kommen ins Ergebnis.",
+    onDone() { $("probe1").hidden = false; } });
+  L.create($("l1"), { db: "tonspur", modus: "lesen", sql: "SELECT titel FROM songs WHERE genre = 'Rock'", tabellen: false });
+
+  /* 2 · Zeitlupe */
+  L.zeitlupe($("zl"), { db: "tonspur", sql: "SELECT titel, jahr FROM songs WHERE jahr >= 2024" });
+
+  /* 3 · Puzzle */
+  L.create($("l3"), { db: "tonspur", modus: "puzzle", tabellen: false,
+    bausteine: ["SELECT", "titel", "FROM", "songs", "WHERE", "jahr", "=", "2025", "genre", ">"],
+    loesung: "SELECT titel FROM songs WHERE jahr = 2025",
+    pruefe({ sql }) {
+      const s = sql.toUpperCase();
+      if (!s.startsWith("SELECT")) return "Eine Abfrage beginnt immer mit <code>SELECT</code>.";
+      if (s.indexOf("WHERE") >= 0 && s.indexOf("FROM") > s.indexOf("WHERE")) return "Erst kommt <code>FROM songs</code>, dann <code>WHERE</code>.";
+      if (/WHERE\s+2025/.test(s)) return "Nach <code>WHERE</code> steht zuerst die Spalte, dann der Vergleich, dann der Wert: <code>jahr = 2025</code>.";
+      return null;
+    },
+    fallen: [
+      { sql: "SELECT titel FROM songs WHERE jahr > 2025", text: "<code>&gt; 2025</code> heißt: nach 2025. Gesucht sind Songs <strong>aus</strong> 2025." },
+      { muster: /WHERE\s+genre/i, text: "Das Genre ist hier egal. Es geht um das Jahr." },
+    ],
+    ok: "✔ Geschafft! 7 Songs aus 2025 – die Playlist steht." });
+
+  /* 4a · Lücken: Zahl */
+  L.create($("l4a"), { db: "tonspur", modus: "luecke", tabellen: false,
+    sql: "SELECT titel, dauer_sek FROM songs WHERE dauer_sek [[=|<>|<|>|<=|>=]] [[5]]",
+    loesung: "SELECT titel, dauer_sek FROM songs WHERE dauer_sek > 300",
+    fallen: [
+      { muster: /dauer_sek\s*\S+\s*5\s*$/, text: "In der Spalte stehen <strong>Sekunden</strong>. Wie viele Sekunden sind 5 Minuten? 5 · 60 = …" },
+      { muster: /<=?\s*\d/, text: "<code>&lt;</code> heißt <em>kleiner als</em> – das wären die kurzen Songs. Gesucht sind die langen." },
+      { muster: /=\s*300\s*$/, text: "Mit <code>=</code> suchst du Songs, die <strong>genau</strong> 300 Sekunden lang sind. Gesucht: länger als 300." },
+      { muster: /dauer_sek\s*\S+\s*\d+[.,:]\d/, text: "Schreib nur eine ganze Zahl in Sekunden, ohne Punkt, Komma oder Doppelpunkt." },
+    ],
+    ok: "✔ Richtig! 4 Songs sind länger als 300 Sekunden." });
+
+  /* 4b · Lücke: Text */
+  L.create($("l4b"), { db: "tonspur", modus: "luecke", tabellen: false,
+    sql: "SELECT titel, jahr FROM songs WHERE kuenstler = [[8]]",
+    loesung: "SELECT titel, jahr FROM songs WHERE kuenstler = 'Juna'",
+    ok: "✔ Richtig! Text steht in Anführungszeichen – sonst hält SQL Juna für eine Spalte." });
+
+  /* 5 · Fehlerdetektiv */
+  L.create($("l5"), { db: "tonspur", modus: "frei", tabellen: false, zeilen: 2, erkunden: true,
+    sql: "SELECT titel, kuenstler FROM songs WHERE genre = Indie",
+    loesung: "SELECT titel, kuenstler FROM songs WHERE genre = 'Indie'",
+    ok: "✔ Fall gelöst! <code>Indie</code> ohne Anführungszeichen hielt SQL für eine Spalte. Mit <code>'Indie'</code> ist es ein Text." });
+  hints($("hints5"), [
+    "Die Meldung sagt: SQL sucht eine <strong>Spalte</strong> namens Indie. Gibt es die?",
+    "<code>Indie</code> ist keine Spalte, sondern ein <strong>Wert</strong> aus der Spalte <code>genre</code> – also Text.",
+    "Lösung: <code>SELECT titel, kuenstler FROM songs WHERE genre = 'Indie'</code>",
+  ]);
+
+  /* 6 · Selbst schreiben */
+  L.create($("l6"), { db: "tonspur", modus: "frei", tabellen: false,
+    loesung: "SELECT titel, kuenstler, likes FROM songs WHERE likes > 50000",
+    fallen: [
+      { muster: /\d{1,3}\.\d{3}\b/, text: "Vorsicht, Falle! <code>50.000</code> ist für SQL <strong>fünfzig</strong> (der Punkt ist das Komma). Zahlen schreibt man ohne Tausenderpunkt: <code>50000</code>." },
+      { muster: /'\d+'/, text: "<code>likes</code> ist eine Zahl. Zahlen stehen <strong>ohne</strong> Anführungszeichen." },
+      { sql: "SELECT titel, kuenstler, likes FROM songs WHERE likes < 50000", text: "Andersherum! <code>&lt;</code> findet Songs mit <strong>weniger</strong> Likes." },
+    ],
+    ok: "✔ Stark – deine erste eigene WHERE-Abfrage! 7 Hits mit mehr als 50 000 Likes." });
+  hints($("hints6"), [
+    "Gefragt sind drei Spalten: <code>titel</code>, <code>kuenstler</code>, <code>likes</code>. Die kommen nach <code>SELECT</code>, mit Komma dazwischen.",
+    "Die Bedingung: <code>likes</code> soll größer sein als 50000. Ohne Punkt in der Zahl!",
+    "Lösung: <code>SELECT titel, kuenstler, likes FROM songs WHERE likes &gt; 50000</code>",
+  ]);
+
+  /* Plus */
+  L.create($("lplus"), { db: "tonspur", modus: "frei", tabellen: false,
+    sql: "SELECT titel, genre FROM songs WHERE ",
+    loesung: "SELECT titel, genre FROM songs WHERE genre <> 'Pop'",
+    fallen: [
+      { sql: "SELECT titel, genre FROM songs WHERE genre = 'Pop'", text: "Das sind genau die Pop-Songs. Gesucht ist das Gegenteil: <strong>ungleich</strong>." },
+      { muster: /!=/, text: "<code>!=</code> funktioniert in SQLite auch – in SQL üblich ist aber <code>&lt;&gt;</code>. Probier es damit." },
+    ],
+    ok: "✔ Genau: <code>&lt;&gt;</code> heißt ungleich. 26 Songs sind nicht Pop." });
+  hints($("hintsplus"), [
+    "Schau in die Tabelle mit den Vergleichen in Schritt 4. Welches Zeichen heißt „ungleich“?",
+    "Lösung: <code>SELECT titel, genre FROM songs WHERE genre &lt;&gt; 'Pop'</code>",
+  ]);
+
+  /* Kurz-Check */
+  quiz($("quiz"), [
+    { q: "Welche Abfrage findet alle Songs von Frida Falk?",
+      options: ["<code>… WHERE kuenstler = Frida Falk</code>", "<code>… WHERE kuenstler = 'Frida Falk'</code>", "<code>… WHERE 'kuenstler' = Frida Falk</code>", "<code>SELECT 'Frida Falk' FROM songs</code>"], right: 1,
+      miss: ["Ohne Anführungszeichen hält SQL <code>Frida</code> und <code>Falk</code> für Namen von Spalten.", null,
+        "Andersherum: Der <strong>Text</strong> kommt in Anführungszeichen, nicht die Spalte.",
+        "Das zeigt 36-mal den Text „Frida Falk“ – für jede Zeile einmal. Gefiltert wird nichts."],
+      why: "Der Text steht in Anführungszeichen, die Spalte ohne: <code>kuenstler = 'Frida Falk'</code>." },
+    { q: "Gesucht: Songs <strong>ab</strong> 2023. Welche Bedingung passt?",
+      options: ["<code>jahr &gt; 2023</code>", "<code>jahr &gt;= 2023</code>", "<code>jahr = 2023</code>", "<code>jahr &lt; 2023</code>"], right: 1,
+      miss: ["Dann fehlen die Songs aus 2023 selbst. „Ab 2023“ heißt: 2023 gehört dazu.", null,
+        "Damit bekommst du nur 2023 – nicht 2024 und 2025.", "Das sind die Songs <strong>vor</strong> 2023."],
+      why: "„ab“ und „mindestens“ heißt <code>&gt;=</code>: größer oder gleich." },
+    { q: "In welcher Reihenfolge steht eine Abfrage?",
+      options: ["<code>SELECT … WHERE … FROM …</code>", "<code>FROM … SELECT … WHERE …</code>", "<code>SELECT … FROM … WHERE …</code>", "Egal – SQL sortiert das selbst"], right: 2,
+      miss: ["<code>WHERE</code> braucht erst die Tabelle. Darum steht <code>FROM</code> davor.",
+        "Eine Abfrage beginnt immer mit <code>SELECT</code>.", null, "Nein – bei falscher Reihenfolge meldet SQL einen Fehler."],
+      why: "Immer: <code>SELECT</code> spalten <code>FROM</code> tabelle <code>WHERE</code> bedingung." },
+    { q: "<code>SELECT titel FROM songs WHERE genre = 'pop'</code> liefert 0 Zeilen. Warum?",
+      options: ["Es gibt keine Pop-Songs", "In der Tabelle steht <code>Pop</code> mit großem P", "WHERE funktioniert nur mit Zahlen", "Am Ende fehlt ein Strichpunkt"], right: 1,
+      miss: ["Doch, es gibt 10 Pop-Songs. Schau genau, wie das Wort in der Tabelle geschrieben ist.", null,
+        "<code>WHERE</code> funktioniert mit Text genauso – Text muss nur genau stimmen.",
+        "Der Strichpunkt am Ende darf fehlen. Daran liegt es nicht."],
+      why: "Bei Text zählt jeder Buchstabe: <code>'pop'</code> ist nicht <code>'Pop'</code>." },
+  ]);
+
+
+  /* ---------- Training ---------- */
+  L.training($("tr1"), { db: "tonspur", key: "l04-basis", tabelle: false, aufgaben: [
+    { text: "Alle Songs der Band <strong>Die Kaltfront</strong>. Zeig nur den Titel.",
+      loesung: "SELECT titel FROM songs WHERE kuenstler = 'Die Kaltfront'",
+      hints: ["Die Band steht in der Spalte <code>kuenstler</code>.", "Der Name ist Text: <code>'Die Kaltfront'</code> – genau so geschrieben.",
+        "Lösung: <code>SELECT titel FROM songs WHERE kuenstler = 'Die Kaltfront'</code>"] },
+    { text: "Alle <strong>Hip-Hop</strong>-Songs mit Titel und Künstler.",
+      loesung: "SELECT titel, kuenstler FROM songs WHERE genre = 'Hip-Hop'",
+      hints: ["Spalten: <code>titel, kuenstler</code>. Bedingung in der Spalte <code>genre</code>.",
+        "Schau in der Tabelle, wie Hip-Hop genau geschrieben ist (Bindestrich, großes H).",
+        "Lösung: <code>SELECT titel, kuenstler FROM songs WHERE genre = 'Hip-Hop'</code>"] },
+    { text: "Alle Songs, die <strong>vor 2020</strong> erschienen sind. Zeig Titel und Jahr.",
+      loesung: "SELECT titel, jahr FROM songs WHERE jahr < 2020",
+      fallen: [{ sql: "SELECT titel, jahr FROM songs WHERE jahr <= 2020", text: "„Vor 2020“ heißt: 2020 gehört <strong>nicht</strong> dazu. Nimm <code>&lt;</code> statt <code>&lt;=</code>." }],
+      hints: ["„Vor 2020“ heißt: kleiner als 2020.", "Lösung: <code>SELECT titel, jahr FROM songs WHERE jahr &lt; 2020</code>"] },
+    { text: "Kurze Songs für Social Media: <strong>höchstens 3 Minuten</strong> lang. Zeig Titel und Dauer.",
+      loesung: "SELECT titel, dauer_sek FROM songs WHERE dauer_sek <= 180",
+      fallen: [{ muster: /dauer_sek\s*<=?\s*3\b/, text: "<code>dauer_sek</code> zählt Sekunden. 3 Minuten sind 3 · 60 = 180 Sekunden." },
+        { muster: />/, text: "„Höchstens“ heißt: nicht mehr als – also <code>&lt;=</code>." }],
+      hints: ["Rechne zuerst: 3 Minuten = ? Sekunden.", "„Höchstens“ heißt <code>&lt;=</code>.",
+        "Lösung: <code>SELECT titel, dauer_sek FROM songs WHERE dauer_sek &lt;= 180</code>"] },
+    { text: "Welcher Song hat genau <strong>4120 Likes</strong>? Zeig Titel und Künstler.",
+      loesung: "SELECT titel, kuenstler FROM songs WHERE likes = 4120",
+      fallen: [{ muster: /4\.120/, text: "Ohne Punkt! Für SQL ist <code>4.120</code> die Kommazahl 4,12." }],
+      hints: ["Genau = gleich.", "Lösung: <code>SELECT titel, kuenstler FROM songs WHERE likes = 4120</code>"] },
+    { text: "Alle Songs, die <strong>kein Elektro</strong> sind. Zeig Titel und Genre.",
+      loesung: "SELECT titel, genre FROM songs WHERE genre <> 'Elektro'",
+      fallen: [{ sql: "SELECT titel, genre FROM songs WHERE genre = 'Elektro'", text: "Das sind die Elektro-Songs. Gesucht ist das Gegenteil." }],
+      hints: ["„kein“ = ungleich.", "Lösung: <code>SELECT titel, genre FROM songs WHERE genre &lt;&gt; 'Elektro'</code>"] },
+  ]});
+
+  L.training($("tr2"), { db: "azubi", key: "l04-sicher", aufgaben: [
+    { text: "Emre sucht eine Ausbildung in <strong>Regensburg</strong>. Zeig ihm Beruf und Betrieb.",
+      loesung: "SELECT beruf, betrieb FROM stellen WHERE ort = 'Regensburg'",
+      hints: ["Der Ort steht in der Spalte <code>ort</code>.", "Lösung: <code>SELECT beruf, betrieb FROM stellen WHERE ort = 'Regensburg'</code>"] },
+    { text: "Lea hat den <strong>Quali</strong>. Welche Stellen verlangen genau diesen Abschluss? Zeig Beruf, Betrieb und Ort.",
+      loesung: "SELECT beruf, betrieb, ort FROM stellen WHERE abschluss = 'Quali'",
+      hints: ["Spalte: <code>abschluss</code>.", "Lösung: <code>SELECT beruf, betrieb, ort FROM stellen WHERE abschluss = 'Quali'</code>"] },
+    { text: "Tim will im ersten Jahr <strong>mindestens 1000 Euro</strong> im Monat verdienen. Zeig Beruf, Betrieb und Vergütung.",
+      loesung: "SELECT beruf, betrieb, verguetung FROM stellen WHERE verguetung >= 1000",
+      fallen: [{ sql: "SELECT beruf, betrieb, verguetung FROM stellen WHERE verguetung > 1000", text: "Fast! Es gibt Stellen mit <strong>genau</strong> 1000 Euro – die gehören bei „mindestens“ dazu." },
+        { muster: /1\.000/, text: "Ohne Tausenderpunkt: <code>1000</code>." }, { muster: /€|euro/i, text: "Nur die Zahl – ohne € und ohne „Euro“." }],
+      hints: ["„Mindestens“ heißt: größer oder gleich.", "Lösung: <code>SELECT beruf, betrieb, verguetung FROM stellen WHERE verguetung &gt;= 1000</code>"] },
+    { text: "Welche Ausbildungen dauern <strong>weniger als 3 Jahre</strong>? Zeig Beruf, Betrieb und Dauer.",
+      loesung: "SELECT beruf, betrieb, dauer_monate FROM stellen WHERE dauer_monate < 36",
+      fallen: [{ muster: /dauer_monate\s*<=?\s*3\b/, text: "Die Spalte zählt <strong>Monate</strong>. 3 Jahre = 36 Monate." }],
+      hints: ["3 Jahre sind wie viele Monate?", "Lösung: <code>SELECT beruf, betrieb, dauer_monate FROM stellen WHERE dauer_monate &lt; 36</code>"] },
+    { text: "Welche Stellen sind <strong>schon vergeben</strong> (keine freien Plätze mehr)? Zeig Betrieb und Beruf.",
+      loesung: "SELECT betrieb, beruf FROM stellen WHERE plaetze = 0",
+      fallen: [{ muster: /'0'|'null'|'keine'/i, text: "<code>plaetze</code> ist eine Zahl. Keine Plätze heißt: <code>0</code> – ohne Anführungszeichen." }],
+      hints: ["Keine freien Plätze: <code>plaetze</code> ist 0.", "Lösung: <code>SELECT betrieb, beruf FROM stellen WHERE plaetze = 0</code>"] },
+    { text: "Sara will <strong>nicht in Augsburg</strong> arbeiten. Zeig alle anderen Stellen mit Beruf und Ort.",
+      loesung: "SELECT beruf, ort FROM stellen WHERE ort <> 'Augsburg'",
+      hints: ["„nicht“ = ungleich: <code>&lt;&gt;</code>", "Lösung: <code>SELECT beruf, ort FROM stellen WHERE ort &lt;&gt; 'Augsburg'</code>"] },
+    { text: "Wo kann man <strong>Kfz-Mechatroniker/in</strong> lernen? Zeig Betrieb und Ort.",
+      loesung: "SELECT betrieb, ort FROM stellen WHERE beruf = 'Kfz-Mechatroniker/in'",
+      hints: ["Der Text muss <strong>genau</strong> so dastehen wie in der Tabelle – mit <code>/in</code> am Ende.",
+        "Lösung: <code>SELECT betrieb, ort FROM stellen WHERE beruf = 'Kfz-Mechatroniker/in'</code>"] },
+  ]});
+
+  L.training($("tr3"), { db: "konzerte", key: "l04-profi", aufgaben: [
+    { text: "Alle Konzerte in <strong>Nürnberg</strong>: Künstler und Datum.",
+      loesung: "SELECT kuenstler, datum FROM konzerte WHERE stadt = 'Nürnberg'",
+      fallen: [{ muster: /'Nuernberg'|'Nurnberg'/i, text: "In der Tabelle steht <code>Nürnberg</code> mit ü. Text muss genau stimmen." }],
+      hints: ["Spalte: <code>stadt</code>.", "Lösung: <code>SELECT kuenstler, datum FROM konzerte WHERE stadt = 'Nürnberg'</code>"] },
+    { text: "Tickets für <strong>höchstens 29,90 €</strong>: Künstler, Stadt und Preis.",
+      loesung: "SELECT kuenstler, stadt, preis FROM konzerte WHERE preis <= 29.90",
+      fallen: [{ muster: /29\s*,\s*9/, text: "Falle! In SQL ist das Komma ein Trennzeichen. Kommazahlen schreibt man mit <strong>Punkt</strong>: <code>29.90</code>." },
+        { sql: "SELECT kuenstler, stadt, preis FROM konzerte WHERE preis < 29.90", text: "Konzerte für genau 29,90 € gehören bei „höchstens“ dazu." }],
+      hints: ["„Höchstens“: <code>&lt;=</code>. Und die Zahl mit Punkt.", "Lösung: <code>SELECT kuenstler, stadt, preis FROM konzerte WHERE preis &lt;= 29.90</code>"] },
+    { text: "Welche Konzerte kommen noch – <strong>ab heute, dem 15. März 2026</strong>? Künstler, Stadt und Datum.",
+      loesung: "SELECT kuenstler, stadt, datum FROM konzerte WHERE datum >= '2026-03-15'",
+      fallen: [{ muster: /15\.0?3\.2026/, text: "In der Tabelle steht das Datum so: <code>'2026-03-15'</code> (Jahr-Monat-Tag). Nur in dieser Form kann SQL richtig vergleichen." },
+        { muster: /datum\s*>=?\s*2026/, text: "Ein Datum ist hier Text – also in Anführungszeichen: <code>'2026-03-15'</code>." },
+        { sql: "SELECT kuenstler, stadt, datum FROM konzerte WHERE datum > '2026-03-15'", text: "Das Konzert heute fehlt! „Ab heute“ heißt: heute gehört dazu." }],
+      hints: ["Schau in der Tabelle, wie ein Datum geschrieben ist.", "„Ab heute“: <code>&gt;=</code> und das Datum als <code>'2026-03-15'</code>.",
+        "Lösung: <code>SELECT kuenstler, stadt, datum FROM konzerte WHERE datum &gt;= '2026-03-15'</code>"] },
+    { text: "Für welche Konzerte gibt es noch Karten? Zeig alle, die <strong>nicht ausverkauft</strong> sind: Künstler, Stadt, freie Plätze.",
+      loesung: "SELECT kuenstler, stadt, plaetze_frei FROM konzerte WHERE ausverkauft = 'nein'",
+      hints: ["In der Spalte <code>ausverkauft</code> steht <code>ja</code> oder <code>nein</code> – als Text.",
+        "Lösung: <code>SELECT kuenstler, stadt, plaetze_frei FROM konzerte WHERE ausverkauft = 'nein'</code>"] },
+    { text: "Alle Konzerte von <strong>Juna</strong>: Stadt, Datum und Preis.",
+      loesung: "SELECT stadt, datum, preis FROM konzerte WHERE kuenstler = 'Juna'",
+      hints: ["Lösung: <code>SELECT stadt, datum, preis FROM konzerte WHERE kuenstler = 'Juna'</code>"] },
+    { text: "Die teuren Abende: Konzerte, die <strong>mehr als 50 €</strong> kosten. Zeig Künstler, Stadt und Preis.",
+      loesung: "SELECT kuenstler, stadt, preis FROM konzerte WHERE preis > 50",
+      hints: ["„Mehr als“: <code>&gt;</code>.", "Lösung: <code>SELECT kuenstler, stadt, preis FROM konzerte WHERE preis &gt; 50</code>"] },
+  ]});
+});
+</script>
+</body>
+</html>

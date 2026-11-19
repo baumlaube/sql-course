@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SQL-Kurs · Datenbanken verstehen – mit echtem SQLite im Browser</title>
+<meta name="description" content="Freier SQL-Kurs für die 10. Klasse (Mittelschule Bayern, Informatik M10): Datenbanken verstehen, Abfragen mit SELECT, WHERE und JOIN, eigene Datenbank bauen – mit echtem SQLite direkt im Browser, Rückmeldung zu jedem Fehler und viel Training.">
+<link rel="canonical" href="https://sql.herrseibert.de/">
+<!-- vorschau -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SQL-Kurs">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://sql.herrseibert.de/">
+<meta property="og:title" content="SQL-Kurs · Datenbanken verstehen – mit echtem SQLite im Browser">
+<meta property="og:description" content="Freier SQL-Kurs für die 10. Klasse (Mittelschule Bayern, Informatik M10): Datenbanken verstehen, Abfragen mit SELECT, WHERE und JOIN, eigene Datenbank bauen – mit echtem SQLite direkt im Browser, Rückmeldung zu jedem Fehler und viel Training.">
+<meta property="og:image" content="https://sql.herrseibert.de/vorschau.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SQL-Kurs – Datenbanken und SQL Schritt für Schritt, mit SQL-Labor im Browser">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /vorschau -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="assets/kurs.css?v=2b9f3c7d0f">
+<link rel="stylesheet" href="assets/labor.css?v=6a1d489de7">
+<script src="assets/i18n.js?v=2890af4da9" data-page="index" data-langs="de en"></script>
+<script src="assets/kurs.js?v=c26439e733"></script>
+<style>
+  .teile { list-style: none; padding: 0; margin: 0; }
+  .teil { margin: 18px 0 0; }
+  .teil h3 { margin: 0 0 6px; color: var(--navy); font-size: 19px; }
+  .lektionen { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+  .lektionen a, .lektionen span { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 10px;
+    border: 2px solid var(--line); background: var(--surface); color: var(--text); text-decoration: none; }
+  .lektionen a:hover { border-color: var(--accent); }
+  .lektionen span { color: var(--muted); border-style: dashed; }
+  .lektionen b { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--surface-2); flex: none; }
+  .lektionen a b { background: var(--basis); color: #fff; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img class="logo" src="favicon.svg" alt="" width="34" height="34"> SQL-Kurs <span>· Datenbanken verstehen</span></a>
+    <span class="spacer"></span>
+    <button class="theme-btn" type="button" aria-label="Hell oder dunkel umschalten">◐ Hell/Dunkel</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero" style="padding-top:24px">
+    <h1>Datenbanken verstehen – mit SQL</h1>
+    <div class="meta">
+      <span class="chip">Informatik · Klasse 10</span>
+      <span class="chip">16 Lektionen à 35 Minuten</span>
+      <span class="chip">läuft im Browser, auch am Handy</span>
+    </div>
+    <p>Hinter fast jeder App steckt eine Datenbank: Musik, Onlineshop, Bücherei, Zeugnis. In diesem Kurs lernst du, wie sie aufgebaut ist,
+      wie man sie mit <strong>SQL</strong> befragt – und am Ende baust du deine eigene.</p>
+    <p>Geübt wird im <strong>SQL-Labor</strong>: echtes SQLite direkt auf dieser Seite. Nichts installieren, kein Konto,
+      und zu jedem Fehler sagt dir das Labor, was nicht stimmt.</p>
+  </section>
+
+  <section class="card">
+    <h2><span class="step-no">▶</span> Lernpfad</h2>
+    <p class="note">Der Kurs entsteht gerade. Fertige Lektionen sind grün.</p>
+    <ul class="teile">
+      <li class="teil"><h3>Teil 1 · Was ist eine Datenbank?</h3>
+        <ul class="lektionen">
+          <li><span><b>1</b> Datenbanken sind überall</span></li>
+          <li><span><b>2</b> IDs und Verknüpfung</span></li>
+        </ul></li>
+      <li class="teil"><h3>Teil 2 · Abfragen in einer Tabelle</h3>
+        <ul class="lektionen">
+          <li><a href="teil2/03-select.html"><b>3</b> SELECT – Spalten auswählen</a></li>
+          <li><a href="teil2/04-where.html"><b>4</b> WHERE – Zeilen filtern</a></li>
+          <li><a href="teil2/05-and-or-not.html"><b>5</b> AND, OR, NOT</a></li>
+          <li><a href="teil2/06-like-in-between.html"><b>6</b> LIKE, IN, BETWEEN</a></li>
+          <li><a href="teil2/07-sortieren-rechnen.html"><b>7</b> Sortieren und rechnen</a></li>
+          <li><a href="teil2/08-group-by.html"><b>8</b> GROUP BY – Gruppen bilden</a></li>
+        </ul></li>
+      <li class="teil"><h3>Teil 3 · Mehrere Tabellen: JOIN</h3>
+        <ul class="lektionen">
+          <li><span><b>9</b> Zwei Tabellen: JOIN</span></li>
+          <li><span><b>10</b> JOIN mit WHERE und GROUP BY</span></li>
+          <li><span><b>11</b> Der Fall</span></li>
+        </ul></li>
+      <li class="teil"><h3>Teil 4 · Projekt: Pfotenglück, die Partnerbörse für Tiere</h3>
+        <ul class="lektionen">
+          <li><span><b>12</b> Projekt planen</span></li>
+          <li><span><b>13</b> Tabellen anlegen und füllen</span></li>
+          <li><span><b>14</b> Ändern und löschen</span></li>
+        </ul></li>
+      <li class="teil"><h3>Teil 5 · Formulare</h3>
+        <ul class="lektionen">
+          <li><span><b>15</b> Suchformular</span></li>
+          <li><span><b>16</b> Eingabeformular</span></li>
+        </ul></li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap t">Lernmaterial von <a href="https://herrseibert.de">herrseibert.de</a> · Lizenz <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">CC BY-SA 4.0</a> · ohne Tracking, ohne Cookies<br>Erstellt von der KI Claude von Anthropic.</div>
+  <div class="wrap t gh">Fehler gefunden oder eine Idee? → <a href="https://github.com/baumlaube/sql-course">Kurs auf GitHub</a></div>
+  <div class="wrap t gh">Das SQL-Labor nutzt SQLite (gemeinfrei) über sql.js (MIT-Lizenz) – alles läuft in deinem Browser.</div>
+  <div class="wrap legal"><a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></div>
+</footer>
+</body>
+</html>

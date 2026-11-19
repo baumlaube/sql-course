@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LIKE, IN, BETWEEN – suchen mit Muster, Liste und Bereich · SQL-Kurs</title>
+<meta name="description" content="Lektion 6 im SQL-Lernpfad: Mit LIKE nach Teilen von Texten suchen (% und _), mit IN eine Liste von Werten und mit BETWEEN einen Bereich abfragen – mit echtem SQLite direkt im Browser, Rückmeldung zu jedem Fehler und viel Training.">
+<link rel="canonical" href="https://sql.herrseibert.de/teil2/06-like-in-between.html">
+<!-- vorschau -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SQL-Kurs">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://sql.herrseibert.de/teil2/06-like-in-between.html">
+<meta property="og:title" content="LIKE, IN, BETWEEN – suchen mit Muster, Liste und Bereich · SQL-Kurs">
+<meta property="og:description" content="Lektion 6 im SQL-Lernpfad: Mit LIKE nach Teilen von Texten suchen (% und _), mit IN eine Liste von Werten und mit BETWEEN einen Bereich abfragen – mit echtem SQLite direkt im Browser, Rückmeldung zu jedem Fehler und viel Training.">
+<meta property="og:image" content="https://sql.herrseibert.de/vorschau.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SQL-Kurs – Datenbanken und SQL Schritt für Schritt, mit SQL-Labor im Browser">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /vorschau -->
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/kurs.css?v=2b9f3c7d0f">
+<link rel="stylesheet" href="../assets/labor.css?v=6a1d489de7">
+<script src="../assets/i18n.js?v=2890af4da9" data-page="teil2-06-like-in-between" data-langs="de en"></script>
+<script src="../assets/kurs.js?v=c26439e733"></script>
+<script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
+<script src="../assets/labor.js?v=b6bfaa57ea"></script>
+<script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
+<script src="../assets/daten/azubi.js?v=5b1356cc35"></script>
+<script src="../assets/daten/konzerte.js?v=51212600cc"></script>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html"><img class="logo" src="../favicon.svg" alt="" width="34" height="34"> SQL-Kurs <span>· Datenbanken verstehen</span></a>
+    <span class="spacer"></span>
+    <button class="theme-btn" type="button" aria-label="Hell oder dunkel umschalten">◐ Hell/Dunkel</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="path" aria-label="Lernpfad">
+    <strong class="t">Lernpfad:</strong>
+    <ol>
+      <li class="soon"><span title="1 · Datenbanken sind überall (in Arbeit)">1</span></li>
+      <li class="soon"><span title="2 · IDs und Verknüpfung (in Arbeit)">2</span></li>
+      <li class="done"><a href="03-select.html" title="3 · SELECT – Spalten auswählen">3</a></li>
+      <li class="done"><a href="04-where.html" title="4 · WHERE – Zeilen filtern">4</a></li>
+      <li class="done"><a href="05-and-or-not.html" title="5 · AND, OR, NOT">5</a></li>
+      <li class="now"><span title="6 · LIKE, IN, BETWEEN" aria-current="step">6</span></li>
+      <li class="done"><a href="07-sortieren-rechnen.html" title="7 · Sortieren und rechnen">7</a></li>
+      <li class="done"><a href="08-group-by.html" title="8 · GROUP BY – Gruppen bilden">8</a></li>
+      <li class="soon"><span title="9 · Zwei Tabellen: JOIN (in Arbeit)">9</span></li>
+      <li class="soon"><span title="10 · JOIN mit WHERE und GROUP BY (in Arbeit)">10</span></li>
+      <li class="soon"><span title="11 · Der Fall (in Arbeit)">11</span></li>
+      <li class="soon"><span title="12 · Projekt planen (in Arbeit)">12</span></li>
+      <li class="soon"><span title="13 · Tabellen anlegen und füllen (in Arbeit)">13</span></li>
+      <li class="soon"><span title="14 · Ändern und löschen (in Arbeit)">14</span></li>
+      <li class="soon"><span title="15 · Suchformular (in Arbeit)">15</span></li>
+      <li class="soon"><span title="16 · Eingabeformular (in Arbeit)">16</span></li>
+    </ol>
+  </nav>
+
+  <section class="hero">
+    <h1>LIKE, IN, BETWEEN – suchen mit Muster, Liste und Bereich</h1>
+    <div class="meta">
+      <span class="chip">Teil 2 · Lektion 6</span>
+      <span class="chip">⏱ ca. 35 Minuten</span>
+    </div>
+    <p class="erklaerung">Oft kennst du nur einen Teil: Der Titel hat irgendwas mit „Nacht“. Oder du hast eine Liste: Rock oder Indie.
+      Oder einen Bereich: Songs von 2019 bis 2021. Mit <code>LIKE</code>, <code>IN</code> und <code>BETWEEN</code> geht das kurz und sicher.
+      Jedes Suchfeld in einer App arbeitet so – du tippst ein paar Buchstaben, und die Datenbank sucht mit <code>LIKE</code>.</p>
+  </section>
+
+  <section class="card wdh">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
+  <details class="card woerter">
+    <summary>📖 Wörter für diese Lektion</summary>
+    <p class="note">Die SQL-Befehle bleiben englisch – so heißen sie in jeder Datenbank der Welt.</p>
+    <div class="tbl-scroll"><table class="plain">
+      <tr><th class="wort">das Muster <small>die Muster</small></th><td>Eine Vorlage für Text mit Lücken, z. B. „fängt mit S an“.</td></tr>
+      <tr><th class="wort">der Platzhalter <small>die Platzhalter</small></th><td>Ein Zeichen, das für anderen Text steht: <code>%</code> und <code>_</code>.</td></tr>
+      <tr><th class="wort">enthalten <small>es enthält</small></th><td>Etwas steckt irgendwo darin. „Mitternachtsbus“ enthält „nacht“.</td></tr>
+      <tr><th class="wort">die Liste <small>die Listen</small></th><td>Mehrere Werte nacheinander, z. B. <code>('Rock', 'Indie')</code>.</td></tr>
+      <tr><th class="wort">der Bereich <small>die Bereiche</small></th><td>Alles von einem Wert bis zu einem anderen, z. B. von 2019 bis 2021.</td></tr>
+      <tr><th class="wort">die Grenze <small>die Grenzen</small></th><td>Der erste und der letzte Wert eines Bereichs.</td></tr>
+    </table></div>
+  </details>
+
+  <section class="card szenario">
+    <h2><span class="step-no">🎧</span> Szenario</h2>
+    <p>Bei <strong>Tonspur</strong> wird die Suchfunktion der App gebaut. Du testest, welche Abfragen dahinter stecken – mit der Tabelle <code>songs</code>.</p>
+  </section>
+
+  <!-- 1 · Überleg -->
+  <section class="card">
+    <h2><span class="step-no">1</span> Überleg: das Suchfeld <span class="chip">4 Minuten</span></h2>
+    <div id="tab-songs"></div>
+    <p>Jemand tippt ins Suchfeld ein „S“. Die App schickt diese Abfrage los:</p>
+    <pre class="sql" data-farbe>SELECT titel FROM songs WHERE titel LIKE 'S%'</pre>
+    <p><strong>Überleg:</strong> Welche Titel kommen heraus? Das <code>%</code> ist ein Platzhalter. Führ noch nichts aus!</p>
+    <div class="choices" id="pred1">
+      <button type="button" class="choice">alle Titel, in denen ein S vorkommt</button>
+      <button type="button" class="choice">alle Titel, die mit S anfangen</button>
+      <button type="button" class="choice">nur ein Titel, der genau „S%“ heißt</button>
+      <button type="button" class="choice">alle Titel, die mit S aufhören</button>
+    </div>
+    <p class="fb" id="fb1"></p>
+    <div id="probe1" hidden>
+      <div id="l1"></div>
+    </div>
+  </section>
+
+  <!-- 2 · LIKE mit % -->
+  <section class="card">
+    <h2><span class="step-no">2</span> Wo steht das %? <span class="chip">5 Minuten</span></h2>
+    <p><code>%</code> steht für <strong>beliebig viel Text</strong> – auch für gar keinen. Wo du es hinsetzt, entscheidet alles:</p>
+    <div class="tbl-scroll"><table class="plain">
+      <tr><th>Muster</th><th>findet</th><th>Beispiel</th></tr>
+      <tr><td><code>LIKE 'S%'</code></td><td>beginnt mit S</td><td>Sturmwarnung</td></tr>
+      <tr><td><code>LIKE '%e'</code></td><td>endet auf e</td><td>Blaue Stunde</td></tr>
+      <tr><td><code>LIKE '%licht%'</code></td><td>enthält „licht“ – irgendwo</td><td>Polarlicht, Neonlicht</td></tr>
+      <tr><td><code>LIKE '_lan%'</code></td><td><code>_</code> steht für <strong>genau ein</strong> Zeichen</td><td>Plan B</td></tr>
+    </table></div>
+    <p>Jemand tippt „nacht“ ins Suchfeld. Gefunden werden sollen <strong>alle Titel, in denen „nacht“ vorkommt</strong> – egal wo.</p>
+    <div id="l2"></div>
+    <p class="rule"><code>LIKE</code> sucht mit Muster. <code>%</code> = beliebig viel Text, <code>_</code> = genau ein Zeichen.<br>
+      Groß- und Kleinschreibung ist bei <code>LIKE</code> egal: <code>'nacht%'</code> findet auch „Nachtschicht“.</p>
+  </section>
+
+  <!-- 3 · Fehlerdetektiv -->
+  <section class="card">
+    <h2><span class="step-no">3</span> Fehlerdetektiv: Die Suche findet nichts <span class="chip">4 Minuten</span></h2>
+    <p>Ein Kollege hat die Suche nach Titeln mit „B“ am Anfang programmiert. Es kommt kein Fehler – aber auch kein einziger Song.
+      Dabei gibt es Titel mit B! Führ die Abfrage aus und finde den Fehler.</p>
+    <ol class="howto">
+      <li>Wie viele Zeilen kommen heraus? Wie viele sollten es sein?</li>
+      <li>Was macht <code>=</code> mit dem Zeichen <code>%</code>?</li>
+      <li>Welches Wort braucht man für ein Muster?</li>
+    </ol>
+    <div id="l3"></div>
+    <div id="hints3"></div>
+  </section>
+
+  <!-- 4 · IN -->
+  <section class="card">
+    <h2><span class="step-no">4</span> IN: eine ganze Liste auf einmal <span class="chip">5 Minuten</span></h2>
+    <p>Für die Playlist „Gitarre“ sollen alle Songs aus <strong>Rock oder Indie</strong> rein. Mit <code>OR</code> geht das so:</p>
+    <pre class="sql" data-farbe>SELECT titel, genre FROM songs WHERE genre = 'Rock' OR genre = 'Indie'</pre>
+    <p>Kürzer geht es mit <code>IN</code> und einer <strong>Liste in Klammern</strong>. Leg die Abfrage aus den Bausteinen –
+      Titel und Genre aus der Tabelle <code>songs</code>. Zwei Bausteine brauchst du nicht.</p>
+    <div id="l4"></div>
+    <p class="rule"><code>spalte IN ('A', 'B', 'C')</code> heißt: Der Wert ist A <strong>oder</strong> B <strong>oder</strong> C.<br>
+      Die Liste steht in Klammern, die Werte trennt ein Komma.</p>
+  </section>
+
+  <!-- 5 · BETWEEN -->
+  <section class="card">
+    <h2><span class="step-no">5</span> BETWEEN: von … bis … <span class="chip">5 Minuten</span></h2>
+    <pre class="sql" data-farbe>SELECT titel, jahr FROM songs WHERE jahr BETWEEN 2019 AND 2021</pre>
+    <p><strong>Überleg:</strong> Sind die Songs aus 2019 und aus 2021 dabei?</p>
+    <div class="choices" id="pred5">
+      <button type="button" class="choice">Nein, nur 2020 – was dazwischen liegt</button>
+      <button type="button" class="choice">Ja, beide Grenzen gehören dazu</button>
+      <button type="button" class="choice">Nur 2019, nicht 2021</button>
+    </div>
+    <p class="fb" id="fb5"></p>
+    <div id="probe5" hidden>
+      <div id="l5a"></div>
+      <p><strong>Jetzt du:</strong> Für Radiosender braucht Tonspur alle Songs, die <strong>zwischen 3 und 4 Minuten</strong> lang sind (Grenzen inklusive).
+        Zeig Titel und Dauer.</p>
+      <div id="l5b"></div>
+      <div id="hints5"></div>
+      <p class="rule"><code>BETWEEN a AND b</code> ist dasselbe wie <code>&gt;= a AND &lt;= b</code>.<br>Beide Grenzen gehören dazu. Die kleinere Zahl kommt zuerst.</p>
+    </div>
+  </section>
+
+  <!-- 6 · Alles zusammen -->
+  <section class="card">
+    <h2><span class="step-no">6</span> Jetzt du: alles zusammen <span class="chip">5 Minuten</span></h2>
+    <p>Ein Fan sucht Songs von Künstlern, deren Name mit <strong>N</strong> beginnt – aber nur aus den Jahren <strong>2019 bis 2022</strong>.
+      Zeig Titel, Künstler und Jahr.</p>
+    <div id="l6"></div>
+    <div id="hints6"></div>
+  </section>
+
+  <!-- Plus -->
+  <section class="card">
+    <h2><span class="badge plus">Plus</span> NOT IN und NOT LIKE <span class="chip">für Schnelle</span></h2>
+    <p><code>NOT</code> funktioniert auch hier: <code>genre NOT IN (…)</code>, <code>titel NOT LIKE '…'</code>.
+      Gesucht: alle Songs, die <strong>weder Pop noch Rock noch Hip-Hop</strong> sind. Zeig Titel und Genre.</p>
+    <div id="lplus"></div>
+    <div id="hintsplus"></div>
+  </section>
+
+  <!-- Kurz-Check -->
+  <section class="card">
+    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
+    <div id="quiz"></div>
+  </section>
+
+  <section class="card merke">
+    <h2>Merke</h2>
+    <ul>
+      <li><code>LIKE</code> sucht mit Muster: <code>%</code> = beliebig viel Text, <code>_</code> = genau ein Zeichen. Mit <code>=</code> funktionieren Platzhalter nicht.</li>
+      <li><code>'S%'</code> beginnt mit S · <code>'%e'</code> endet auf e · <code>'%licht%'</code> enthält „licht“.</li>
+      <li><code>IN ('A', 'B')</code> ersetzt lange <code>OR</code>-Ketten. Die Liste steht in Klammern.</li>
+      <li><code>BETWEEN a AND b</code>: von a bis b, beide Grenzen gehören dazu. Klappt mit Zahlen und mit Datum.</li>
+    </ul>
+  </section>
+
+  <!-- Training -->
+  <section class="card frei" id="training">
+    <h2><span class="step-no">🏋</span> Training</h2>
+    <p class="lead">Je mehr Abfragen du schreibst, desto sicherer wirst du. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
+
+    <h3 class="sub"><span class="badge ueben">● Basis</span> Die Suchfunktion testen</h3>
+    <div id="tr1"></div>
+
+    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Azubi-Börse</h3>
+    <p>Die Azubi-Börse bekommt ein Suchfeld und Filter. Teste sie mit der Tabelle <code>stellen</code>.</p>
+    <div id="tr2"></div>
+
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Konzertkalender</h3>
+    <p>Tabelle <code>konzerte</code>. Datumswerte stehen als Text im Format <code>'JJJJ-MM-TT'</code>.</p>
+    <div id="tr3"></div>
+  </section>
+
+  <nav class="pager">
+    <a href="05-and-or-not.html">← Lektion 5: AND, OR, NOT</a>
+    <a href="07-sortieren-rechnen.html">Lektion 7: Sortieren und rechnen →</a>
+  </nav>
+</main>
+
+<footer>
+  <div class="wrap t">Lernmaterial von <a href="https://herrseibert.de">herrseibert.de</a> · Lizenz <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">CC BY-SA 4.0</a> · ohne Tracking, ohne Cookies<br>Erstellt von der KI Claude von Anthropic.</div>
+  <div class="wrap t gh">Fehler gefunden oder eine Idee? → <a href="https://github.com/baumlaube/sql-course">Kurs auf GitHub</a></div>
+  <div class="wrap t gh">Das SQL-Labor nutzt SQLite (gemeinfrei) über sql.js (MIT-Lizenz) – alles läuft in deinem Browser.</div>
+  <div class="wrap legal"><a href="../impressum.html">Impressum</a> · <a href="../datenschutz.html">Datenschutz</a></div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { pick, quiz, hints } = window.Kurs;
+  const L = window.Labor;
+  const $ = (id) => document.getElementById(id);
+  const EXTRA = ["AND", "OR", "NOT", "LIKE", "%", "_", "IN", "BETWEEN", "(", ")"];
+  /* Typische Fehler, die in vielen Aufgaben vorkommen */
+  const GLEICH_PROZENT = { muster: /=\s*'[^']*[%_][^']*'/, text: "Mit <code>=</code> sucht SQL das Zeichen <code>%</code> wirklich als Buchstaben. Für ein Muster brauchst du <code>LIKE</code>." };
+  const LIKE_OHNE_PROZENT = { wenn: ({ res, sql }) => res.ok && res.zeilen.length === 0 && /LIKE\s*'[^'%_]*'/i.test(sql),
+    text: "Ohne <code>%</code> sucht <code>LIKE</code> genau diesen Text – nicht mehr und nicht weniger. Setz <code>%</code> dorthin, wo noch Text stehen darf." };
+  const IN_OHNE_KLAMMER = { muster: /\bIN\s*'/i, text: "Nach <code>IN</code> kommt eine Liste <strong>in Klammern</strong>: <code>IN ('A', 'B')</code>." };
+  const BETWEEN_OR = { muster: /BETWEEN\s+\S+\s+OR\b/i, text: "Bei <code>BETWEEN</code> heißt es immer <code>BETWEEN a AND b</code> – mit <code>AND</code>." };
+  const BETWEEN_VERDREHT = { wenn: ({ res, sql }) => res.ok && res.zeilen.length === 0 && /BETWEEN/i.test(sql),
+    text: "0 Zeilen? Bei <code>BETWEEN</code> muss die <strong>kleinere</strong> Grenze zuerst stehen: <code>BETWEEN 180 AND 240</code>." };
+  const IMMER = [GLEICH_PROZENT, IN_OHNE_KLAMMER, BETWEEN_OR, LIKE_OHNE_PROZENT, BETWEEN_VERDREHT];
+
+  L.tabelle($("tab-songs"), { db: "tonspur", offen: true });
+
+  /* Weißt du noch? (Lektion 5) */
+  quiz($("wdh"), [
+    { q: "„Alle Songs von Juna und Elbkind.“ Welche Bedingung passt?",
+      options: ["<code>kuenstler = 'Juna' AND kuenstler = 'Elbkind'</code>", "<code>kuenstler = 'Juna' OR kuenstler = 'Elbkind'</code>", "<code>kuenstler = 'Juna' OR 'Elbkind'</code>"], right: 1,
+      miss: ["Ein Song ist nicht gleichzeitig von beiden – das ergibt 0 Zeilen.", null, "Nach <code>OR</code> fehlt die ganze Bedingung: <code>kuenstler = 'Elbkind'</code>."],
+      why: "Jeder Song ist von Juna <strong>oder</strong> von Elbkind." },
+    { q: "Pop oder Rock, aber nur aus 2025. Was ist richtig?",
+      options: ["<code>genre = 'Pop' OR genre = 'Rock' AND jahr = 2025</code>", "<code>(genre = 'Pop' OR genre = 'Rock') AND jahr = 2025</code>"], right: 1,
+      miss: ["Ohne Klammern wird <code>AND</code> zuerst geprüft – dann kommen alle Pop-Songs aus jedem Jahr dazu.", null],
+      why: "<code>AND</code> vor <code>OR</code> – darum Klammern um das <code>OR</code>." },
+  ]);
+
+  /* 1 · Überleg */
+  pick($("pred1"), { right: 1, fb: $("fb1"),
+    miss: ["Dafür bräuchte man <code>'%S%'</code> – mit % auch vorne.", null,
+      "Mit <code>LIKE</code> ist <code>%</code> ein Platzhalter, kein echtes Zeichen.", "Für „endet auf S“ müsste das % vorne stehen: <code>'%S'</code>."],
+    why: "Nach dem S darf beliebiger Text kommen, davor nichts. Also: alle Titel, die mit S anfangen.",
+    onDone() { $("probe1").hidden = false; } });
+  L.create($("l1"), { db: "tonspur", modus: "lesen", tabellen: false, sql: "SELECT titel FROM songs WHERE titel LIKE 'S%'" });
+
+  /* 2 · LIKE mit % */
+  L.create($("l2"), { db: "tonspur", modus: "luecke", tabellen: false,
+    sql: "SELECT titel FROM songs WHERE titel LIKE [[12]]",
+    loesung: "SELECT titel FROM songs WHERE titel LIKE '%nacht%'",
+    fallen: [
+      { muster: /LIKE\s*'nacht%'\s*$/i, text: "Damit findest du nur Titel, die mit „nacht“ <strong>beginnen</strong>. „Mitternachtsbus“ fehlt – da steht „nacht“ in der Mitte." },
+      { muster: /LIKE\s*'%nacht'\s*$/i, text: "Damit findest du nur Titel, die auf „nacht“ <strong>enden</strong>. Es soll aber irgendwo vorkommen." },
+      { muster: /LIKE\s*'?\*/, text: "In SQL ist der Platzhalter <code>%</code>, nicht <code>*</code>." },
+      ...IMMER,
+    ],
+    ok: "✔ Richtig! „Mitternachtsbus“ und „Nachtschicht“ – „nacht“ steht einmal in der Mitte, einmal am Anfang." });
+
+  /* 3 · Fehlerdetektiv */
+  L.create($("l3"), { db: "tonspur", modus: "frei", tabellen: false, zeilen: 2, erkunden: true, extra: EXTRA,
+    sql: "SELECT titel FROM songs WHERE titel = 'B%'",
+    loesung: "SELECT titel FROM songs WHERE titel LIKE 'B%'",
+    fallen: [GLEICH_PROZENT, ...IMMER],
+    ok: "✔ Fall gelöst! Mit <code>=</code> hat SQL einen Titel gesucht, der wirklich „B%“ heißt. Mit <code>LIKE</code> ist <code>%</code> ein Platzhalter – jetzt kommen 4 Songs." });
+  hints($("hints3"), [
+    "0 Zeilen, obwohl es Titel mit B gibt (schau in die Tabelle). Was sucht <code>=</code> eigentlich?",
+    "<code>=</code> vergleicht genau. Platzhalter wie <code>%</code> funktionieren nur mit einem anderen Wort.",
+    "Lösung: <code>SELECT titel FROM songs WHERE titel LIKE 'B%'</code>",
+  ]);
+
+  /* 4 · IN (Puzzle) */
+  L.create($("l4"), { db: "tonspur", modus: "puzzle", tabellen: false,
+    bausteine: ["SELECT", "titel", ",", "genre", "FROM", "songs", "WHERE", "genre", "IN", "(", "'Rock'", ",", "'Indie'", ")", "=", "AND"],
+    loesung: "SELECT titel, genre FROM songs WHERE genre IN ('Rock', 'Indie')",
+    pruefe({ sql }) {
+      if (/IN\s+'/i.test(sql)) return "Nach <code>IN</code> kommt die Klammer auf, dann die Liste, dann die Klammer zu.";
+      if (/'Rock'\s+'Indie'|'Indie'\s+'Rock'/i.test(sql)) return "In der Liste trennt ein Komma die Werte.";
+      return null;
+    },
+    fallen: [{ muster: /\bAND\b/i, text: "<code>AND</code> brauchst du hier nicht. <code>IN</code> mit der Liste ersetzt die ganze Verknüpfung." }],
+    ok: "✔ Geschafft! 11 Songs – genau wie mit <code>OR</code>, nur kürzer." });
+
+  /* 5 · BETWEEN */
+  pick($("pred5"), { right: 1, fb: $("fb5"),
+    miss: ["Das ist der häufigste Irrtum! Bei <code>BETWEEN</code> gehören beide Grenzen dazu.", null, "Beide Grenzen werden gleich behandelt: Beide gehören dazu."],
+    why: "<code>BETWEEN 2019 AND 2021</code> heißt: 2019, 2020 und 2021.",
+    onDone() { $("probe5").hidden = false; } });
+  L.create($("l5a"), { db: "tonspur", modus: "lesen", tabellen: false, sql: "SELECT titel, jahr FROM songs WHERE jahr BETWEEN 2019 AND 2021" });
+  L.create($("l5b"), { db: "tonspur", modus: "frei", tabellen: false, extra: EXTRA,
+    loesung: "SELECT titel, dauer_sek FROM songs WHERE dauer_sek BETWEEN 180 AND 240",
+    fallen: [
+      { muster: /BETWEEN\s+3\s+AND\s+4/i, text: "<code>dauer_sek</code> zählt Sekunden: 3 Minuten = 180, 4 Minuten = 240." },
+      { muster: /BETWEEN\s+240\s+AND\s+180/i, text: "Die kleinere Zahl kommt zuerst: <code>BETWEEN 180 AND 240</code>." },
+      ...IMMER,
+    ],
+    ok: "✔ Richtig! 19 Songs zwischen 180 und 240 Sekunden." });
+  hints($("hints5"), [
+    "Rechne in Sekunden: 3 Minuten = 180, 4 Minuten = 240.",
+    "Lösung: <code>SELECT titel, dauer_sek FROM songs WHERE dauer_sek BETWEEN 180 AND 240</code>",
+  ]);
+
+  /* 6 · Alles zusammen */
+  L.create($("l6"), { db: "tonspur", modus: "frei", tabellen: false, extra: EXTRA,
+    loesung: "SELECT titel, kuenstler, jahr FROM songs WHERE kuenstler LIKE 'N%' AND jahr BETWEEN 2019 AND 2022",
+    fallen: [
+      { sql: "SELECT titel, kuenstler, jahr FROM songs WHERE kuenstler LIKE 'N%'", text: "Die Künstler stimmen. Jetzt fehlt noch der Zeitraum 2019 bis 2022." },
+      { sql: "SELECT titel, kuenstler, jahr FROM songs WHERE jahr BETWEEN 2019 AND 2022", text: "Der Zeitraum stimmt. Jetzt fehlt noch: Künstler beginnt mit N." },
+      { sql: "SELECT titel, kuenstler, jahr FROM songs WHERE kuenstler LIKE '%N%' AND jahr BETWEEN 2019 AND 2022", text: "<code>'%N%'</code> findet ein N irgendwo im Namen – z. B. auch „Juna“. Gesucht ist: <strong>beginnt</strong> mit N." },
+      ...IMMER,
+    ],
+    ok: "✔ Stark! LIKE und BETWEEN mit AND verknüpft – 3 Songs." });
+  hints($("hints6"), [
+    "Zwei Bedingungen mit <code>AND</code>: Künstler beginnt mit N – und Jahr von 2019 bis 2022.",
+    "Lösung: <code>SELECT titel, kuenstler, jahr FROM songs WHERE kuenstler LIKE 'N%' AND jahr BETWEEN 2019 AND 2022</code>",
+  ]);
+
+  /* Plus · NOT IN */
+  L.create($("lplus"), { db: "tonspur", modus: "frei", tabellen: false, extra: EXTRA,
+    loesung: "SELECT titel, genre FROM songs WHERE genre NOT IN ('Pop', 'Rock', 'Hip-Hop')",
+    fallen: [{ sql: "SELECT titel, genre FROM songs WHERE genre IN ('Pop', 'Rock', 'Hip-Hop')", text: "Das sind genau die drei Genres, die <strong>nicht</strong> rein sollen. Dreh es mit <code>NOT</code> um." }, ...IMMER],
+    ok: "✔ Richtig! Übrig bleiben Elektro und Indie – 14 Songs." });
+  hints($("hintsplus"), [
+    "<code>NOT IN</code> mit einer Liste: <code>genre NOT IN ('Pop', 'Rock', 'Hip-Hop')</code>",
+    "Lösung: <code>SELECT titel, genre FROM songs WHERE genre NOT IN ('Pop', 'Rock', 'Hip-Hop')</code>",
+  ]);
+
+  /* Kurz-Check */
+  quiz($("quiz"), [
+    { q: "Welches Muster findet alle Titel, in denen „licht“ vorkommt?",
+      options: ["<code>LIKE 'licht%'</code>", "<code>LIKE '%licht'</code>", "<code>LIKE '%licht%'</code>", "<code>= '%licht%'</code>"], right: 2,
+      miss: ["Das findet nur Titel, die mit „licht“ beginnen.", "Das findet nur Titel, die auf „licht“ enden.", null, "Mit <code>=</code> sind <code>%</code> echte Zeichen, keine Platzhalter."],
+      why: "Mit % vorne und hinten darf davor und danach beliebiger Text stehen." },
+    { q: "<code>WHERE jahr BETWEEN 2020 AND 2022</code> – welche Jahre?",
+      options: ["nur 2021", "2020, 2021 und 2022", "2020 und 2021", "2021 und 2022"], right: 1,
+      miss: ["Die Grenzen gehören bei <code>BETWEEN</code> dazu.", null, "Auch die obere Grenze 2022 gehört dazu.", "Auch die untere Grenze 2020 gehört dazu."],
+      why: "Bei <code>BETWEEN</code> gehören beide Grenzen dazu." },
+    { q: "Was ist dasselbe wie <code>ort IN ('Augsburg', 'Kempten')</code>?",
+      options: ["<code>ort = 'Augsburg' AND ort = 'Kempten'</code>", "<code>ort = 'Augsburg' OR ort = 'Kempten'</code>", "<code>ort LIKE 'Augsburg Kempten'</code>", "<code>ort BETWEEN 'Augsburg' AND 'Kempten'</code>"], right: 1,
+      miss: ["Ein Ort ist nicht gleichzeitig Augsburg und Kempten.", null, "Das sucht einen Ort, der wörtlich so heißt.", "Das wären alle Orte, die im Alphabet dazwischen liegen."],
+      why: "<code>IN</code> mit einer Liste ist eine kurze Schreibweise für eine <code>OR</code>-Kette." },
+    { q: "Was findet <code>LIKE '____'</code> (vier Unterstriche)?",
+      options: ["Texte mit genau 4 Zeichen", "Texte mit mindestens 4 Zeichen", "Texte, die vier Unterstriche enthalten", "Leere Texte"], right: 0,
+      miss: [null, "Für „mindestens“ bräuchte man noch ein <code>%</code>: <code>'____%'</code>.", "Mit <code>LIKE</code> ist <code>_</code> ein Platzhalter.", "Jedes <code>_</code> steht für genau ein Zeichen."],
+      why: "<code>_</code> steht für genau ein Zeichen – vier davon für genau vier Zeichen, z. B. „Juna“." },
+  ]);
+
+  /* ---------- Training ---------- */
+  const mit = (arr) => arr.map((a) => Object.assign({ extra: EXTRA }, a, { fallen: [...(a.fallen || []), ...IMMER] }));
+
+  L.training($("tr1"), { db: "tonspur", key: "l06-basis", tabelle: false, aufgaben: mit([
+    { text: "Alle Titel, die mit <strong>B</strong> beginnen.",
+      loesung: "SELECT titel FROM songs WHERE titel LIKE 'B%'",
+      hints: ["Lösung: <code>SELECT titel FROM songs WHERE titel LIKE 'B%'</code>"] },
+    { text: "Alle Titel, die auf <strong>e</strong> enden.",
+      loesung: "SELECT titel FROM songs WHERE titel LIKE '%e'",
+      fallen: [{ muster: /LIKE\s*'e%'/i, text: "Das findet Titel, die mit e <strong>beginnen</strong>. Für „endet auf“ kommt das % nach vorne." }],
+      hints: ["Für „endet auf“ steht das % vorne.", "Lösung: <code>SELECT titel FROM songs WHERE titel LIKE '%e'</code>"] },
+    { text: "Alle Titel, in denen <strong>„licht“</strong> vorkommt. Zeig Titel und Künstler.",
+      loesung: "SELECT titel, kuenstler FROM songs WHERE titel LIKE '%licht%'",
+      hints: ["Lösung: <code>SELECT titel, kuenstler FROM songs WHERE titel LIKE '%licht%'</code>"] },
+    { text: "Alle Songs von <strong>Juna, Elbkind und Bass Bude</strong>. Zeig Titel und Künstler. Nimm <code>IN</code>.",
+      loesung: "SELECT titel, kuenstler FROM songs WHERE kuenstler IN ('Juna', 'Elbkind', 'Bass Bude')",
+      hints: ["<code>kuenstler IN ('…', '…', '…')</code>", "Lösung: <code>SELECT titel, kuenstler FROM songs WHERE kuenstler IN ('Juna', 'Elbkind', 'Bass Bude')</code>"] },
+    { text: "Songs mit <strong>20 000 bis 30 000 Likes</strong>. Zeig Titel und Likes. Nimm <code>BETWEEN</code>.",
+      loesung: "SELECT titel, likes FROM songs WHERE likes BETWEEN 20000 AND 30000",
+      fallen: [{ muster: /20\.000|30\.000/, text: "Ohne Tausenderpunkt: <code>20000</code>, <code>30000</code>." }],
+      hints: ["Lösung: <code>SELECT titel, likes FROM songs WHERE likes BETWEEN 20000 AND 30000</code>"] },
+    { text: "Titel, die nur aus <strong>einem Wort</strong> bestehen – also <strong>kein Leerzeichen</strong> enthalten.",
+      loesung: "SELECT titel FROM songs WHERE titel NOT LIKE '% %'",
+      fallen: [{ sql: "SELECT titel FROM songs WHERE titel LIKE '% %'", text: "Das sind genau die Titel <strong>mit</strong> Leerzeichen. Dreh es mit <code>NOT</code> um." }],
+      hints: ["Ein Leerzeichen irgendwo im Titel: <code>'% %'</code>. Du willst das Gegenteil.", "Lösung: <code>SELECT titel FROM songs WHERE titel NOT LIKE '% %'</code>"] },
+  ]) });
+
+  L.training($("tr2"), { db: "azubi", key: "l06-sicher", aufgaben: mit([
+    { text: "Jemand tippt „mechaniker“ ins Suchfeld. Zeig alle Berufe, in denen das vorkommt, mit Betrieb.",
+      loesung: "SELECT beruf, betrieb FROM stellen WHERE beruf LIKE '%mechaniker%'",
+      hints: ["„Mechaniker“ kann mitten im Wort stehen: Industrie<strong>mechaniker</strong>.", "Lösung: <code>SELECT beruf, betrieb FROM stellen WHERE beruf LIKE '%mechaniker%'</code>"] },
+    { text: "Alle Stellen von Betrieben, deren Name mit <strong>„Logistik“</strong> beginnt: Betrieb, Beruf, Ort.",
+      loesung: "SELECT betrieb, beruf, ort FROM stellen WHERE betrieb LIKE 'Logistik%'",
+      hints: ["Lösung: <code>SELECT betrieb, beruf, ort FROM stellen WHERE betrieb LIKE 'Logistik%'</code>"] },
+    { text: "Der Filter „Schwaben und Niederbayern“: alle Stellen in <strong>Augsburg, Kempten und Landshut</strong>. Zeig Beruf und Ort.",
+      loesung: "SELECT beruf, ort FROM stellen WHERE ort IN ('Augsburg', 'Kempten', 'Landshut')",
+      hints: ["Eine Liste von Orten: <code>IN</code>.", "Lösung: <code>SELECT beruf, ort FROM stellen WHERE ort IN ('Augsburg', 'Kempten', 'Landshut')</code>"] },
+    { text: "Stellen mit einer Vergütung <strong>von 950 bis 1050 Euro</strong>. Zeig Beruf und Vergütung.",
+      loesung: "SELECT beruf, verguetung FROM stellen WHERE verguetung BETWEEN 950 AND 1050",
+      hints: ["Lösung: <code>SELECT beruf, verguetung FROM stellen WHERE verguetung BETWEEN 950 AND 1050</code>"] },
+    { text: "Alle Stellen, deren Beruf <strong>„tron“</strong> enthält (Elektroniker, Mechatroniker …): Beruf, Betrieb, Vergütung.",
+      loesung: "SELECT beruf, betrieb, verguetung FROM stellen WHERE beruf LIKE '%tron%'",
+      hints: ["Lösung: <code>SELECT beruf, betrieb, verguetung FROM stellen WHERE beruf LIKE '%tron%'</code>"] },
+    { text: "Kaufmännische Berufe (beginnen mit <strong>„Kaufmann“</strong>) in <strong>Augsburg oder Ingolstadt</strong>: Beruf, Betrieb, Ort.",
+      loesung: "SELECT beruf, betrieb, ort FROM stellen WHERE beruf LIKE 'Kaufmann%' AND ort IN ('Augsburg', 'Ingolstadt')",
+      hints: ["Zwei Bedingungen mit <code>AND</code>: <code>LIKE</code> für den Beruf, <code>IN</code> für die Orte.",
+        "Lösung: <code>SELECT beruf, betrieb, ort FROM stellen WHERE beruf LIKE 'Kaufmann%' AND ort IN ('Augsburg', 'Ingolstadt')</code>"] },
+  ]) });
+
+  L.training($("tr3"), { db: "konzerte", key: "l06-profi", aufgaben: mit([
+    { text: "Alle Konzerte im <strong>zweiten Quartal</strong> (April bis Juni 2026): Künstler, Stadt, Datum. Nimm <code>BETWEEN</code>.",
+      loesung: "SELECT kuenstler, stadt, datum FROM konzerte WHERE datum BETWEEN '2026-04-01' AND '2026-06-30'",
+      fallen: [{ muster: /BETWEEN\s+2026/i, text: "Ein Datum ist hier Text – in Anführungszeichen: <code>'2026-04-01'</code>." }],
+      hints: ["Vom ersten April bis zum letzten Juni.", "Lösung: <code>SELECT kuenstler, stadt, datum FROM konzerte WHERE datum BETWEEN '2026-04-01' AND '2026-06-30'</code>"] },
+    { text: "Alle Konzerte im <strong>Mai 2026</strong> – diesmal mit <code>LIKE</code>: Künstler, Stadt, Datum.",
+      loesung: "SELECT kuenstler, stadt, datum FROM konzerte WHERE datum LIKE '2026-05-%'",
+      hints: ["Alle Daten im Mai beginnen gleich: <code>2026-05-…</code>", "Lösung: <code>SELECT kuenstler, stadt, datum FROM konzerte WHERE datum LIKE '2026-05-%'</code>"] },
+    { text: "Alle Konzerte <strong>außer in München und Nürnberg</strong>: Künstler und Stadt.",
+      loesung: "SELECT kuenstler, stadt FROM konzerte WHERE stadt NOT IN ('München', 'Nürnberg')",
+      hints: ["Lösung: <code>SELECT kuenstler, stadt FROM konzerte WHERE stadt NOT IN ('München', 'Nürnberg')</code>"] },
+    { text: "Konzerte <strong>zwischen 20 und 30 €</strong>, die <strong>nicht ausverkauft</strong> sind: Künstler, Preis.",
+      loesung: "SELECT kuenstler, preis FROM konzerte WHERE preis BETWEEN 20 AND 30 AND ausverkauft = 'nein'",
+      hints: ["<code>BETWEEN 20 AND 30</code> – und danach noch ein <code>AND</code> für ausverkauft.", "Lösung: <code>SELECT kuenstler, preis FROM konzerte WHERE preis BETWEEN 20 AND 30 AND ausverkauft = 'nein'</code>"] },
+    { text: "Künstler, deren Name aus <strong>genau 4 Zeichen</strong> besteht: Künstler und Stadt.",
+      loesung: "SELECT kuenstler, stadt FROM konzerte WHERE kuenstler LIKE '____'",
+      fallen: [{ muster: /LIKE\s*'%{1,}4%*'/i, text: "Die Zahl 4 sucht SQL als Zeichen. Für „genau ein Zeichen“ gibt es den Platzhalter <code>_</code>." }],
+      hints: ["<code>_</code> steht für genau ein Zeichen.", "Lösung: <code>SELECT kuenstler, stadt FROM konzerte WHERE kuenstler LIKE '____'</code>"] },
+    { text: "Künstler mit <strong>Leerzeichen im Namen</strong>, die in <strong>Augsburg oder Würzburg</strong> spielen: Künstler, Stadt, Datum.",
+      loesung: "SELECT kuenstler, stadt, datum FROM konzerte WHERE kuenstler LIKE '% %' AND stadt IN ('Augsburg', 'Würzburg')",
+      hints: ["Leerzeichen irgendwo: <code>'% %'</code>.", "Lösung: <code>SELECT kuenstler, stadt, datum FROM konzerte WHERE kuenstler LIKE '% %' AND stadt IN ('Augsburg', 'Würzburg')</code>"] },
+  ]) });
+});
+</script>
+</body>
+</html>

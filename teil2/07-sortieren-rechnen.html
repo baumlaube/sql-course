@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sortieren und rechnen – ORDER BY, LIMIT, COUNT, SUM, AVG · SQL-Kurs</title>
+<meta name="description" content="Lektion 7 im SQL-Lernpfad: Mit ORDER BY sortieren, mit LIMIT die ersten nehmen, mit COUNT, SUM, AVG, MIN und MAX rechnen – und den Größten mit ORDER BY … LIMIT 1 finden. Echtes SQLite im Browser, Rückmeldung zu jedem Fehler und viel Training.">
+<link rel="canonical" href="https://sql.herrseibert.de/teil2/07-sortieren-rechnen.html">
+<!-- vorschau -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SQL-Kurs">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://sql.herrseibert.de/teil2/07-sortieren-rechnen.html">
+<meta property="og:title" content="Sortieren und rechnen – ORDER BY, LIMIT, COUNT, SUM, AVG · SQL-Kurs">
+<meta property="og:description" content="Lektion 7 im SQL-Lernpfad: Mit ORDER BY sortieren, mit LIMIT die ersten nehmen, mit COUNT, SUM, AVG, MIN und MAX rechnen – und den Größten mit ORDER BY … LIMIT 1 finden. Echtes SQLite im Browser, Rückmeldung zu jedem Fehler und viel Training.">
+<meta property="og:image" content="https://sql.herrseibert.de/vorschau.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SQL-Kurs – Datenbanken und SQL Schritt für Schritt, mit SQL-Labor im Browser">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /vorschau -->
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/kurs.css?v=2b9f3c7d0f">
+<link rel="stylesheet" href="../assets/labor.css?v=6a1d489de7">
+<script src="../assets/i18n.js?v=2890af4da9" data-page="teil2-07-sortieren-rechnen" data-langs="de en"></script>
+<script src="../assets/kurs.js?v=c26439e733"></script>
+<script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
+<script src="../assets/labor.js?v=b6bfaa57ea"></script>
+<script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
+<script src="../assets/daten/azubi.js?v=5b1356cc35"></script>
+<script src="../assets/daten/konzerte.js?v=51212600cc"></script>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html"><img class="logo" src="../favicon.svg" alt="" width="34" height="34"> SQL-Kurs <span>· Datenbanken verstehen</span></a>
+    <span class="spacer"></span>
+    <button class="theme-btn" type="button" aria-label="Hell oder dunkel umschalten">◐ Hell/Dunkel</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="path" aria-label="Lernpfad">
+    <strong class="t">Lernpfad:</strong>
+    <ol>
+      <li class="soon"><span title="1 · Datenbanken sind überall (in Arbeit)">1</span></li>
+      <li class="soon"><span title="2 · IDs und Verknüpfung (in Arbeit)">2</span></li>
+      <li class="done"><a href="03-select.html" title="3 · SELECT – Spalten auswählen">3</a></li>
+      <li class="done"><a href="04-where.html" title="4 · WHERE – Zeilen filtern">4</a></li>
+      <li class="done"><a href="05-and-or-not.html" title="5 · AND, OR, NOT">5</a></li>
+      <li class="done"><a href="06-like-in-between.html" title="6 · LIKE, IN, BETWEEN">6</a></li>
+      <li class="now"><span title="7 · Sortieren und rechnen" aria-current="step">7</span></li>
+      <li class="done"><a href="08-group-by.html" title="8 · GROUP BY – Gruppen bilden">8</a></li>
+      <li class="soon"><span title="9 · Zwei Tabellen: JOIN (in Arbeit)">9</span></li>
+      <li class="soon"><span title="10 · JOIN mit WHERE und GROUP BY (in Arbeit)">10</span></li>
+      <li class="soon"><span title="11 · Der Fall (in Arbeit)">11</span></li>
+      <li class="soon"><span title="12 · Projekt planen (in Arbeit)">12</span></li>
+      <li class="soon"><span title="13 · Tabellen anlegen und füllen (in Arbeit)">13</span></li>
+      <li class="soon"><span title="14 · Ändern und löschen (in Arbeit)">14</span></li>
+      <li class="soon"><span title="15 · Suchformular (in Arbeit)">15</span></li>
+      <li class="soon"><span title="16 · Eingabeformular (in Arbeit)">16</span></li>
+    </ol>
+  </nav>
+
+  <section class="hero">
+    <h1>Sortieren und rechnen – Charts, Summen, Durchschnitt</h1>
+    <div class="meta">
+      <span class="chip">Teil 2 · Lektion 7</span>
+      <span class="chip">⏱ ca. 35 Minuten</span>
+    </div>
+    <p class="erklaerung">Charts, Bestenlisten, Durchschnitt: Oft willst du nicht nur Zeilen sehen, sondern sie ordnen oder zusammenrechnen.
+      Mit <code>ORDER BY</code> sortierst du, mit <code>LIMIT</code> nimmst du nur die ersten – und <code>COUNT</code>, <code>SUM</code>,
+      <code>AVG</code>, <code>MIN</code> und <code>MAX</code> rechnen für dich. Auch über eine Million Zeilen, in einem Augenblick.</p>
+  </section>
+
+  <section class="card wdh">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
+  <details class="card woerter">
+    <summary>📖 Wörter für diese Lektion</summary>
+    <p class="note">Die SQL-Befehle bleiben englisch – so heißen sie in jeder Datenbank der Welt.</p>
+    <div class="tbl-scroll"><table class="plain">
+      <tr><th class="wort">sortieren <small>die Sortierung</small></th><td>In eine Reihenfolge bringen, z. B. nach Größe oder Alphabet.</td></tr>
+      <tr><th class="wort">aufsteigend <small>ASC</small></th><td>Vom Kleinsten zum Größten, von A nach Z.</td></tr>
+      <tr><th class="wort">absteigend <small>DESC</small></th><td>Vom Größten zum Kleinsten, von Z nach A.</td></tr>
+      <tr><th class="wort">die Summe <small>die Summen</small></th><td>Alles zusammengezählt. In SQL: <code>SUM</code>.</td></tr>
+      <tr><th class="wort">der Durchschnitt <small>die Durchschnitte</small></th><td>Summe geteilt durch die Anzahl. In SQL: <code>AVG</code>.</td></tr>
+      <tr><th class="wort">runden <small>gerundet</small></th><td>Eine Kommazahl kürzer machen: 225,06 → 225. In SQL: <code>ROUND</code>.</td></tr>
+    </table></div>
+  </details>
+
+  <section class="card szenario">
+    <h2><span class="step-no">🎧</span> Szenario</h2>
+    <p>Jahresende bei <strong>Tonspur</strong>: Die App bekommt Charts, und die Chefin will Zahlen für die Jahresbilanz. Alles steht in der Tabelle <code>songs</code>.</p>
+  </section>
+
+  <!-- 1 · Überleg -->
+  <section class="card">
+    <h2><span class="step-no">1</span> Überleg: Wer steht oben? <span class="chip">4 Minuten</span></h2>
+    <div id="tab-songs"></div>
+    <pre class="sql" data-farbe>SELECT titel, likes FROM songs ORDER BY likes DESC</pre>
+    <p><strong>Überleg:</strong> Welcher Song steht ganz oben im Ergebnis? Führ noch nichts aus!</p>
+    <div class="choices" id="pred1">
+      <button type="button" class="choice">Mitternachtsbus – er hat die id 1</button>
+      <button type="button" class="choice">Hinterhof – der Song mit den wenigsten Likes</button>
+      <button type="button" class="choice">Wolke 8 – der Song mit den meisten Likes</button>
+      <button type="button" class="choice">Alte Freunde – alphabetisch zuerst</button>
+    </div>
+    <p class="fb" id="fb1"></p>
+    <div id="probe1" hidden>
+      <div id="l1"></div>
+      <p class="rule"><code>ORDER BY spalte</code> sortiert aufsteigend (klein → groß, A → Z).<br>
+        Mit <code>DESC</code> dahinter absteigend (groß → klein). <code>ORDER BY</code> steht nach <code>WHERE</code>.</p>
+    </div>
+  </section>
+
+  <!-- 2 · Puzzle Top 5 -->
+  <section class="card">
+    <h2><span class="step-no">2</span> Puzzle: die Top 5 <span class="chip">4 Minuten</span></h2>
+    <p>Die App-Startseite zeigt die <strong>Top 5</strong>: die fünf Songs mit den meisten Likes, mit Titel und Likes, der beliebteste zuerst.
+      <code>LIMIT 5</code> schneidet nach fünf Zeilen ab. Zwei Bausteine brauchst du nicht.</p>
+    <div id="l2"></div>
+  </section>
+
+  <!-- 3 · Zwei Sortierungen -->
+  <section class="card">
+    <h2><span class="step-no">3</span> Nach zwei Spalten sortieren <span class="chip">4 Minuten</span></h2>
+    <p>Die Künstlerseite: alle Songs <strong>nach Künstler von A bis Z</strong> – und bei jedem Künstler <strong>die neuesten Songs zuerst</strong>.
+      Wähle in den Lücken.</p>
+    <div id="l3"></div>
+    <p class="rule">Bei <code>ORDER BY a, b</code> wird zuerst nach <code>a</code> sortiert.<br>Nur wenn <code>a</code> gleich ist, entscheidet <code>b</code>.</p>
+  </section>
+
+  <!-- 4 · Rechnen -->
+  <section class="card">
+    <h2><span class="step-no">4</span> Rechnen statt zählen <span class="chip">6 Minuten</span></h2>
+    <p>Statt Zeilen anzuzeigen, kann die Datenbank rechnen. Heraus kommt dann <strong>ein einziger Wert</strong>:</p>
+    <div class="tbl-scroll"><table class="plain">
+      <tr><td><code>COUNT(*)</code></td><td>zählt die Zeilen</td></tr>
+      <tr><td><code>SUM(likes)</code></td><td>zählt alle Werte der Spalte zusammen</td></tr>
+      <tr><td><code>AVG(likes)</code></td><td>Durchschnitt</td></tr>
+      <tr><td><code>MIN(jahr)</code> / <code>MAX(jahr)</code></td><td>kleinster / größter Wert</td></tr>
+      <tr><td><code>ROUND(…)</code></td><td>rundet auf eine ganze Zahl, <code>ROUND(…, 2)</code> auf zwei Nachkommastellen</td></tr>
+    </table></div>
+    <p><strong>a)</strong> Die Chefin will wissen: <em>„Wie viele Likes haben alle Songs zusammen?“</em> Wähle die passende Funktion.</p>
+    <div id="l4a"></div>
+    <p><strong>b)</strong> <em>„Wie viele Songs sind 2025 erschienen?“</em> Sie will eine <strong>Zahl</strong>, keine Liste.</p>
+    <div id="l4b"></div>
+    <div id="hints4b"></div>
+    <p><strong>c)</strong> <em>„Wie lang ist ein Song im Durchschnitt – in Sekunden, gerundet?“</em></p>
+    <div id="l4c"></div>
+    <div id="hints4c"></div>
+  </section>
+
+  <!-- 5 · Fehlerdetektiv -->
+  <section class="card">
+    <h2><span class="step-no">5</span> Fehlerdetektiv: die kürzesten Songs <span class="chip">4 Minuten</span></h2>
+    <p>Für eine Playlist „Schnell durch“ wollte Jonas die <strong>3 kürzesten Songs</strong>. Seine Abfrage läuft ohne Fehler.
+      Führ sie aus und schau dir die Dauer an.</p>
+    <ol class="howto">
+      <li>Sind das wirklich kurze Songs? Vergleich mit der Tabelle.</li>
+      <li>In welche Richtung wird sortiert?</li>
+      <li>Was muss sich ändern, damit die kürzesten oben stehen?</li>
+    </ol>
+    <div id="l5"></div>
+    <div id="hints5"></div>
+  </section>
+
+  <!-- 6 · Der Längste -->
+  <section class="card">
+    <h2><span class="step-no">6</span> Jetzt du: der längste Song <span class="chip">5 Minuten</span></h2>
+    <p><em>„Welcher Song ist der längste? Ich brauche Titel und Dauer.“</em></p>
+    <p class="note">Tipp: <code>MAX(dauer_sek)</code> liefert nur die Zahl. Wer den <strong>Song</strong> dazu will, sortiert und nimmt die erste Zeile.</p>
+    <div id="l6"></div>
+    <div id="hints6"></div>
+    <p class="rule">„Der Größte“, „die Teuerste“, „der Neueste“:<br><code>ORDER BY spalte DESC LIMIT 1</code></p>
+  </section>
+
+  <!-- Plus -->
+  <section class="card">
+    <h2><span class="badge plus">Plus</span> COUNT(DISTINCT …) <span class="chip">für Schnelle</span></h2>
+    <p><em>„Wie viele verschiedene Künstler haben wir?“</em> <code>COUNT(*)</code> zählt alle 36 Zeilen. Du brauchst jeden Künstler nur einmal.
+      Probier <code>COUNT(DISTINCT spalte)</code>.</p>
+    <div id="lplus"></div>
+    <div id="hintsplus"></div>
+  </section>
+
+  <!-- Kurz-Check -->
+  <section class="card">
+    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
+    <div id="quiz"></div>
+  </section>
+
+  <section class="card merke">
+    <h2>Merke</h2>
+    <ul>
+      <li>Reihenfolge der Teile: <code>SELECT … FROM … WHERE … ORDER BY … LIMIT …</code></li>
+      <li><code>ORDER BY spalte</code> = aufsteigend, <code>ORDER BY spalte DESC</code> = absteigend. Mehrere Spalten mit Komma.</li>
+      <li><code>COUNT(*)</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code> rechnen über alle Zeilen – heraus kommt ein Wert. <code>ROUND</code> rundet.</li>
+      <li>Wer den ganzen Datensatz zum Größten will: <code>ORDER BY … DESC LIMIT 1</code>.</li>
+    </ul>
+  </section>
+
+  <!-- Training -->
+  <section class="card frei" id="training">
+    <h2><span class="step-no">🏋</span> Training</h2>
+    <p class="lead">Je mehr Abfragen du schreibst, desto sicherer wirst du. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
+
+    <h3 class="sub"><span class="badge ueben">● Basis</span> Charts und Zahlen für Tonspur</h3>
+    <div id="tr1"></div>
+
+    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Azubi-Börse: die Statistik</h3>
+    <p>Die Azubi-Börse veröffentlicht eine Statistik aus der Tabelle <code>stellen</code>. <code>verguetung</code> = Euro pro Monat im 1. Jahr,
+      <code>plaetze</code> = freie Plätze.</p>
+    <div id="tr2"></div>
+
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Konzertkalender</h3>
+    <p>Tabelle <code>konzerte</code>. <strong>Heute ist der 15. März 2026.</strong></p>
+    <div id="tr3"></div>
+  </section>
+
+  <nav class="pager">
+    <a href="06-like-in-between.html">← Lektion 6: LIKE, IN, BETWEEN</a>
+    <a href="08-group-by.html">Lektion 8: GROUP BY →</a>
+  </nav>
+</main>
+
+<footer>
+  <div class="wrap t">Lernmaterial von <a href="https://herrseibert.de">herrseibert.de</a> · Lizenz <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">CC BY-SA 4.0</a> · ohne Tracking, ohne Cookies<br>Erstellt von der KI Claude von Anthropic.</div>
+  <div class="wrap t gh">Fehler gefunden oder eine Idee? → <a href="https://github.com/baumlaube/sql-course">Kurs auf GitHub</a></div>
+  <div class="wrap t gh">Das SQL-Labor nutzt SQLite (gemeinfrei) über sql.js (MIT-Lizenz) – alles läuft in deinem Browser.</div>
+  <div class="wrap legal"><a href="../impressum.html">Impressum</a> · <a href="../datenschutz.html">Datenschutz</a></div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { pick, quiz, hints } = window.Kurs;
+  const L = window.Labor;
+  const $ = (id) => document.getElementById(id);
+  const EXTRA = ["AND", "OR", "ORDER BY", "ASC", "DESC", "LIMIT", "COUNT(*)", "SUM(", "AVG(", "MIN(", "MAX(", "ROUND(", "(", ")"];
+  /* Typische Fehler, die in vielen Aufgaben vorkommen */
+  const LISTE_STATT_ZAHL = { wenn: ({ res, ref }) => res.ok && ref && ref.zeilen.length === 1 && ref.spalten.length === 1 && res.zeilen.length > 1,
+    text: "Du bekommst eine Liste. Gefragt ist <strong>eine Zahl</strong> – lass die Datenbank rechnen, z. B. mit <code>COUNT(*)</code>." };
+  const UNGERUNDET = { wenn: ({ res }) => res.ok && res.zeilen.length === 1 && res.zeilen[0].some((v) => typeof v === "number" && !Number.isInteger(v) && String(v).split(".")[1]?.length > 2),
+    text: "Fast! Die Zahl hat noch viele Nachkommastellen. Runde sie mit <code>ROUND(…)</code>." };
+  const IMMER = [LISTE_STATT_ZAHL, UNGERUNDET];   // MAX/MIN mit weiterer Spalte prüft labor.js selbst
+
+  L.tabelle($("tab-songs"), { db: "tonspur", offen: true });
+
+  /* Weißt du noch? (Lektion 6) */
+  quiz($("wdh"), [
+    { q: "Welche Titel findet <code>LIKE '%e'</code>?",
+      options: ["Titel, die mit e beginnen", "Titel, die auf e enden", "Titel mit einem e irgendwo"], right: 1,
+      miss: ["Für „beginnt mit“ steht das % hinten: <code>'e%'</code>.", null, "Dafür bräuchte man % vorne <strong>und</strong> hinten."],
+      why: "Das % steht vorne: Davor darf beliebiger Text kommen, am Ende steht das e." },
+    { q: "Gehören bei <code>BETWEEN 2020 AND 2022</code> die Jahre 2020 und 2022 dazu?",
+      options: ["Ja, beide", "Nein, nur 2021", "Nur 2020"], right: 0,
+      miss: [null, "Bei <code>BETWEEN</code> gehören die Grenzen dazu.", "Beide Grenzen werden gleich behandelt."],
+      why: "<code>BETWEEN a AND b</code> ist dasselbe wie <code>&gt;= a AND &lt;= b</code>." },
+  ]);
+
+  /* 1 · Überleg */
+  pick($("pred1"), { right: 2, fb: $("fb1"),
+    miss: ["So stehen die Zeilen ohne Sortierung. Mit <code>ORDER BY likes</code> bestimmt die Spalte <code>likes</code> die Reihenfolge.",
+      "Das wäre aufsteigend (ohne <code>DESC</code>). <code>DESC</code> heißt: absteigend – der Größte zuerst.", null,
+      "Alphabetisch wäre <code>ORDER BY titel</code>. Hier wird nach <code>likes</code> sortiert."],
+    why: "<code>ORDER BY likes DESC</code>: nach Likes sortiert, die meisten zuerst. Wolke 8 hat 98 040 Likes.",
+    onDone() { $("probe1").hidden = false; } });
+  L.create($("l1"), { db: "tonspur", modus: "lesen", tabellen: false, sql: "SELECT titel, likes FROM songs ORDER BY likes DESC" });
+
+  /* 2 · Puzzle */
+  L.create($("l2"), { db: "tonspur", modus: "puzzle", tabellen: false, reihenfolge: true,
+    bausteine: ["SELECT", "titel", ",", "likes", "FROM", "songs", "ORDER BY", "likes", "DESC", "LIMIT", "5", "ASC", "WHERE"],
+    loesung: "SELECT titel, likes FROM songs ORDER BY likes DESC LIMIT 5",
+    fallen: [
+      { sql: "SELECT titel, likes FROM songs ORDER BY likes ASC LIMIT 5", text: "Das sind die fünf mit den <strong>wenigsten</strong> Likes. Für die meisten: <code>DESC</code>." },
+      { sql: "SELECT titel, likes FROM songs ORDER BY likes LIMIT 5", text: "Ohne Angabe wird aufsteigend sortiert – das sind die fünf mit den wenigsten Likes. Für die meisten: <code>DESC</code>." },
+      { muster: /WHERE/i, text: "<code>WHERE</code> brauchst du hier nicht – es wird nichts aussortiert, nur sortiert und abgeschnitten." },
+    ],
+    ok: "✔ Geschafft! Die Top 5 – Wolke 8 auf Platz 1." });
+
+  /* 3 · Zwei Sortierungen */
+  L.create($("l3"), { db: "tonspur", modus: "luecke", tabellen: false, reihenfolge: true,
+    sql: "SELECT kuenstler, titel, jahr FROM songs ORDER BY [[kuenstler|titel|jahr]] [[ASC|DESC]], [[kuenstler|titel|jahr]] [[ASC|DESC]]",
+    loesung: "SELECT kuenstler, titel, jahr FROM songs ORDER BY kuenstler ASC, jahr DESC",
+    fallen: [
+      { sql: "SELECT kuenstler, titel, jahr FROM songs ORDER BY jahr DESC, kuenstler ASC", text: "Jetzt wird zuerst nach dem Jahr sortiert. Die Seite soll aber nach <strong>Künstlern</strong> geordnet sein – das kommt zuerst." },
+      { sql: "SELECT kuenstler, titel, jahr FROM songs ORDER BY kuenstler ASC, jahr ASC", text: "Fast! Bei jedem Künstler sollen die <strong>neuesten</strong> Songs oben stehen: absteigend." },
+      { sql: "SELECT kuenstler, titel, jahr FROM songs ORDER BY kuenstler DESC, jahr DESC", text: "Die Künstler stehen von Z nach A. Gewünscht ist A bis Z: aufsteigend." },
+    ],
+    ok: "✔ Richtig! Zuerst nach Künstler (A–Z), innerhalb eines Künstlers nach Jahr (neueste zuerst)." });
+
+  /* 4 · Rechnen */
+  L.create($("l4a"), { db: "tonspur", modus: "luecke", tabellen: false,
+    sql: "SELECT [[COUNT|SUM|AVG|MIN|MAX]](likes) FROM songs",
+    loesung: "SELECT SUM(likes) FROM songs",
+    fallen: [
+      { muster: /COUNT/i, text: "<code>COUNT</code> zählt, wie viele Songs es gibt – nicht ihre Likes." },
+      { muster: /AVG/i, text: "<code>AVG</code> ist der Durchschnitt. Gefragt ist: alle zusammen." },
+      { muster: /MAX|MIN/i, text: "Das ist nur ein einzelner Song. Gefragt sind alle Likes zusammen." },
+    ],
+    ok: "✔ Richtig! Über eine Million Likes – zusammengezählt mit <code>SUM</code>." });
+  L.create($("l4b"), { db: "tonspur", modus: "frei", tabellen: false, extra: EXTRA,
+    loesung: "SELECT COUNT(*) FROM songs WHERE jahr = 2025",
+    fallen: [{ muster: /SUM\s*\(\s*jahr/i, text: "<code>SUM(jahr)</code> zählt die Jahreszahlen zusammen. Du willst die <strong>Zeilen</strong> zählen: <code>COUNT(*)</code>." }, ...IMMER],
+    ok: "✔ Richtig! 7 Songs aus 2025 – eine Zahl statt einer Liste." });
+  hints($("hints4b"), [
+    "Zählen: <code>COUNT(*)</code>. Welche Zeilen? Die aus 2025: <code>WHERE …</code>",
+    "Lösung: <code>SELECT COUNT(*) FROM songs WHERE jahr = 2025</code>",
+  ]);
+  L.create($("l4c"), { db: "tonspur", modus: "frei", tabellen: false, extra: EXTRA,
+    loesung: "SELECT ROUND(AVG(dauer_sek)) FROM songs",
+    fallen: [{ muster: /ROUND\s*\(\s*dauer_sek\s*\)/i, text: "So rundest du jede einzelne Dauer. Runden sollst du den <strong>Durchschnitt</strong>: <code>ROUND(AVG(dauer_sek))</code>." }, ...IMMER],
+    ok: "✔ Richtig! Ein Song dauert im Schnitt 225 Sekunden – knapp 4 Minuten." });
+  hints($("hints4c"), [
+    "Erst den Durchschnitt: <code>AVG(dauer_sek)</code>. Dann runden: <code>ROUND( … )</code> drumherum.",
+    "Lösung: <code>SELECT ROUND(AVG(dauer_sek)) FROM songs</code>",
+  ]);
+
+  /* 5 · Fehlerdetektiv */
+  L.create($("l5"), { db: "tonspur", modus: "frei", tabellen: false, zeilen: 2, erkunden: true, reihenfolge: true, extra: EXTRA,
+    sql: "SELECT titel, dauer_sek FROM songs ORDER BY dauer_sek DESC LIMIT 3",
+    loesung: "SELECT titel, dauer_sek FROM songs ORDER BY dauer_sek LIMIT 3",
+    fallen: [{ muster: /LIMIT\s+3\s+ORDER/i, text: "Erst sortieren, dann abschneiden: <code>LIMIT</code> steht ganz am Ende." }, ...IMMER],
+    ok: "✔ Fall gelöst! <code>DESC</code> hat die längsten Songs nach oben gestellt. Ohne <code>DESC</code> (oder mit <code>ASC</code>) kommen die kürzesten zuerst." });
+  hints($("hints5"), [
+    "Die Dauer ist über 300 Sekunden – das sind die <strong>längsten</strong> Songs.",
+    "<code>DESC</code> sortiert absteigend: der Größte zuerst. Du willst den Kleinsten zuerst.",
+    "Lösung: <code>SELECT titel, dauer_sek FROM songs ORDER BY dauer_sek ASC LIMIT 3</code> (oder ohne <code>ASC</code>)",
+  ]);
+
+  /* 6 · Der längste Song */
+  L.create($("l6"), { db: "tonspur", modus: "frei", tabellen: false, extra: EXTRA,
+    loesung: "SELECT titel, dauer_sek FROM songs ORDER BY dauer_sek DESC LIMIT 1",
+    fallen: [
+      ...IMMER,
+      { sql: "SELECT titel, dauer_sek FROM songs ORDER BY dauer_sek DESC", text: "Die Reihenfolge stimmt – jetzt nur noch die erste Zeile: <code>LIMIT 1</code>." },
+      { sql: "SELECT titel, dauer_sek FROM songs ORDER BY dauer_sek LIMIT 1", text: "Das ist der <strong>kürzeste</strong> Song. Für den längsten: <code>DESC</code>." },
+      { sql: "SELECT MAX(dauer_sek) FROM songs", text: "Die Zahl stimmt – aber welcher Song ist es? Sortiere und nimm die erste Zeile." },
+    ],
+    ok: "✔ Richtig! „Endlosschleife“ mit 320 Sekunden – der Name passt." });
+  hints($("hints6"), [
+    "Sortier nach <code>dauer_sek</code>, die längsten zuerst. Dann nur die erste Zeile.",
+    "Lösung: <code>SELECT titel, dauer_sek FROM songs ORDER BY dauer_sek DESC LIMIT 1</code>",
+  ]);
+
+  /* Plus */
+  L.create($("lplus"), { db: "tonspur", modus: "frei", tabellen: false, extra: [...EXTRA, "DISTINCT"],
+    loesung: "SELECT COUNT(DISTINCT kuenstler) FROM songs",
+    fallen: [{ sql: "SELECT COUNT(kuenstler) FROM songs", text: "Das zählt jede Zeile mit Künstler – 36. Jeden Künstler nur einmal: <code>DISTINCT</code> in die Klammer." },
+      { sql: "SELECT DISTINCT kuenstler FROM songs", text: "Die Liste stimmt – jetzt noch zählen lassen: <code>COUNT(DISTINCT kuenstler)</code>." }, ...IMMER],
+    ok: "✔ Richtig! 12 verschiedene Künstler." });
+  hints($("hintsplus"), ["Lösung: <code>SELECT COUNT(DISTINCT kuenstler) FROM songs</code>"]);
+
+  /* Kurz-Check */
+  quiz($("quiz"), [
+    { q: "Welche Abfrage zeigt die 3 neuesten Songs?",
+      options: ["<code>… ORDER BY jahr LIMIT 3</code>", "<code>… ORDER BY jahr DESC LIMIT 3</code>", "<code>… LIMIT 3 ORDER BY jahr DESC</code>", "<code>… WHERE jahr = MAX LIMIT 3</code>"], right: 1,
+      miss: ["Ohne <code>DESC</code> stehen die ältesten oben.", null, "<code>LIMIT</code> steht immer ganz am Ende.", "So funktioniert <code>MAX</code> nicht."],
+      why: "Neueste = größtes Jahr zuerst: <code>DESC</code>. Dann abschneiden: <code>LIMIT 3</code>." },
+    { q: "Was liefert <code>SELECT COUNT(*) FROM songs WHERE genre = 'Rock'</code>?",
+      options: ["Alle Rock-Songs als Liste", "Die Zahl 5", "Die Summe der Likes aller Rock-Songs", "Die Zahl 36"], right: 1,
+      miss: ["<code>COUNT</code> zeigt keine Liste, sondern zählt.", null, "Dafür bräuchte man <code>SUM(likes)</code>.", "36 sind alle Songs. <code>WHERE</code> zählt nur die Rock-Songs."],
+      why: "<code>COUNT(*)</code> zählt die Zeilen, die nach <code>WHERE</code> übrig bleiben: 5 Rock-Songs." },
+    { q: "Durchschnitt der Likes, auf ganze Zahlen gerundet?",
+      options: ["<code>AVG(ROUND(likes))</code>", "<code>ROUND(AVG(likes))</code>", "<code>ROUND(SUM(likes))</code>", "<code>AVG(likes, 0)</code>"], right: 1,
+      miss: ["So rundest du jede einzelne Zahl, bevor der Durchschnitt gebildet wird – das Ergebnis hat dann trotzdem Nachkommastellen.", null,
+        "<code>SUM</code> ist die Summe, nicht der Durchschnitt.", "<code>AVG</code> hat keine Stellen-Angabe – runden macht <code>ROUND</code>."],
+      why: "Erst rechnen (<code>AVG</code>), dann runden (<code>ROUND</code> außen herum)." },
+    { q: "In welcher Reihenfolge stehen die Teile?",
+      options: ["SELECT · FROM · ORDER BY · WHERE · LIMIT", "SELECT · FROM · WHERE · ORDER BY · LIMIT", "SELECT · FROM · WHERE · LIMIT · ORDER BY"], right: 1,
+      miss: ["Erst filtern (<code>WHERE</code>), dann sortieren.", null, "Erst sortieren, dann abschneiden – <code>LIMIT</code> ganz am Ende."],
+      why: "Filtern, sortieren, abschneiden: <code>WHERE</code> · <code>ORDER BY</code> · <code>LIMIT</code>." },
+  ]);
+
+  /* ---------- Training ---------- */
+  const mit = (arr) => arr.map((a) => Object.assign({ extra: EXTRA }, a, { fallen: [...(a.fallen || []), ...IMMER] }));
+
+  L.training($("tr1"), { db: "tonspur", key: "l07-basis", tabelle: false, aufgaben: mit([
+    { text: "Alle Titel <strong>alphabetisch</strong> von A bis Z.", reihenfolge: true,
+      loesung: "SELECT titel FROM songs ORDER BY titel",
+      fallen: [{ sql: "SELECT titel FROM songs ORDER BY titel DESC", text: "Das ist von Z nach A. Von A bis Z ist aufsteigend." }],
+      hints: ["Lösung: <code>SELECT titel FROM songs ORDER BY titel</code>"] },
+    { text: "Die <strong>3 Songs mit den wenigsten Likes</strong>: Titel und Likes, der mit den wenigsten zuerst.", reihenfolge: true,
+      loesung: "SELECT titel, likes FROM songs ORDER BY likes LIMIT 3",
+      hints: ["Aufsteigend sortieren, dann <code>LIMIT 3</code>.", "Lösung: <code>SELECT titel, likes FROM songs ORDER BY likes LIMIT 3</code>"] },
+    { text: "<strong>Wie viele</strong> Hip-Hop-Songs gibt es?",
+      loesung: "SELECT COUNT(*) FROM songs WHERE genre = 'Hip-Hop'",
+      hints: ["Lösung: <code>SELECT COUNT(*) FROM songs WHERE genre = 'Hip-Hop'</code>"] },
+    { text: "Wie viele Likes hat ein <strong>Rock-Song im Durchschnitt</strong>? Gerundet auf eine ganze Zahl.",
+      loesung: "SELECT ROUND(AVG(likes)) FROM songs WHERE genre = 'Rock'",
+      hints: ["<code>ROUND(AVG(likes))</code> – und nur die Rock-Songs.", "Lösung: <code>SELECT ROUND(AVG(likes)) FROM songs WHERE genre = 'Rock'</code>"] },
+    { text: "Aus welchem Jahr stammt der <strong>älteste</strong> Song? Nur die Jahreszahl.",
+      loesung: "SELECT MIN(jahr) FROM songs",
+      fallen: [{ sql: "SELECT MAX(jahr) FROM songs", text: "Das ist das neueste Jahr. Der älteste Song hat das <strong>kleinste</strong> Jahr." }],
+      hints: ["Nur die Zahl: <code>MIN</code> oder <code>MAX</code>? Das älteste Jahr ist das kleinste.", "Lösung: <code>SELECT MIN(jahr) FROM songs</code>"] },
+    { text: "Und <strong>welcher Song</strong> ist der älteste? Titel und Jahr.",
+      loesung: "SELECT titel, jahr FROM songs ORDER BY jahr LIMIT 1",
+      fallen: [{ sql: "SELECT titel, jahr FROM songs ORDER BY jahr DESC LIMIT 1", text: "Das ist der neueste. Der älteste hat das kleinste Jahr – aufsteigend sortieren." }],
+      hints: ["Den ganzen Datensatz zum Kleinsten: sortieren und <code>LIMIT 1</code>.", "Lösung: <code>SELECT titel, jahr FROM songs ORDER BY jahr LIMIT 1</code>"] },
+  ]) });
+
+  L.training($("tr2"), { db: "azubi", key: "l07-sicher", aufgaben: mit([
+    { text: "Wie viele Stellen gibt es <strong>in Augsburg</strong>?",
+      loesung: "SELECT COUNT(*) FROM stellen WHERE ort = 'Augsburg'",
+      hints: ["Lösung: <code>SELECT COUNT(*) FROM stellen WHERE ort = 'Augsburg'</code>"] },
+    { text: "Wie hoch ist die <strong>durchschnittliche Vergütung</strong> aller Stellen? Gerundet auf ganze Euro.",
+      loesung: "SELECT ROUND(AVG(verguetung)) FROM stellen",
+      hints: ["Lösung: <code>SELECT ROUND(AVG(verguetung)) FROM stellen</code>"] },
+    { text: "Wie viele <strong>freie Plätze</strong> gibt es insgesamt?",
+      loesung: "SELECT SUM(plaetze) FROM stellen",
+      fallen: [{ sql: "SELECT COUNT(plaetze) FROM stellen", text: "<code>COUNT</code> zählt die Stellen (30). Die Plätze sollen zusammengezählt werden: <code>SUM</code>." }],
+      hints: ["Alle Werte der Spalte <code>plaetze</code> zusammenzählen.", "Lösung: <code>SELECT SUM(plaetze) FROM stellen</code>"] },
+    { text: "Welche Stelle ist <strong>am besten bezahlt</strong>? Beruf, Betrieb und Vergütung.",
+      loesung: "SELECT beruf, betrieb, verguetung FROM stellen ORDER BY verguetung DESC LIMIT 1",
+      hints: ["Lösung: <code>SELECT beruf, betrieb, verguetung FROM stellen ORDER BY verguetung DESC LIMIT 1</code>"] },
+    { text: "Die <strong>5 bestbezahlten</strong> Stellen: Beruf und Vergütung, die höchste zuerst.", reihenfolge: true,
+      loesung: "SELECT beruf, verguetung FROM stellen ORDER BY verguetung DESC LIMIT 5",
+      hints: ["Lösung: <code>SELECT beruf, verguetung FROM stellen ORDER BY verguetung DESC LIMIT 5</code>"] },
+    { text: "In wie vielen <strong>verschiedenen Orten</strong> gibt es Stellen?",
+      loesung: "SELECT COUNT(DISTINCT ort) FROM stellen",
+      fallen: [{ sql: "SELECT COUNT(ort) FROM stellen", text: "Das zählt jede Stelle. Jeden Ort nur einmal: <code>COUNT(DISTINCT ort)</code>." }],
+      hints: ["<code>COUNT(DISTINCT …)</code>", "Lösung: <code>SELECT COUNT(DISTINCT ort) FROM stellen</code>"] },
+  ]).map((a) => Object.assign(a, { extra: [...EXTRA, "DISTINCT"] })) });
+
+  L.training($("tr3"), { db: "konzerte", key: "l07-profi", aufgaben: mit([
+    { text: "Welches Konzert ist das <strong>nächste ab heute</strong>? Künstler, Stadt, Datum.",
+      loesung: "SELECT kuenstler, stadt, datum FROM konzerte WHERE datum >= '2026-03-15' ORDER BY datum LIMIT 1",
+      fallen: [{ sql: "SELECT kuenstler, stadt, datum FROM konzerte ORDER BY datum LIMIT 1", text: "Das ist das erste Konzert überhaupt – das war im Januar. Nur Konzerte ab heute!" }],
+      hints: ["Erst filtern (ab heute), dann sortieren (früheste zuerst), dann <code>LIMIT 1</code>.",
+        "Lösung: <code>SELECT kuenstler, stadt, datum FROM konzerte WHERE datum &gt;= '2026-03-15' ORDER BY datum LIMIT 1</code>"] },
+    { text: "Das <strong>teuerste</strong> Konzert: Künstler, Stadt, Preis.",
+      loesung: "SELECT kuenstler, stadt, preis FROM konzerte ORDER BY preis DESC LIMIT 1",
+      hints: ["Lösung: <code>SELECT kuenstler, stadt, preis FROM konzerte ORDER BY preis DESC LIMIT 1</code>"] },
+    { text: "Was kostet ein Ticket <strong>im Durchschnitt</strong>? Auf <strong>Cent</strong> gerundet (2 Nachkommastellen).",
+      loesung: "SELECT ROUND(AVG(preis), 2) FROM konzerte",
+      fallen: [{ sql: "SELECT ROUND(AVG(preis)) FROM konzerte", text: "Das ist auf ganze Euro gerundet. Für Cent: <code>ROUND(…, 2)</code>." }],
+      hints: ["<code>ROUND(wert, 2)</code> rundet auf zwei Nachkommastellen.", "Lösung: <code>SELECT ROUND(AVG(preis), 2) FROM konzerte</code>"] },
+    { text: "Wie viele Konzerte sind <strong>ausverkauft</strong>?",
+      loesung: "SELECT COUNT(*) FROM konzerte WHERE ausverkauft = 'ja'",
+      hints: ["Lösung: <code>SELECT COUNT(*) FROM konzerte WHERE ausverkauft = 'ja'</code>"] },
+    { text: "Wie viele <strong>freie Plätze</strong> gibt es bei allen Konzerten <strong>ab heute</strong> zusammen?",
+      loesung: "SELECT SUM(plaetze_frei) FROM konzerte WHERE datum >= '2026-03-15'",
+      hints: ["Lösung: <code>SELECT SUM(plaetze_frei) FROM konzerte WHERE datum &gt;= '2026-03-15'</code>"] },
+    { text: "Alle Konzerte, <strong>teuerste zuerst</strong>. Bei gleichem Preis das <strong>frühere Datum zuerst</strong>. Künstler, Preis, Datum.", reihenfolge: true,
+      loesung: "SELECT kuenstler, preis, datum FROM konzerte ORDER BY preis DESC, datum",
+      pruefe: ({ sql, cmp }) => (cmp && cmp.gleich && !/ORDER\s+BY[\s\S]*,\s*datum/i.test(sql)
+        ? "Die Reihenfolge stimmt hier nur zufällig. Sag der Datenbank ausdrücklich, was bei gleichem Preis gilt: <code>…, datum</code>." : null),
+      fallen: [{ sql: "SELECT kuenstler, preis, datum FROM konzerte ORDER BY preis DESC, datum DESC", text: "Bei gleichem Preis soll das <strong>frühere</strong> Datum zuerst stehen – aufsteigend." }],
+      hints: ["Zwei Sortierungen mit Komma: erst Preis absteigend, dann Datum aufsteigend.", "Lösung: <code>SELECT kuenstler, preis, datum FROM konzerte ORDER BY preis DESC, datum</code>"] },
+  ]) });
+});
+</script>
+</body>
+</html>

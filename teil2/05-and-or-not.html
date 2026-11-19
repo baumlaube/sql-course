@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AND, OR, NOT – Bedingungen verknüpfen · SQL-Kurs</title>
+<meta name="description" content="Lektion 5 im SQL-Lernpfad: Mehrere Bedingungen mit AND, OR und NOT verknüpfen, Klammern richtig setzen und die Sprachfalle „und“ erkennen – mit echtem SQLite direkt im Browser, Rückmeldung zu jedem Fehler und viel Training.">
+<link rel="canonical" href="https://sql.herrseibert.de/teil2/05-and-or-not.html">
+<!-- vorschau -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SQL-Kurs">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://sql.herrseibert.de/teil2/05-and-or-not.html">
+<meta property="og:title" content="AND, OR, NOT – Bedingungen verknüpfen · SQL-Kurs">
+<meta property="og:description" content="Lektion 5 im SQL-Lernpfad: Mehrere Bedingungen mit AND, OR und NOT verknüpfen, Klammern richtig setzen und die Sprachfalle „und“ erkennen – mit echtem SQLite direkt im Browser, Rückmeldung zu jedem Fehler und viel Training.">
+<meta property="og:image" content="https://sql.herrseibert.de/vorschau.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SQL-Kurs – Datenbanken und SQL Schritt für Schritt, mit SQL-Labor im Browser">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /vorschau -->
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/kurs.css?v=2b9f3c7d0f">
+<link rel="stylesheet" href="../assets/labor.css?v=6a1d489de7">
+<script src="../assets/i18n.js?v=2890af4da9" data-page="teil2-05-and-or-not" data-langs="de en"></script>
+<script src="../assets/kurs.js?v=c26439e733"></script>
+<script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
+<script src="../assets/labor.js?v=b6bfaa57ea"></script>
+<script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
+<script src="../assets/daten/azubi.js?v=5b1356cc35"></script>
+<script src="../assets/daten/konzerte.js?v=51212600cc"></script>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html"><img class="logo" src="../favicon.svg" alt="" width="34" height="34"> SQL-Kurs <span>· Datenbanken verstehen</span></a>
+    <span class="spacer"></span>
+    <button class="theme-btn" type="button" aria-label="Hell oder dunkel umschalten">◐ Hell/Dunkel</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="path" aria-label="Lernpfad">
+    <strong class="t">Lernpfad:</strong>
+    <ol>
+      <li class="soon"><span title="1 · Datenbanken sind überall (in Arbeit)">1</span></li>
+      <li class="soon"><span title="2 · IDs und Verknüpfung (in Arbeit)">2</span></li>
+      <li class="done"><a href="03-select.html" title="3 · SELECT – Spalten auswählen">3</a></li>
+      <li class="done"><a href="04-where.html" title="4 · WHERE – Zeilen filtern">4</a></li>
+      <li class="now"><span title="5 · AND, OR, NOT" aria-current="step">5</span></li>
+      <li class="done"><a href="06-like-in-between.html" title="6 · LIKE, IN, BETWEEN">6</a></li>
+      <li class="done"><a href="07-sortieren-rechnen.html" title="7 · Sortieren und rechnen">7</a></li>
+      <li class="done"><a href="08-group-by.html" title="8 · GROUP BY – Gruppen bilden">8</a></li>
+      <li class="soon"><span title="9 · Zwei Tabellen: JOIN (in Arbeit)">9</span></li>
+      <li class="soon"><span title="10 · JOIN mit WHERE und GROUP BY (in Arbeit)">10</span></li>
+      <li class="soon"><span title="11 · Der Fall (in Arbeit)">11</span></li>
+      <li class="soon"><span title="12 · Projekt planen (in Arbeit)">12</span></li>
+      <li class="soon"><span title="13 · Tabellen anlegen und füllen (in Arbeit)">13</span></li>
+      <li class="soon"><span title="14 · Ändern und löschen (in Arbeit)">14</span></li>
+      <li class="soon"><span title="15 · Suchformular (in Arbeit)">15</span></li>
+      <li class="soon"><span title="16 · Eingabeformular (in Arbeit)">16</span></li>
+    </ol>
+  </nav>
+
+  <section class="hero">
+    <h1>AND, OR, NOT – mehrere Bedingungen auf einmal</h1>
+    <div class="meta">
+      <span class="chip">Teil 2 · Lektion 5</span>
+      <span class="chip">⏱ ca. 35 Minuten</span>
+    </div>
+    <p class="erklaerung">Eine echte Suche hat selten nur eine Bedingung: ein Hip-Hop-Song, aber aus 2025. Eine Stelle in Augsburg oder Ingolstadt.
+      Mit <code>AND</code>, <code>OR</code> und <code>NOT</code> verknüpfst du Bedingungen – genau wie bei den Filtern in einem Onlineshop,
+      wenn du mehrere Häkchen setzt.</p>
+  </section>
+
+  <section class="card wdh">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
+  <details class="card woerter">
+    <summary>📖 Wörter für diese Lektion</summary>
+    <p class="note">Die SQL-Befehle bleiben englisch – so heißen sie in jeder Datenbank der Welt.</p>
+    <div class="tbl-scroll"><table class="plain">
+      <tr><th class="wort">verknüpfen <small>die Verknüpfung</small></th><td>Zwei Dinge miteinander verbinden. Hier: zwei Bedingungen.</td></tr>
+      <tr><th class="wort">AND <small>und</small></th><td>Beide Bedingungen müssen stimmen.</td></tr>
+      <tr><th class="wort">OR <small>oder</small></th><td>Mindestens eine der Bedingungen muss stimmen.</td></tr>
+      <tr><th class="wort">NOT <small>nicht</small></th><td>Dreht eine Bedingung um: aus „stimmt“ wird „stimmt nicht“.</td></tr>
+      <tr><th class="wort">die Klammer <small>die Klammern</small></th><td>Die Zeichen <code>(</code> und <code>)</code>. Was in Klammern steht, wird zuerst geprüft.</td></tr>
+      <tr><th class="wort">gleichzeitig</th><td>Zur selben Zeit, beides auf einmal.</td></tr>
+    </table></div>
+  </details>
+
+  <section class="card szenario">
+    <h2><span class="step-no">🎧</span> Szenario</h2>
+    <p>Zweite Woche im Praktikum bei <strong>Tonspur</strong>. Du baust Playlists für die App. Jede Playlist hat mehrere Regeln –
+      alles steht in der Tabelle <code>songs</code>.</p>
+  </section>
+
+  <!-- 1 · Überleg -->
+  <section class="card">
+    <h2><span class="step-no">1</span> Überleg: zwei Bedingungen <span class="chip">4 Minuten</span></h2>
+    <div id="tab-songs"></div>
+    <p>Die Playlist „Pop 2025“ wird mit dieser Abfrage gebaut:</p>
+    <pre class="sql" data-farbe>SELECT titel FROM songs WHERE genre = 'Pop' AND jahr = 2025</pre>
+    <p><strong>Überleg:</strong> Wie viele Songs kommen in die Playlist? Schau in die Tabelle. Führ noch nichts aus!</p>
+    <div class="choices" id="pred1">
+      <button type="button" class="choice">10 – alle Pop-Songs</button>
+      <button type="button" class="choice">7 – alle Songs aus 2025</button>
+      <button type="button" class="choice">3</button>
+      <button type="button" class="choice">14 – alle Pop-Songs und alle aus 2025</button>
+    </div>
+    <p class="fb" id="fb1"></p>
+    <div id="probe1" hidden>
+      <p><strong>Probier es aus:</strong></p>
+      <div id="l1"></div>
+    </div>
+  </section>
+
+  <!-- 2 · AND und OR in Zeitlupe -->
+  <section class="card">
+    <h2><span class="step-no">2</span> AND oder OR? In Zeitlupe <span class="chip">4 Minuten</span></h2>
+    <p>Jetzt steht <code>OR</code> statt <code>AND</code> da. Schau zu, welche Zeilen bleiben. Tipp ein paar Mal auf <strong>👣 Nächste Zeile</strong>.</p>
+    <div id="zl"></div>
+    <div class="tbl-scroll"><table class="plain wahrheit">
+      <tr><th>Bedingung 1</th><th>Bedingung 2</th><th><code>AND</code></th><th><code>OR</code></th></tr>
+      <tr><td>✔ stimmt</td><td>✔ stimmt</td><td>✔ bleibt</td><td>✔ bleibt</td></tr>
+      <tr><td>✔ stimmt</td><td>✘ stimmt nicht</td><td>✘ fliegt raus</td><td>✔ bleibt</td></tr>
+      <tr><td>✘ stimmt nicht</td><td>✔ stimmt</td><td>✘ fliegt raus</td><td>✔ bleibt</td></tr>
+      <tr><td>✘ stimmt nicht</td><td>✘ stimmt nicht</td><td>✘ fliegt raus</td><td>✘ fliegt raus</td></tr>
+    </table></div>
+    <p class="rule"><code>AND</code>: <strong>beide</strong> Bedingungen müssen stimmen – das Ergebnis wird kleiner.<br>
+      <code>OR</code>: <strong>mindestens eine</strong> muss stimmen – das Ergebnis wird größer.</p>
+  </section>
+
+  <!-- 3 · Puzzle -->
+  <section class="card">
+    <h2><span class="step-no">3</span> Puzzle: „Neuer Rock“ <span class="chip">4 Minuten</span></h2>
+    <p>Die Playlist „Neuer Rock“ braucht die <strong>Titel aller Rock-Songs ab 2022</strong> aus der Tabelle <code>songs</code>.
+      Leg die Abfrage. Zwei Bausteine brauchst du nicht.</p>
+    <div id="l3"></div>
+  </section>
+
+  <!-- 4 · Sprachfalle -->
+  <section class="card">
+    <h2><span class="step-no">4</span> Die Falle mit dem „und“ <span class="chip">5 Minuten</span></h2>
+    <p>Die Chefin sagt: <em>„Ich brauche alle Songs von Juna und von Frida Falk.“</em></p>
+    <p><strong>Überleg:</strong> Welches Wort gehört in die gelbe Lücke? Probier ruhig beide aus.</p>
+    <div id="l4"></div>
+    <p class="rule">Im Alltag sagt man oft „und“, wenn man in SQL <code>OR</code> braucht.<br>
+      Frag dich: Muss <strong>eine Zeile</strong> beides gleichzeitig erfüllen? Nur dann ist es <code>AND</code>.</p>
+  </section>
+
+  <!-- 5 · Klammern -->
+  <section class="card">
+    <h2><span class="step-no">5</span> Klammern: Was gilt zuerst? <span class="chip">5 Minuten</span></h2>
+    <p>Die Playlist „Frisch“ soll Songs enthalten, die <strong>Hip-Hop oder Pop</strong> sind – <strong>aber nur aus 2025</strong>.
+      Ein Kollege hat es ohne Klammern versucht:</p>
+    <div id="l5a"></div>
+    <p><strong>Überleg:</strong> Da sind Hip-Hop-Songs aus 2021 dabei! Woran liegt das?</p>
+    <div class="choices" id="pred5">
+      <button type="button" class="choice">SQL liest von links nach rechts</button>
+      <button type="button" class="choice"><code>AND</code> wird vor <code>OR</code> geprüft</button>
+      <button type="button" class="choice"><code>OR</code> wird vor <code>AND</code> geprüft</button>
+    </div>
+    <p class="fb" id="fb5"></p>
+    <div id="probe5" hidden>
+      <p>Mit Klammern sagst du SQL, was zusammengehört:</p>
+      <div id="l5b"></div>
+      <p class="rule"><code>AND</code> wird vor <code>OR</code> geprüft – wie Punkt vor Strich.<br>
+        Mischst du <code>AND</code> und <code>OR</code>, setz Klammern um das <code>OR</code>.</p>
+    </div>
+  </section>
+
+  <!-- 6 · Fehlerdetektiv -->
+  <section class="card">
+    <h2><span class="step-no">6</span> Fehlerdetektiv: Wo ist der Rock? <span class="chip">5 Minuten</span></h2>
+    <p>Jonas wollte <strong>alle Pop- und Rock-Songs</strong> mit Titel und Genre. Seine Abfrage meldet keinen Fehler.
+      Führ sie aus und schau dir das Ergebnis genau an.</p>
+    <ol class="howto">
+      <li>Welche Genres stehen im Ergebnis? Welche fehlen?</li>
+      <li>Was steht nach <code>OR</code> – eine ganze Bedingung?</li>
+      <li>Wie muss die zweite Bedingung vollständig heißen?</li>
+    </ol>
+    <div id="l6"></div>
+    <div id="hints6"></div>
+  </section>
+
+  <!-- 7 · Selbst schreiben -->
+  <section class="card">
+    <h2><span class="step-no">7</span> Jetzt du: kurze Hits <span class="chip">4 Minuten</span></h2>
+    <p>Für Social Media braucht das Team Songs, die <strong>kürzer als 3 Minuten</strong> sind <strong>und mehr als 40 000 Likes</strong> haben.
+      Zeig Titel, Dauer und Likes.</p>
+    <div id="l7"></div>
+    <div id="hints7"></div>
+  </section>
+
+  <!-- Plus -->
+  <section class="card">
+    <h2><span class="badge plus">Plus</span> NOT <span class="chip">für Schnelle</span></h2>
+    <p><code>NOT</code> dreht eine Bedingung um: <code>NOT kuenstler = 'Juna'</code> heißt „nicht von Juna“.
+      Gesucht: <strong>alle Songs aus 2025, aber nicht von Juna</strong>. Zeig Titel und Künstler.</p>
+    <div id="lplus"></div>
+    <div id="hintsplus"></div>
+  </section>
+
+  <!-- Kurz-Check -->
+  <section class="card">
+    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
+    <div id="quiz"></div>
+  </section>
+
+  <section class="card merke">
+    <h2>Merke</h2>
+    <ul>
+      <li><code>AND</code>: beide Bedingungen müssen stimmen. <code>OR</code>: mindestens eine muss stimmen.</li>
+      <li>Jede Bedingung ist vollständig: <code>genre = 'Pop' OR genre = 'Rock'</code> – nicht <code>genre = 'Pop' OR 'Rock'</code>.</li>
+      <li>„Songs von A und B“ heißt fast immer <code>OR</code>: Eine Zeile kann nicht gleichzeitig zwei Werte in derselben Spalte haben.</li>
+      <li><code>AND</code> vor <code>OR</code>. Beim Mischen Klammern setzen: <code>(… OR …) AND …</code></li>
+      <li><code>NOT</code> dreht eine Bedingung um: <code>NOT ort = 'Augsburg'</code></li>
+    </ul>
+  </section>
+
+  <!-- Training -->
+  <section class="card frei" id="training">
+    <h2><span class="step-no">🏋</span> Training</h2>
+    <p class="lead">Je mehr Abfragen du schreibst, desto sicherer wirst du. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
+
+    <h3 class="sub"><span class="badge ueben">● Basis</span> Noch mehr Playlists</h3>
+    <div id="tr1"></div>
+
+    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Azubi-Börse</h3>
+    <p>Jugendliche suchen eine Ausbildung. Jeder hat mehrere Wünsche – finde die passenden Stellen in der Tabelle <code>stellen</code>.
+      <code>verguetung</code> ist das Geld pro Monat im 1. Jahr in Euro.</p>
+    <div id="tr2"></div>
+
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Konzertkalender</h3>
+    <p>Die Künstler aus Tonspur gehen auf Tour (Tabelle <code>konzerte</code>). <strong>Heute ist der 15. März 2026.</strong>
+      Datumswerte stehen als Text im Format <code>'JJJJ-MM-TT'</code>.</p>
+    <div id="tr3"></div>
+  </section>
+
+  <nav class="pager">
+    <a href="04-where.html">← Lektion 4: WHERE – Zeilen filtern</a>
+    <a href="06-like-in-between.html">Lektion 6: LIKE, IN, BETWEEN →</a>
+  </nav>
+</main>
+
+<footer>
+  <div class="wrap t">Lernmaterial von <a href="https://herrseibert.de">herrseibert.de</a> · Lizenz <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">CC BY-SA 4.0</a> · ohne Tracking, ohne Cookies<br>Erstellt von der KI Claude von Anthropic.</div>
+  <div class="wrap t gh">Fehler gefunden oder eine Idee? → <a href="https://github.com/baumlaube/sql-course">Kurs auf GitHub</a></div>
+  <div class="wrap t gh">Das SQL-Labor nutzt SQLite (gemeinfrei) über sql.js (MIT-Lizenz) – alles läuft in deinem Browser.</div>
+  <div class="wrap legal"><a href="../impressum.html">Impressum</a> · <a href="../datenschutz.html">Datenschutz</a></div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { pick, quiz, hints } = window.Kurs;
+  const L = window.Labor;
+  const $ = (id) => document.getElementById(id);
+  const EXTRA = ["AND", "OR", "NOT", "(", ")"];
+  /* Typische Fehler, die in vielen Aufgaben vorkommen */
+  const OR_RUMPF = { muster: /\bOR\s*'[^']*'/i, text: "Nach <code>OR</code> steht nur ein Wert. SQL braucht dort eine ganze Bedingung: <code>spalte = 'Wert'</code>." };
+  const AND_RUMPF = { muster: /\bAND\s*'[^']*'/i, text: "Nach <code>AND</code> steht nur ein Wert. SQL braucht dort eine ganze Bedingung: <code>spalte = 'Wert'</code>." };
+  const UND_FALLE = { wenn: ({ res, sql }) => res.ok && res.zeilen.length === 0 && /\bAND\b/i.test(sql),
+    text: "0 Zeilen: Eine Zeile kann nicht gleichzeitig zwei verschiedene Werte in derselben Spalte haben. Gemeint ist: der eine <strong>oder</strong> der andere – also <code>OR</code>." };
+
+  L.tabelle($("tab-songs"), { db: "tonspur", offen: true });
+
+  /* Weißt du noch? (Lektion 3 und 4) */
+  quiz($("wdh"), [
+    { q: "Gesucht: Songs <strong>ab</strong> 2024. Welche Bedingung passt?",
+      options: ["<code>jahr &gt; 2024</code>", "<code>jahr &gt;= 2024</code>", "<code>jahr = 2024</code>", "<code>jahr &lt;= 2024</code>"], right: 1,
+      miss: ["Dann fehlen die Songs aus 2024 selbst.", null, "Damit fehlt 2025.", "Das sind die Songs bis 2024."],
+      why: "„Ab“ heißt: 2024 gehört dazu – also <code>&gt;=</code>." },
+    { q: "Was zeigt <code>SELECT DISTINCT kuenstler FROM songs</code>?",
+      options: ["Alle Künstler, jeden genau einmal", "Nur den Künstler mit den meisten Songs", "Alle 36 Zeilen mit Künstler", "Die Anzahl der Künstler"], right: 0,
+      miss: [null, "<code>DISTINCT</code> sucht nichts aus – es streicht nur doppelte Werte.", "Ohne <code>DISTINCT</code> wären es 36 Zeilen.", "Zählen kommt später mit <code>COUNT</code>."],
+      why: "<code>DISTINCT</code> streicht doppelte Werte." },
+  ]);
+
+  /* 1 · Überleg */
+  pick($("pred1"), { right: 2, fb: $("fb1"),
+    miss: ["Bei 10 wäre das Jahr egal. <code>AND</code> verlangt aber: Pop <strong>und</strong> 2025.",
+      "Bei 7 wäre das Genre egal. Es müssen aber beide Bedingungen stimmen.", null,
+      "Das wäre <code>OR</code>: Pop <strong>oder</strong> 2025. Mit <code>AND</code> müssen beide gleichzeitig stimmen."],
+    why: "Nur 3 Songs sind Pop <strong>und</strong> aus 2025: Leise laut, Wolke 8 und Feuerwerk.",
+    onDone() { $("probe1").hidden = false; } });
+  L.create($("l1"), { db: "tonspur", modus: "lesen", tabellen: false, sql: "SELECT titel FROM songs WHERE genre = 'Pop' AND jahr = 2025" });
+
+  /* 2 · Zeitlupe */
+  L.zeitlupe($("zl"), { db: "tonspur", sql: "SELECT titel, genre, jahr FROM songs WHERE genre = 'Pop' OR jahr = 2025" });
+
+  /* 3 · Puzzle */
+  L.create($("l3"), { db: "tonspur", modus: "puzzle", tabellen: false,
+    bausteine: ["SELECT", "titel", "FROM", "songs", "WHERE", "genre", "=", "'Rock'", "AND", "jahr", ">=", "2022", "OR", ">"],
+    loesung: "SELECT titel FROM songs WHERE genre = 'Rock' AND jahr >= 2022",
+    fallen: [
+      { sql: "SELECT titel FROM songs WHERE genre = 'Rock' OR jahr >= 2022", text: "Mit <code>OR</code> kommen auch Pop- und Hip-Hop-Songs ab 2022 dazu. Es müssen <strong>beide</strong> Bedingungen stimmen." },
+      { sql: "SELECT titel FROM songs WHERE genre = 'Rock' AND jahr > 2022", text: "„Ab 2022“ heißt: 2022 gehört dazu." },
+    ],
+    ok: "✔ Geschafft! 3 Rock-Songs ab 2022." });
+
+  /* 4 · Sprachfalle */
+  L.create($("l4"), { db: "tonspur", modus: "luecke", tabellen: false,
+    sql: "SELECT titel, kuenstler FROM songs WHERE kuenstler = 'Juna' [[AND|OR]] kuenstler = 'Frida Falk'",
+    loesung: "SELECT titel, kuenstler FROM songs WHERE kuenstler = 'Juna' OR kuenstler = 'Frida Falk'",
+    fallen: [UND_FALLE],
+    ok: "✔ Richtig! Jeder Song ist <strong>entweder</strong> von Juna <strong>oder</strong> von Frida Falk. Darum <code>OR</code> – auch wenn die Chefin „und“ gesagt hat." });
+
+  /* 5 · Klammern */
+  L.create($("l5a"), { db: "tonspur", modus: "lesen", tabellen: false,
+    sql: "SELECT titel, genre, jahr FROM songs WHERE genre = 'Hip-Hop' OR genre = 'Pop' AND jahr = 2025" });
+  pick($("pred5"), { right: 1, fb: $("fb5"),
+    miss: ["Von links nach rechts wäre: erst Hip-Hop oder Pop, dann 2025. Dann wären keine Songs aus 2021 dabei.", null,
+      "Dann wären nur Songs aus 2025 im Ergebnis. Es sind aber ältere dabei."],
+    why: "SQL prüft <code>AND</code> zuerst: <code>genre = 'Pop' AND jahr = 2025</code> gehört zusammen. Davor steht <code>genre = 'Hip-Hop' OR …</code> – also kommen <strong>alle</strong> Hip-Hop-Songs dazu, egal aus welchem Jahr.",
+    onDone() { $("probe5").hidden = false; } });
+  L.create($("l5b"), { db: "tonspur", modus: "frei", tabellen: false, zeilen: 2, extra: EXTRA,
+    sql: "SELECT titel, genre, jahr FROM songs WHERE genre = 'Hip-Hop' OR genre = 'Pop' AND jahr = 2025",
+    loesung: "SELECT titel, genre, jahr FROM songs WHERE (genre = 'Hip-Hop' OR genre = 'Pop') AND jahr = 2025",
+    fallen: [
+      { muster: /OR\s*\(\s*genre\s*=\s*'Pop'\s+AND/i, text: "Diese Klammern ändern nichts – so rechnet SQL sowieso. Die Klammer gehört um das <code>OR</code>." },
+      { sql: "SELECT titel, genre, jahr FROM songs WHERE genre = 'Hip-Hop' OR genre = 'Pop' AND jahr = 2025", text: "Noch ohne Klammern. Setz Klammern um den Teil mit <code>OR</code>: <code>(genre = 'Hip-Hop' OR genre = 'Pop')</code>." },
+    ],
+    ok: "✔ Jetzt stimmt es: 4 Songs, alle aus 2025. Probier nebenbei: Was passiert ohne Klammern?" });
+
+  /* 6 · Fehlerdetektiv: OR ohne vollständige Bedingung */
+  L.create($("l6"), { db: "tonspur", modus: "frei", tabellen: false, zeilen: 2, erkunden: true, extra: EXTRA,
+    sql: "SELECT titel, genre FROM songs WHERE genre = 'Pop' OR 'Rock'",
+    loesung: "SELECT titel, genre FROM songs WHERE genre = 'Pop' OR genre = 'Rock'",
+    fallen: [OR_RUMPF, { muster: /'Pop'\s+AND/i, text: "Ein Song kann nicht gleichzeitig Pop und Rock sein. Hier passt <code>OR</code>." }],
+    ok: "✔ Fall gelöst! <code>OR 'Rock'</code> war keine Bedingung – SQL hat es einfach als „falsch“ gelesen. Jetzt sind auch die 5 Rock-Songs da." });
+  hints($("hints6"), [
+    "Im Ergebnis steht nur Pop. Die Rock-Songs fehlen – SQL hat <code>'Rock'</code> gar nicht mit dem Genre verglichen.",
+    "Nach <code>OR</code> muss die ganze Bedingung noch einmal stehen: Spalte, Vergleich, Wert.",
+    "Lösung: <code>SELECT titel, genre FROM songs WHERE genre = 'Pop' OR genre = 'Rock'</code>",
+  ]);
+
+  /* 7 · Selbst schreiben */
+  L.create($("l7"), { db: "tonspur", modus: "frei", tabellen: false, extra: EXTRA,
+    loesung: "SELECT titel, dauer_sek, likes FROM songs WHERE dauer_sek < 180 AND likes > 40000",
+    fallen: [
+      { sql: "SELECT titel, dauer_sek, likes FROM songs WHERE dauer_sek < 180 OR likes > 40000", text: "Mit <code>OR</code> reicht eine der beiden Bedingungen. Gesucht sind Songs, die kurz <strong>und</strong> beliebt sind." },
+      { muster: /dauer_sek\s*<=?\s*3\b/, text: "<code>dauer_sek</code> zählt Sekunden: 3 Minuten = 180 Sekunden." },
+      { muster: /40\.000/, text: "Ohne Tausenderpunkt: <code>40000</code>." },
+      AND_RUMPF,
+    ],
+    ok: "✔ Stark! 4 kurze Hits – kurz <strong>und</strong> beliebt." });
+  hints($("hints7"), [
+    "Zwei Bedingungen: <code>dauer_sek &lt; 180</code> und <code>likes &gt; 40000</code>. Beide müssen stimmen.",
+    "Lösung: <code>SELECT titel, dauer_sek, likes FROM songs WHERE dauer_sek &lt; 180 AND likes &gt; 40000</code>",
+  ]);
+
+  /* Plus · NOT */
+  L.create($("lplus"), { db: "tonspur", modus: "frei", tabellen: false, extra: EXTRA,
+    loesung: "SELECT titel, kuenstler FROM songs WHERE jahr = 2025 AND NOT kuenstler = 'Juna'",
+    fallen: [
+      { sql: "SELECT titel, kuenstler FROM songs WHERE jahr = 2025", text: "Feuerwerk von Juna ist noch dabei. Schließ Juna mit <code>NOT</code> aus." },
+      { sql: "SELECT titel, kuenstler FROM songs WHERE jahr = 2025 OR NOT kuenstler = 'Juna'", text: "Mit <code>OR</code> kommen alle Songs dazu, die nicht von Juna sind – egal aus welchem Jahr. Beides soll gelten: <code>AND</code>." },
+    ],
+    ok: "✔ Richtig! 6 Songs. Übrigens: <code>kuenstler &lt;&gt; 'Juna'</code> bedeutet dasselbe." });
+  hints($("hintsplus"), [
+    "Zwei Bedingungen: aus 2025 – und nicht von Juna.",
+    "Lösung: <code>SELECT titel, kuenstler FROM songs WHERE jahr = 2025 AND NOT kuenstler = 'Juna'</code>",
+  ]);
+
+  /* Kurz-Check */
+  quiz($("quiz"), [
+    { q: "<code>WHERE genre = 'Rock' AND jahr = 2024</code> findet …",
+      options: ["alle Rock-Songs und alle Songs aus 2024", "nur Rock-Songs aus 2024", "Rock-Songs oder Songs aus 2024", "nichts – ein Song kann nicht beides sein"], right: 1,
+      miss: ["Das wäre <code>OR</code>. <code>AND</code> verlangt, dass beides für denselben Song stimmt.", null,
+        "„Oder“ ist <code>OR</code>.", "Doch: Ein Song kann Rock sein <strong>und</strong> aus 2024 – das sind zwei verschiedene Spalten."],
+      why: "<code>AND</code>: beide Bedingungen müssen für dieselbe Zeile stimmen." },
+    { q: "„Zeig alle Stellen in Augsburg und Ingolstadt.“ Welche Bedingung passt?",
+      options: ["<code>ort = 'Augsburg' AND ort = 'Ingolstadt'</code>", "<code>ort = 'Augsburg' OR ort = 'Ingolstadt'</code>", "<code>ort = 'Augsburg und Ingolstadt'</code>", "<code>ort = 'Augsburg' OR 'Ingolstadt'</code>"], right: 1,
+      miss: ["Eine Stelle liegt nicht gleichzeitig in zwei Orten – das ergibt 0 Zeilen.", null,
+        "Einen Ort mit diesem Namen gibt es nicht.", "Nach <code>OR</code> fehlt die ganze Bedingung: <code>ort = 'Ingolstadt'</code>."],
+      why: "Jede Stelle liegt in Augsburg <strong>oder</strong> in Ingolstadt. Darum <code>OR</code>." },
+    { q: "<code>WHERE genre = 'Rock' OR genre = 'Pop' AND jahr = 2025</code> – was prüft SQL zuerst?",
+      options: ["<code>genre = 'Rock' OR genre = 'Pop'</code>", "<code>genre = 'Pop' AND jahr = 2025</code>", "alles gleichzeitig von links nach rechts"], right: 1,
+      miss: ["So hätte man es gern – dafür braucht man aber Klammern.", null, "Nein: <code>AND</code> wird immer vor <code>OR</code> geprüft."],
+      why: "<code>AND</code> vor <code>OR</code>. Wer erst das <code>OR</code> will, setzt Klammern." },
+    { q: "Was zeigt <code>WHERE genre = 'Pop' OR 'Rock'</code>?",
+      options: ["Pop- und Rock-Songs", "Nur Pop-Songs", "Eine Fehlermeldung", "Gar nichts"], right: 1,
+      miss: ["Das wäre richtig mit <code>OR genre = 'Rock'</code>. So fehlt der Vergleich.", null,
+        "Leider nicht – SQL meldet hier keinen Fehler. Das macht den Fehler so gemein.", "Die Pop-Songs kommen schon – nur die Rock-Songs fehlen."],
+      why: "<code>'Rock'</code> allein ist keine Bedingung. SQL liest es als „falsch“ – übrig bleiben nur die Pop-Songs." },
+  ]);
+
+  /* ---------- Training ---------- */
+  L.training($("tr1"), { db: "tonspur", key: "l05-basis", tabelle: false, aufgaben: [
+    { text: "<strong>Hip-Hop</strong>-Songs aus dem Jahr <strong>2024</strong>. Zeig den Titel.",
+      loesung: "SELECT titel FROM songs WHERE genre = 'Hip-Hop' AND jahr = 2024",
+      hints: ["Beide Bedingungen müssen stimmen: <code>AND</code>.", "Lösung: <code>SELECT titel FROM songs WHERE genre = 'Hip-Hop' AND jahr = 2024</code>"] },
+    { text: "Songs von <strong>Die Kaltfront</strong> mit <strong>mehr als 20 000 Likes</strong>. Zeig Titel und Likes.",
+      loesung: "SELECT titel, likes FROM songs WHERE kuenstler = 'Die Kaltfront' AND likes > 20000",
+      fallen: [{ muster: /20\.000/, text: "Ohne Tausenderpunkt: <code>20000</code>." }],
+      hints: ["Lösung: <code>SELECT titel, likes FROM songs WHERE kuenstler = 'Die Kaltfront' AND likes &gt; 20000</code>"] },
+    { text: "Alle <strong>Indie- und Rock-Songs</strong>. Zeig Titel und Genre.",
+      loesung: "SELECT titel, genre FROM songs WHERE genre = 'Indie' OR genre = 'Rock'",
+      fallen: [UND_FALLE, OR_RUMPF],
+      hints: ["Achtung, Sprachfalle: Ein Song ist Indie <strong>oder</strong> Rock.", "Lösung: <code>SELECT titel, genre FROM songs WHERE genre = 'Indie' OR genre = 'Rock'</code>"] },
+    { text: "Songs aus den Jahren <strong>2016 bis 2018</strong> (beide Jahre gehören dazu). Zeig Titel und Jahr.",
+      loesung: "SELECT titel, jahr FROM songs WHERE jahr >= 2016 AND jahr <= 2018",
+      fallen: [{ sql: "SELECT titel, jahr FROM songs WHERE jahr > 2016 AND jahr < 2018", text: "„Bis“ und „von“ heißt hier: die Grenzen gehören dazu. Nimm <code>&gt;=</code> und <code>&lt;=</code>." },
+        { wenn: ({ res, sql }) => res.ok && res.zeilen.length === 0 && /\bAND\b/i.test(sql) && /2016/.test(sql), text: "0 Zeilen? Prüf die Richtung: <strong>mindestens</strong> 2016 (<code>&gt;=</code>) und <strong>höchstens</strong> 2018 (<code>&lt;=</code>)." }],
+      hints: ["Ein Bereich hat zwei Grenzen: <code>jahr &gt;= 2016</code> und <code>jahr &lt;= 2018</code>.", "Lösung: <code>SELECT titel, jahr FROM songs WHERE jahr &gt;= 2016 AND jahr &lt;= 2018</code>"] },
+    { text: "<strong>Elektro</strong>-Songs, die <strong>kürzer als 5 Minuten</strong> sind. Zeig Titel und Dauer.",
+      loesung: "SELECT titel, dauer_sek FROM songs WHERE genre = 'Elektro' AND dauer_sek < 300",
+      fallen: [{ muster: /dauer_sek\s*<=?\s*5\b/, text: "5 Minuten = 300 Sekunden." }],
+      hints: ["Lösung: <code>SELECT titel, dauer_sek FROM songs WHERE genre = 'Elektro' AND dauer_sek &lt; 300</code>"] },
+    { text: "Alle Songs von <strong>Juna und Sunny Öztürk</strong>. Zeig Titel und Künstler.",
+      loesung: "SELECT titel, kuenstler FROM songs WHERE kuenstler = 'Juna' OR kuenstler = 'Sunny Öztürk'",
+      fallen: [UND_FALLE, OR_RUMPF, { muster: /Oezt|Ozt/i, text: "In der Tabelle steht <code>Sunny Öztürk</code> mit Ö und ü – Werte dürfen Umlaute haben, nur Spaltennamen nicht." }],
+      hints: ["Jeder Song ist von Juna <strong>oder</strong> von Sunny Öztürk.", "Lösung: <code>SELECT titel, kuenstler FROM songs WHERE kuenstler = 'Juna' OR kuenstler = 'Sunny Öztürk'</code>"] },
+  ].map((a) => Object.assign({ extra: EXTRA }, a)) });
+
+  L.training($("tr2"), { db: "azubi", key: "l05-sicher", aufgaben: [
+    { text: "Tim sucht eine Stelle <strong>in Augsburg</strong> mit <strong>mindestens 1000 Euro</strong>. Zeig Beruf, Betrieb und Vergütung.",
+      loesung: "SELECT beruf, betrieb, verguetung FROM stellen WHERE ort = 'Augsburg' AND verguetung >= 1000",
+      fallen: [{ sql: "SELECT beruf, betrieb, verguetung FROM stellen WHERE ort = 'Augsburg' AND verguetung > 1000", text: "Bei „mindestens“ gehören die Stellen mit genau 1000 Euro dazu." }],
+      hints: ["Lösung: <code>SELECT beruf, betrieb, verguetung FROM stellen WHERE ort = 'Augsburg' AND verguetung &gt;= 1000</code>"] },
+    { text: "Lea hat den <strong>Quali</strong>. Sie kann Stellen nehmen, die den <strong>Quali oder den Mittelschulabschluss</strong> verlangen. Zeig Beruf, Betrieb und Abschluss.",
+      loesung: "SELECT beruf, betrieb, abschluss FROM stellen WHERE abschluss = 'Quali' OR abschluss = 'Mittelschulabschluss'",
+      fallen: [UND_FALLE, OR_RUMPF],
+      hints: ["Lösung: <code>SELECT beruf, betrieb, abschluss FROM stellen WHERE abschluss = 'Quali' OR abschluss = 'Mittelschulabschluss'</code>"] },
+    { text: "Emre will <strong>in Regensburg und Landshut</strong> suchen. Zeig Beruf und Ort.",
+      loesung: "SELECT beruf, ort FROM stellen WHERE ort = 'Regensburg' OR ort = 'Landshut'",
+      fallen: [UND_FALLE, OR_RUMPF],
+      hints: ["Sprachfalle! Eine Stelle liegt in Regensburg <strong>oder</strong> in Landshut.", "Lösung: <code>SELECT beruf, ort FROM stellen WHERE ort = 'Regensburg' OR ort = 'Landshut'</code>"] },
+    { text: "Kurze Ausbildungen: <strong>24 Monate</strong> – und es müssen noch <strong>Plätze frei</strong> sein. Zeig Beruf, Betrieb und Plätze.",
+      loesung: "SELECT beruf, betrieb, plaetze FROM stellen WHERE dauer_monate = 24 AND plaetze > 0",
+      fallen: [{ sql: "SELECT beruf, betrieb, plaetze FROM stellen WHERE dauer_monate = 24", text: "Fast! Prüf noch, ob Plätze frei sind: <code>plaetze &gt; 0</code>." }],
+      hints: ["Lösung: <code>SELECT beruf, betrieb, plaetze FROM stellen WHERE dauer_monate = 24 AND plaetze &gt; 0</code>"] },
+    { text: "Sara sucht <strong>in Nürnberg oder Ingolstadt</strong> – aber nur Stellen mit <strong>mindestens 1000 Euro</strong>. Zeig Beruf, Ort und Vergütung.",
+      loesung: "SELECT beruf, ort, verguetung FROM stellen WHERE (ort = 'Nürnberg' OR ort = 'Ingolstadt') AND verguetung >= 1000",
+      fallen: [{ sql: "SELECT beruf, ort, verguetung FROM stellen WHERE ort = 'Nürnberg' OR ort = 'Ingolstadt' AND verguetung >= 1000", text: "Klammer-Falle! In Nürnberg sind Stellen unter 1000 Euro dabei. <code>AND</code> wird zuerst geprüft – setz Klammern um das <code>OR</code>." }],
+      hints: ["Du mischst <code>OR</code> und <code>AND</code>. Was muss zusammen geprüft werden?", "Lösung: <code>SELECT beruf, ort, verguetung FROM stellen WHERE (ort = 'Nürnberg' OR ort = 'Ingolstadt') AND verguetung &gt;= 1000</code>"] },
+    { text: "Alle Stellen, die <strong>nicht in Augsburg</strong> sind und noch <strong>freie Plätze</strong> haben. Zeig Betrieb und Ort. Probier <code>NOT</code>.",
+      loesung: "SELECT betrieb, ort FROM stellen WHERE NOT ort = 'Augsburg' AND plaetze > 0",
+      hints: ["<code>NOT ort = 'Augsburg'</code> heißt: nicht in Augsburg.", "Lösung: <code>SELECT betrieb, ort FROM stellen WHERE NOT ort = 'Augsburg' AND plaetze &gt; 0</code>"] },
+  ].map((a) => Object.assign({ extra: EXTRA }, a)) });
+
+  L.training($("tr3"), { db: "konzerte", key: "l05-profi", aufgaben: [
+    { text: "Alle Konzerte <strong>im April 2026</strong>. Zeig Künstler, Stadt und Datum.",
+      loesung: "SELECT kuenstler, stadt, datum FROM konzerte WHERE datum >= '2026-04-01' AND datum <= '2026-04-30'",
+      fallen: [{ muster: /'2026-04'/, text: "Ein Datum muss vollständig sein. Der April geht vom <code>'2026-04-01'</code> bis zum <code>'2026-04-30'</code>." },
+        { muster: /\.0?4\.2026/, text: "In der Tabelle stehen Daten so: <code>'2026-04-01'</code>." }],
+      hints: ["Ein Monat ist ein Bereich: vom ersten bis zum letzten Tag.", "Lösung: <code>SELECT kuenstler, stadt, datum FROM konzerte WHERE datum &gt;= '2026-04-01' AND datum &lt;= '2026-04-30'</code>"] },
+    { text: "Konzerte <strong>ab heute</strong>, für die es <strong>noch Karten</strong> gibt. Zeig Künstler, Stadt und Datum.",
+      loesung: "SELECT kuenstler, stadt, datum FROM konzerte WHERE datum >= '2026-03-15' AND ausverkauft = 'nein'",
+      hints: ["Noch Karten heißt: <code>ausverkauft = 'nein'</code>.", "Lösung: <code>SELECT kuenstler, stadt, datum FROM konzerte WHERE datum &gt;= '2026-03-15' AND ausverkauft = 'nein'</code>"] },
+    { text: "Konzerte in <strong>München oder Augsburg</strong> für <strong>höchstens 30 €</strong>. Zeig Künstler, Stadt und Preis.",
+      loesung: "SELECT kuenstler, stadt, preis FROM konzerte WHERE (stadt = 'München' OR stadt = 'Augsburg') AND preis <= 30",
+      fallen: [{ sql: "SELECT kuenstler, stadt, preis FROM konzerte WHERE stadt = 'München' OR stadt = 'Augsburg' AND preis <= 30", text: "Da sind teure Münchner Konzerte dabei. Setz Klammern um das <code>OR</code>." },
+        { muster: /30\s*,/, text: "Kommazahlen mit Punkt: <code>30.00</code> – oder einfach <code>30</code>." }],
+      hints: ["Lösung: <code>SELECT kuenstler, stadt, preis FROM konzerte WHERE (stadt = 'München' OR stadt = 'Augsburg') AND preis &lt;= 30</code>"] },
+    { text: "Alle Konzerte von <strong>Juna und Elbkind</strong>. Zeig Künstler, Stadt und Datum.",
+      loesung: "SELECT kuenstler, stadt, datum FROM konzerte WHERE kuenstler = 'Juna' OR kuenstler = 'Elbkind'",
+      fallen: [UND_FALLE, OR_RUMPF],
+      hints: ["Lösung: <code>SELECT kuenstler, stadt, datum FROM konzerte WHERE kuenstler = 'Juna' OR kuenstler = 'Elbkind'</code>"] },
+    { text: "Konzerte <strong>außerhalb von München</strong>, die <strong>nicht ausverkauft</strong> sind. Zeig Künstler und Stadt.",
+      loesung: "SELECT kuenstler, stadt FROM konzerte WHERE NOT stadt = 'München' AND ausverkauft = 'nein'",
+      hints: ["Lösung: <code>SELECT kuenstler, stadt FROM konzerte WHERE NOT stadt = 'München' AND ausverkauft = 'nein'</code>"] },
+    { text: "Für Leute mit wenig Geld oder wenig Planung: Konzerte, die <strong>unter 20 €</strong> kosten <strong>oder</strong> bei denen noch <strong>mehr als 500 Plätze frei</strong> sind. Zeig Künstler, Preis und freie Plätze.",
+      loesung: "SELECT kuenstler, preis, plaetze_frei FROM konzerte WHERE preis < 20 OR plaetze_frei > 500",
+      fallen: [{ sql: "SELECT kuenstler, preis, plaetze_frei FROM konzerte WHERE preis < 20 AND plaetze_frei > 500", text: "Mit <code>AND</code> müsste beides gleichzeitig stimmen. Hier reicht eins von beiden." }],
+      hints: ["Lösung: <code>SELECT kuenstler, preis, plaetze_frei FROM konzerte WHERE preis &lt; 20 OR plaetze_frei &gt; 500</code>"] },
+  ].map((a) => Object.assign({ extra: EXTRA }, a)) });
+});
+</script>
+</body>
+</html>
