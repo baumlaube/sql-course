@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Der Fall: Wer hat den Song geleakt? · SQL-Kurs</title>
+<meta name="description" content="Lektion 11 im SQL-Lernpfad: Ein Kriminalfall zum Lösen mit SQL. Ein unveröffentlichter Song taucht im Internet auf – mit JOIN, WHERE und LIKE wertest du Zugriffe und Türprotokolle aus, Spur für Spur, bis der Täter feststeht.">
+<link rel="canonical" href="https://sql.herrseibert.de/teil3/11-der-fall.html">
+<!-- vorschau -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SQL-Kurs">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://sql.herrseibert.de/teil3/11-der-fall.html">
+<meta property="og:title" content="Der Fall: Wer hat den Song geleakt? · SQL-Kurs">
+<meta property="og:description" content="Lektion 11 im SQL-Lernpfad: Ein Kriminalfall zum Lösen mit SQL. Ein unveröffentlichter Song taucht im Internet auf – mit JOIN, WHERE und LIKE wertest du Zugriffe und Türprotokolle aus, Spur für Spur, bis der Täter feststeht.">
+<meta property="og:image" content="https://sql.herrseibert.de/vorschau.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SQL-Kurs – Datenbanken und SQL Schritt für Schritt, mit SQL-Labor im Browser">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /vorschau -->
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/kurs.css?v=2b9f3c7d0f">
+<link rel="stylesheet" href="../assets/labor.css?v=543649a01b">
+<script src="../assets/i18n.js?v=2890af4da9" data-page="teil3-11-der-fall" data-langs="de"></script>
+<script src="../assets/kurs.js?v=c26439e733"></script>
+<script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
+<script src="../assets/labor.js?v=2f69012746"></script>
+<script src="../assets/labor-extra.js?v=e94bd060f6"></script>
+<script src="../assets/daten/fall.js?v=05625d4ed0"></script>
+<style>
+  .akte { border-left: 6px solid var(--plus); background: var(--hint-bg); color: var(--hint-fg); border-radius: 12px; padding: 14px 18px; }
+  .akte p { margin: 6px 0; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html"><img class="logo" src="../favicon.svg" alt="" width="34" height="34"> SQL-Kurs <span>· Datenbanken verstehen</span></a>
+    <span class="spacer"></span>
+    <button class="theme-btn" type="button" aria-label="Hell oder dunkel umschalten">◐ Hell/Dunkel</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="path" aria-label="Lernpfad">
+    <strong class="t">Lernpfad:</strong>
+    <ol>
+      <li class="done"><a href="../teil1/01-datenbanken.html" title="1 · Datenbanken sind überall">1</a></li>
+      <li class="done"><a href="../teil1/02-ids.html" title="2 · IDs und Verknüpfung">2</a></li>
+      <li class="done"><a href="../teil2/03-select.html" title="3 · SELECT – Spalten auswählen">3</a></li>
+      <li class="done"><a href="../teil2/04-where.html" title="4 · WHERE – Zeilen filtern">4</a></li>
+      <li class="done"><a href="../teil2/05-and-or-not.html" title="5 · AND, OR, NOT">5</a></li>
+      <li class="done"><a href="../teil2/06-like-in-between.html" title="6 · LIKE, IN, BETWEEN">6</a></li>
+      <li class="done"><a href="../teil2/07-sortieren-rechnen.html" title="7 · Sortieren und rechnen">7</a></li>
+      <li class="done"><a href="../teil2/08-group-by.html" title="8 · GROUP BY – Gruppen bilden">8</a></li>
+      <li class="done"><a href="09-join.html" title="9 · Zwei Tabellen: JOIN">9</a></li>
+      <li class="done"><a href="10-join-mehr.html" title="10 · JOIN mit WHERE und GROUP BY">10</a></li>
+      <li class="now"><span title="11 · Der Fall" aria-current="step">11</span></li>
+      <li class="soon"><span title="12 · Projekt planen (in Arbeit)">12</span></li>
+      <li class="soon"><span title="13 · Tabellen anlegen und füllen (in Arbeit)">13</span></li>
+      <li class="soon"><span title="14 · Ändern und löschen (in Arbeit)">14</span></li>
+      <li class="soon"><span title="15 · Suchformular (in Arbeit)">15</span></li>
+      <li class="soon"><span title="16 · Eingabeformular (in Arbeit)">16</span></li>
+    </ol>
+  </nav>
+
+  <section class="hero">
+    <h1>Der Fall: Wer hat den Song geleakt?</h1>
+    <div class="meta">
+      <span class="chip">Teil 3 · Lektion 11</span>
+      <span class="chip">⏱ ca. 35 Minuten</span>
+    </div>
+    <p class="erklaerung">Firmen speichern, wer wann welche Datei geöffnet hat und wer durch welche Tür gegangen ist. Wenn etwas passiert, werten Fachleute
+      genau diese Daten aus – mit SQL. Heute bist du diese Fachkraft. Alles, was du in diesem Kurs gelernt hast, brauchst du jetzt.</p>
+  </section>
+
+  <section class="card wdh">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
+  <section class="card">
+    <h2><span class="step-no">🗂</span> Die Akte</h2>
+    <div class="akte">
+      <p><strong>Freitag, 14. November 2025, 6:30 Uhr.</strong> Auf einer Tauschbörse taucht „Mondscheinmaschine“ auf – der neue Song von Nova Lindqvist.
+        Er sollte erst im Dezember erscheinen. Die Master-Datei lag nur auf dem Server von Tonspur.</p>
+      <p>In der geleakten Datei steht noch der Name des Rechners, auf dem sie gespeichert wurde: <strong>PC-STUDIO-B</strong>.</p>
+      <p>Die Chefin gibt dir Zugriff auf die Protokolle: wer welche Datei geöffnet hat (<code>zugriffe</code>) und wer wann durch welche Tür ging (<code>zutritte</code>).
+        <em>„Finde heraus, wer es war. Aber beschuldige niemanden ohne Beweis.“</em></p>
+    </div>
+    <div id="er"></div>
+  </section>
+
+  <!-- Ermittlung -->
+  <section class="card" id="ermittlung">
+    <h2><span class="step-no">🔍</span> Die Ermittlung <span class="chip">25 Minuten</span></h2>
+    <p class="lead">Sechs Spuren. Jede Abfrage bringt dich einen Schritt weiter. Die Tabellen kannst du oben aufklappen.</p>
+    <div id="spuren"></div>
+  </section>
+
+  <!-- Auflösung -->
+  <section class="card">
+    <h2><span class="step-no">⚖</span> Die Entscheidung <span class="chip">3 Minuten</span></h2>
+    <p>Du hast alle Spuren. Wer hat die Master-Datei kopiert?</p>
+    <div id="urteil"></div>
+  </section>
+
+  <section class="card merke">
+    <h2>Merke</h2>
+    <ul>
+      <li>Große Fragen löst man in kleinen Schritten: erst eine Tabelle, dann <code>JOIN</code>, dann filtern.</li>
+      <li>Jeder Fremdschlüssel (<code>…_id</code>) ist ein Faden zu einer anderen Tabelle – <code>JOIN … ON fremdschluessel = id</code>.</li>
+      <li>Daten zeigen, <strong>was</strong> passiert ist – aber nicht immer, <strong>wer</strong> wirklich am Rechner saß. Darum mehrere Quellen vergleichen.</li>
+    </ul>
+  </section>
+
+  <!-- Freiwillig -->
+  <section class="card frei" id="training">
+    <h2><span class="step-no">🏋</span> Training</h2>
+    <p class="lead">Der Fall ist gelöst – aber es gibt noch offene Fragen.</p>
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Nachermittlung</h3>
+    <div id="tr3"></div>
+  </section>
+
+  <nav class="pager">
+    <a href="10-join-mehr.html">← Lektion 10: JOIN mit WHERE und GROUP BY</a>
+    <span>Lektion 12: Projekt planen (in Arbeit) →</span>
+  </nav>
+</main>
+
+<footer>
+  <div class="wrap t">Lernmaterial von <a href="https://herrseibert.de">herrseibert.de</a> · Lizenz <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">CC BY-SA 4.0</a> · ohne Tracking, ohne Cookies<br>Erstellt von der KI Claude von Anthropic.</div>
+  <div class="wrap t gh">Fehler gefunden oder eine Idee? → <a href="https://github.com/baumlaube/sql-course">Kurs auf GitHub</a></div>
+  <div class="wrap t gh">Das SQL-Labor nutzt SQLite (gemeinfrei) über sql.js (MIT-Lizenz) – alles läuft in deinem Browser. Der Fall ist erfunden.</div>
+  <div class="wrap legal"><a href="../impressum.html">Impressum</a> · <a href="../datenschutz.html">Datenschutz</a></div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { quiz } = window.Kurs;
+  const T = (x) => (window.T ? window.T(x) : x);
+  const L = window.Labor;
+  const $ = (id) => document.getElementById(id);
+  const EXTRA = ["JOIN", "ON", "AND", "OR", "LIKE", "%", "ORDER BY", "DESC", "LIMIT", "(", ")"];
+
+  /** Steht jeder dieser Werte irgendwo im Ergebnis? (Spalten sind frei wählbar) */
+  const enthaelt = (res, ...werte) => werte.every((w) => res.zeilen.some((z) => z.some((v) => String(v) === String(w))));
+  const spur = (pruef) => ({ res }) => (res.ok ? pruef(res) : null);
+
+  quiz($("wdh"), [
+    { q: "Welche Bedingung findet alle Zeitpunkte am 13. November 2025 (Format <code>'2025-11-13 22:41'</code>)?",
+      options: ["<code>zeitpunkt = '2025-11-13'</code>", "<code>zeitpunkt LIKE '2025-11-13%'</code>", "<code>zeitpunkt LIKE '13.11.2025'</code>"], right: 1,
+      miss: ["Mit <code>=</code> muss der Text genau stimmen – die Uhrzeit fehlt.", null, "In der Tabelle steht das Datum als JJJJ-MM-TT."], why: "<code>LIKE</code> mit <code>%</code>: Danach darf die Uhrzeit kommen." },
+    { q: "Drei Tabellen verbinden – wie viele <code>JOIN</code>?", options: ["1", "2", "3"], right: 1,
+      miss: ["Ein JOIN verbindet zwei Tabellen.", null, "Drei Tabellen, zwei Verbindungen."], why: "Zwei JOINs hintereinander." },
+  ]);
+
+  L.er($("er"), {
+    tabellen: [
+      { name: "mitarbeiter", x: 10, y: 10, spalten: [{ name: "id", pk: true }, { name: "vorname" }, { name: "nachname" }, { name: "abteilung" }] },
+      { name: "zugriffe", x: 340, y: 10, spalten: [{ name: "id", pk: true }, { name: "mitarbeiter_id", fk: "mitarbeiter" }, { name: "datei_id", fk: "dateien" }, { name: "rechner_id", fk: "rechner" }, { name: "zeitpunkt" }, { name: "aktion" }] },
+      { name: "dateien", x: 670, y: 10, spalten: [{ name: "id", pk: true }, { name: "dateiname" }, { name: "ordner" }, { name: "vertraulich" }] },
+      { name: "zutritte", x: 10, y: 190, spalten: [{ name: "id", pk: true }, { name: "mitarbeiter_id", fk: "mitarbeiter" }, { name: "tuer" }, { name: "richtung" }, { name: "zeitpunkt" }] },
+      { name: "rechner", x: 670, y: 190, spalten: [{ name: "id", pk: true }, { name: "name" }, { name: "raum" }] },
+    ],
+    beziehungen: [
+      { von: "mitarbeiter", nach: "zugriffe", kard: ["1", "n"] },
+      { von: "dateien", nach: "zugriffe", kard: ["1", "n"] },
+      { von: "rechner", nach: "zugriffe", kard: ["1", "n"] },
+      { von: "mitarbeiter", nach: "zutritte", kard: ["1", "n"] },
+    ],
+  });
+
+  L.training($("spuren"), { db: "fall", key: "l11-spuren", aufgaben: [
+    { text: "<strong>Spur 1 – die Datei.</strong> Finde in <code>dateien</code> die Dateien zum Song „Mondscheinmaschine“. Welche <code>id</code> hat die Master-Datei?",
+      loesung: "SELECT id, dateiname FROM dateien WHERE dateiname LIKE '%Mondschein%'",
+      pruefe: spur((r) => enthaelt(r, "Mondscheinmaschine_MASTER.wav", 7) && r.zeilen.length <= 3 ? true
+        : r.zeilen.length > 3 ? T("Das sind zu viele Dateien. Such nur die mit „Mondschein“ im Namen – mit <code>LIKE</code>.")
+        : T("Die Master-Datei ist noch nicht dabei. Zeig auch die Spalte <code>id</code> und such mit <code>LIKE '%Mondschein%'</code>.")),
+      ok: "✔ Spur 1: Die Master-Datei hat die <code>id</code> 7.",
+      hints: ["Teil des Namens suchen: <code>LIKE '%Mondschein%'</code>.", "Lösung: <code>SELECT id, dateiname FROM dateien WHERE dateiname LIKE '%Mondschein%'</code>"] },
+    { text: "<strong>Spur 2 – wer hat kopiert?</strong> Zeig <strong>Vorname, Nachname und Zeitpunkt</strong> aller Zugriffe auf die Datei 7 mit der Aktion <code>'kopieren'</code>.",
+      loesung: "SELECT mitarbeiter.vorname, mitarbeiter.nachname, zugriffe.zeitpunkt FROM zugriffe JOIN mitarbeiter ON zugriffe.mitarbeiter_id = mitarbeiter.id WHERE zugriffe.datei_id = 7 AND zugriffe.aktion = 'kopieren'",
+      pruefe: spur((r) => enthaelt(r, "Sophie", "Lara", "Jan") && r.zeilen.length === 3 ? true
+        : r.zeilen.length > 3 ? T("Zu viele Zeilen. Nur die Datei 7 – und nur die Aktion <code>'kopieren'</code>.")
+        : !r.spalten.some((c) => /vorname|nachname/i.test(c)) ? T("Du brauchst die Namen – die stehen in <code>mitarbeiter</code>. Verbinde mit <code>JOIN</code>.") : null),
+      ok: "✔ Spur 2: Sophie Lang, Lara Vogt und Jan Petersen haben die Master-Datei kopiert.",
+      hints: ["Start bei <code>zugriffe</code>, <code>JOIN mitarbeiter ON zugriffe.mitarbeiter_id = mitarbeiter.id</code>.", "Zwei Bedingungen: <code>zugriffe.datei_id = 7 AND zugriffe.aktion = 'kopieren'</code>.",
+        "Lösung: <code>SELECT mitarbeiter.vorname, mitarbeiter.nachname, zugriffe.zeitpunkt FROM zugriffe JOIN mitarbeiter ON zugriffe.mitarbeiter_id = mitarbeiter.id WHERE zugriffe.datei_id = 7 AND zugriffe.aktion = 'kopieren'</code>"] },
+    { text: "<strong>Spur 3 – der Tag.</strong> Das Leak tauchte am 14.11. früh auf. Ändere deine Abfrage so, dass nur Kopien vom <strong>13. November</strong> übrig bleiben.",
+      loesung: "SELECT mitarbeiter.vorname, mitarbeiter.nachname, zugriffe.zeitpunkt FROM zugriffe JOIN mitarbeiter ON zugriffe.mitarbeiter_id = mitarbeiter.id WHERE zugriffe.datei_id = 7 AND zugriffe.aktion = 'kopieren' AND zugriffe.zeitpunkt LIKE '2025-11-13%'",
+      pruefe: spur((r) => enthaelt(r, "Lara", "Jan") && r.zeilen.length === 2 ? true
+        : r.zeilen.length > 2 ? T("Noch zu viele: Filtere zusätzlich den Tag mit <code>zugriffe.zeitpunkt LIKE '2025-11-13%'</code>.") : null),
+      ok: "✔ Spur 3: Zwei Verdächtige – Lara Vogt (11:15 Uhr) und Jan Petersen (22:41 Uhr).",
+      hints: ["Noch ein <code>AND</code> dazu: <code>zugriffe.zeitpunkt LIKE '2025-11-13%'</code>.", "Lösung: <code>… WHERE zugriffe.datei_id = 7 AND zugriffe.aktion = 'kopieren' AND zugriffe.zeitpunkt LIKE '2025-11-13%'</code>"] },
+    { text: "<strong>Spur 4 – der Rechner.</strong> Die geleakte Datei stammt von <strong>PC-STUDIO-B</strong>. Zeig zu den beiden Kopien vom 13.11. auch den <strong>Namen des Rechners</strong>. (Dritte Tabelle!)",
+      loesung: "SELECT mitarbeiter.vorname, mitarbeiter.nachname, zugriffe.zeitpunkt, rechner.name FROM zugriffe JOIN mitarbeiter ON zugriffe.mitarbeiter_id = mitarbeiter.id JOIN rechner ON zugriffe.rechner_id = rechner.id WHERE zugriffe.datei_id = 7 AND zugriffe.aktion = 'kopieren' AND zugriffe.zeitpunkt LIKE '2025-11-13%'",
+      pruefe: spur((r) => enthaelt(r, "Jan", "PC-STUDIO-B") && r.zeilen.length <= 2 ? true
+        : !r.spalten.some((c) => /name/i.test(c)) || !enthaelt(r, "PC-STUDIO-B") ? T("Der Rechnername steht in <code>rechner</code>. Hänge <code>JOIN rechner ON zugriffe.rechner_id = rechner.id</code> an.") : null),
+      ok: "✔ Spur 4: Die Kopie auf PC-STUDIO-B lief über das Konto von <strong>Jan Petersen</strong> – um 22:41 Uhr.",
+      hints: ["Zweiter JOIN: <code>JOIN rechner ON zugriffe.rechner_id = rechner.id</code>, dazu <code>rechner.name</code> im SELECT.",
+        "Lösung: <code>SELECT mitarbeiter.vorname, mitarbeiter.nachname, zugriffe.zeitpunkt, rechner.name FROM zugriffe JOIN mitarbeiter ON zugriffe.mitarbeiter_id = mitarbeiter.id JOIN rechner ON zugriffe.rechner_id = rechner.id WHERE zugriffe.datei_id = 7 AND zugriffe.aktion = 'kopieren' AND zugriffe.zeitpunkt LIKE '2025-11-13%'</code>"] },
+    { text: "<strong>Spur 5 – das Alibi.</strong> Jan sagt: <em>„Um 22:41 Uhr war ich längst zu Hause!“</em> Prüf in <code>zutritte</code>: Wann ging Jan (<code>mitarbeiter_id</code> 12) durch welche Tür? Zeig Tür, Richtung und Zeitpunkt.",
+      loesung: "SELECT tuer, richtung, zeitpunkt FROM zutritte WHERE mitarbeiter_id = 12",
+      pruefe: spur((r) => enthaelt(r, "2025-11-13 18:02") && r.zeilen.length <= 6 ? true
+        : r.zeilen.length > 6 ? T("Nur die Zutritte von Jan: <code>WHERE mitarbeiter_id = 12</code>.") : null),
+      ok: "✔ Spur 5: Jan hat das Gebäude um 18:02 Uhr verlassen – und ist nicht zurückgekommen. Wer hat dann um 22:41 Uhr mit seinem Konto kopiert?",
+      hints: ["Lösung: <code>SELECT tuer, richtung, zeitpunkt FROM zutritte WHERE mitarbeiter_id = 12</code>"] },
+    { text: "<strong>Spur 6 – Studio B am Abend.</strong> Wer ging am 13.11. <strong>ab 20 Uhr</strong> durch die Tür <code>'Studio B'</code>? Zeig Vorname, Nachname, Richtung und Zeitpunkt.",
+      loesung: "SELECT mitarbeiter.vorname, mitarbeiter.nachname, zutritte.richtung, zutritte.zeitpunkt FROM zutritte JOIN mitarbeiter ON zutritte.mitarbeiter_id = mitarbeiter.id WHERE zutritte.tuer = 'Studio B' AND zutritte.zeitpunkt >= '2025-11-13 20:00'",
+      pruefe: spur((r) => enthaelt(r, "Ralf", "2025-11-13 22:33") && r.zeilen.length <= 3 ? true
+        : enthaelt(r, "2025-11-13 22:33") && !enthaelt(r, "Ralf") ? T("Du hast den Zeitpunkt – jetzt noch den Namen: <code>JOIN mitarbeiter</code>.")
+        : r.zeilen.length > 3 ? T("Zu viele Zeilen. Nur die Tür <code>'Studio B'</code> und nur ab <code>'2025-11-13 20:00'</code>.") : null),
+      ok: "✔ Spur 6: Ralf Kessler aus der Technik betrat Studio B um 22:33 Uhr und verließ es um 22:58 Uhr. Die Kopie lief um 22:41 Uhr.",
+      hints: ["Datum mit Uhrzeit als Text vergleichen: <code>zutritte.zeitpunkt &gt;= '2025-11-13 20:00'</code>.",
+        "Lösung: <code>SELECT mitarbeiter.vorname, mitarbeiter.nachname, zutritte.richtung, zutritte.zeitpunkt FROM zutritte JOIN mitarbeiter ON zutritte.mitarbeiter_id = mitarbeiter.id WHERE zutritte.tuer = 'Studio B' AND zutritte.zeitpunkt &gt;= '2025-11-13 20:00'</code>"] },
+  ].map((a) => Object.assign({ extra: EXTRA }, a)) });
+
+  quiz($("urteil"), [
+    { q: "Wer hat die Master-Datei am 13.11. um 22:41 Uhr auf PC-STUDIO-B kopiert?",
+      options: ["Jan Petersen – es war sein Konto", "Lara Vogt – sie hat die Datei auch kopiert", "Ralf Kessler – er war um 22:41 im Studio B, Jan nicht", "Sophie Lang – sie hatte die Datei als Erste"], right: 2,
+      miss: ["Sein Konto, ja – aber Jan hatte das Gebäude um 18:02 Uhr verlassen. Jemand hat sein Konto benutzt.",
+        "Lara hat um 11:15 Uhr kopiert – auf dem Laptop der Künstlerbetreuung, nicht auf PC-STUDIO-B.", null,
+        "Sophie hat am 11.11. kopiert, auf dem Laptop – nicht am 13.11. und nicht auf PC-STUDIO-B."],
+      why: "Die Kopie lief über Jans Konto, aber Jan war nicht im Haus. Im Studio B war zur Tatzeit nur Ralf Kessler (22:33–22:58 Uhr). Ein starker Verdacht – den jetzt die Chefin mit Ralf klären muss. Und Jan sollte sein Passwort ändern." },
+  ]);
+
+  L.training($("tr3"), { db: "fall", key: "l11-profi", aufgaben: [
+    { text: "Was hat Ralf Kessler (<code>mitarbeiter_id</code> 6) sonst noch geöffnet? Zeig <strong>Dateiname, Aktion und Zeitpunkt</strong> aller seiner Zugriffe.",
+      loesung: "SELECT dateien.dateiname, zugriffe.aktion, zugriffe.zeitpunkt FROM zugriffe JOIN dateien ON zugriffe.datei_id = dateien.id WHERE zugriffe.mitarbeiter_id = 6",
+      hints: ["Lösung: <code>SELECT dateien.dateiname, zugriffe.aktion, zugriffe.zeitpunkt FROM zugriffe JOIN dateien ON zugriffe.datei_id = dateien.id WHERE zugriffe.mitarbeiter_id = 6</code>"] },
+    { text: "Wie viele Zugriffe gab es auf <strong>vertrauliche</strong> Dateien – <strong>je Mitarbeiter</strong> (Vorname, Nachname, Anzahl)?",
+      loesung: "SELECT mitarbeiter.vorname, mitarbeiter.nachname, COUNT(*) FROM zugriffe JOIN mitarbeiter ON zugriffe.mitarbeiter_id = mitarbeiter.id JOIN dateien ON zugriffe.datei_id = dateien.id WHERE dateien.vertraulich = 'ja' GROUP BY mitarbeiter.id",
+      hints: ["Drei Tabellen, <code>WHERE dateien.vertraulich = 'ja'</code>, <code>GROUP BY mitarbeiter.id</code>.",
+        "Lösung: <code>SELECT mitarbeiter.vorname, mitarbeiter.nachname, COUNT(*) FROM zugriffe JOIN mitarbeiter ON zugriffe.mitarbeiter_id = mitarbeiter.id JOIN dateien ON zugriffe.datei_id = dateien.id WHERE dateien.vertraulich = 'ja' GROUP BY mitarbeiter.id</code>"] },
+    { text: "Die Nacht im Überblick: alle Zutritte am 13.11. <strong>nach 21 Uhr</strong>, mit Name, Tür, Richtung und Zeitpunkt – <strong>zeitlich sortiert</strong>.", reihenfolge: true,
+      loesung: "SELECT mitarbeiter.vorname, mitarbeiter.nachname, zutritte.tuer, zutritte.richtung, zutritte.zeitpunkt FROM zutritte JOIN mitarbeiter ON zutritte.mitarbeiter_id = mitarbeiter.id WHERE zutritte.zeitpunkt >= '2025-11-13 21:00' ORDER BY zutritte.zeitpunkt",
+      hints: ["Lösung: <code>SELECT mitarbeiter.vorname, mitarbeiter.nachname, zutritte.tuer, zutritte.richtung, zutritte.zeitpunkt FROM zutritte JOIN mitarbeiter ON zutritte.mitarbeiter_id = mitarbeiter.id WHERE zutritte.zeitpunkt &gt;= '2025-11-13 21:00' ORDER BY zutritte.zeitpunkt</code>"] },
+  ].map((a) => Object.assign({ extra: [...EXTRA, "GROUP BY", "COUNT(*)"] }, a)) });
+});
+</script>
+</body>
+</html>

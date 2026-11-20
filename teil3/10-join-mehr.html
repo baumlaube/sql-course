@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JOIN mit WHERE, GROUP BY und drei Tabellen · SQL-Kurs</title>
+<meta name="description" content="Lektion 10 im SQL-Lernpfad: JOIN mit WHERE filtern, mit GROUP BY auswerten und drei Tabellen hintereinander verbinden. Dazu IS NULL und die Falle mit gleichen Namen. Echtes SQLite im Browser, Rückmeldung zu jedem Fehler und viel Training.">
+<link rel="canonical" href="https://sql.herrseibert.de/teil3/10-join-mehr.html">
+<!-- vorschau -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SQL-Kurs">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://sql.herrseibert.de/teil3/10-join-mehr.html">
+<meta property="og:title" content="JOIN mit WHERE, GROUP BY und drei Tabellen · SQL-Kurs">
+<meta property="og:description" content="Lektion 10 im SQL-Lernpfad: JOIN mit WHERE filtern, mit GROUP BY auswerten und drei Tabellen hintereinander verbinden. Dazu IS NULL und die Falle mit gleichen Namen. Echtes SQLite im Browser, Rückmeldung zu jedem Fehler und viel Training.">
+<meta property="og:image" content="https://sql.herrseibert.de/vorschau.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SQL-Kurs – Datenbanken und SQL Schritt für Schritt, mit SQL-Labor im Browser">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /vorschau -->
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/kurs.css?v=2b9f3c7d0f">
+<link rel="stylesheet" href="../assets/labor.css?v=543649a01b">
+<script src="../assets/i18n.js?v=2890af4da9" data-page="teil3-10-join-mehr" data-langs="de"></script>
+<script src="../assets/kurs.js?v=c26439e733"></script>
+<script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
+<script src="../assets/labor.js?v=2f69012746"></script>
+<script src="../assets/labor-extra.js?v=e94bd060f6"></script>
+<script src="../assets/daten/musik.js?v=c1bfd9240c"></script>
+<script src="../assets/daten/buecherei.js?v=c99f5e2d8a"></script>
+<script src="../assets/daten/pfoten.js?v=7b482f3862"></script>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html"><img class="logo" src="../favicon.svg" alt="" width="34" height="34"> SQL-Kurs <span>· Datenbanken verstehen</span></a>
+    <span class="spacer"></span>
+    <button class="theme-btn" type="button" aria-label="Hell oder dunkel umschalten">◐ Hell/Dunkel</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="path" aria-label="Lernpfad">
+    <strong class="t">Lernpfad:</strong>
+    <ol>
+      <li class="done"><a href="../teil1/01-datenbanken.html" title="1 · Datenbanken sind überall">1</a></li>
+      <li class="done"><a href="../teil1/02-ids.html" title="2 · IDs und Verknüpfung">2</a></li>
+      <li class="done"><a href="../teil2/03-select.html" title="3 · SELECT – Spalten auswählen">3</a></li>
+      <li class="done"><a href="../teil2/04-where.html" title="4 · WHERE – Zeilen filtern">4</a></li>
+      <li class="done"><a href="../teil2/05-and-or-not.html" title="5 · AND, OR, NOT">5</a></li>
+      <li class="done"><a href="../teil2/06-like-in-between.html" title="6 · LIKE, IN, BETWEEN">6</a></li>
+      <li class="done"><a href="../teil2/07-sortieren-rechnen.html" title="7 · Sortieren und rechnen">7</a></li>
+      <li class="done"><a href="../teil2/08-group-by.html" title="8 · GROUP BY – Gruppen bilden">8</a></li>
+      <li class="done"><a href="09-join.html" title="9 · Zwei Tabellen: JOIN">9</a></li>
+      <li class="now"><span title="10 · JOIN mit WHERE und GROUP BY" aria-current="step">10</span></li>
+      <li class="done"><a href="11-der-fall.html" title="11 · Der Fall">11</a></li>
+      <li class="soon"><span title="12 · Projekt planen (in Arbeit)">12</span></li>
+      <li class="soon"><span title="13 · Tabellen anlegen und füllen (in Arbeit)">13</span></li>
+      <li class="soon"><span title="14 · Ändern und löschen (in Arbeit)">14</span></li>
+      <li class="soon"><span title="15 · Suchformular (in Arbeit)">15</span></li>
+      <li class="soon"><span title="16 · Eingabeformular (in Arbeit)">16</span></li>
+    </ol>
+  </nav>
+
+  <section class="hero">
+    <h1>JOIN plus – filtern, zählen, drei Tabellen</h1>
+    <div class="meta">
+      <span class="chip">Teil 3 · Lektion 10</span>
+      <span class="chip">⏱ ca. 35 Minuten</span>
+    </div>
+    <p class="erklaerung">Ein <code>JOIN</code> ist erst der Anfang. Danach kannst du alles benutzen, was du schon kannst: <code>WHERE</code>, <code>GROUP BY</code>,
+      <code>ORDER BY</code>. Und wenn die Daten auf drei Tabellen verteilt sind, hängst du einfach noch einen <code>JOIN</code> an.
+      So beantwortet man echte Fragen – zum Beispiel: Welche Plattenfirma hat die meisten Likes?</p>
+  </section>
+
+  <section class="card wdh">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
+  <details class="card woerter">
+    <summary>📖 Wörter für diese Lektion</summary>
+    <p class="note">Die SQL-Befehle bleiben englisch – so heißen sie in jeder Datenbank der Welt.</p>
+    <div class="tbl-scroll"><table class="plain">
+      <tr><th class="wort">hintereinander</th><td>Eins nach dem anderen: erst <code>songs</code> mit <code>kuenstler</code>, dann mit <code>labels</code>.</td></tr>
+      <tr><th class="wort">die Plattenfirma <small>das Label</small></th><td>Die Firma, die die Musik eines Künstlers herausbringt.</td></tr>
+      <tr><th class="wort">leer <small>NULL</small></th><td>Kein Wert. Man prüft es mit <code>IS NULL</code>, nicht mit <code>=</code>.</td></tr>
+      <tr><th class="wort">der Namensvetter <small>die Namensvettern</small></th><td>Zwei Menschen mit demselben Namen – wie die zwei Leon Müller.</td></tr>
+    </table></div>
+  </details>
+
+  <section class="card szenario">
+    <h2><span class="step-no">🎧</span> Szenario</h2>
+    <p><strong>Tonspur</strong> verhandelt mit den Plattenfirmen. Die Chefin braucht Zahlen – aus den drei Tabellen <code>songs</code>, <code>kuenstler</code> und <code>labels</code>.</p>
+  </section>
+
+  <!-- 1 · Überleg: WHERE -->
+  <section class="card">
+    <h2><span class="step-no">1</span> Überleg: JOIN und WHERE <span class="chip">4 Minuten</span></h2>
+    <div id="tabs1"></div>
+    <pre class="sql" data-farbe>SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id WHERE kuenstler.herkunft = 'Schweden'</pre>
+    <p><strong>Überleg:</strong> Was kommt heraus?</p>
+    <div class="choices" id="pred1">
+      <button type="button" class="choice">Ein Fehler – <code>herkunft</code> steht nicht in <code>songs</code></button>
+      <button type="button" class="choice">Alle Songs von Künstlern aus Schweden, mit Titel und Name</button>
+      <button type="button" class="choice">Alle Künstler aus Schweden, ohne Songs</button>
+    </div>
+    <p class="fb" id="fb1"></p>
+    <div id="probe1" hidden><div id="l1"></div></div>
+    <p class="rule">Nach dem <code>JOIN</code> kannst du mit <strong>allen</strong> Spalten beider Tabellen filtern.<br>
+      Reihenfolge: <code>SELECT … FROM … JOIN … ON … WHERE … GROUP BY … ORDER BY …</code></p>
+  </section>
+
+  <!-- 2 · Selbst: WHERE -->
+  <section class="card">
+    <h2><span class="step-no">2</span> Jetzt du: Songs aus dem Ausland <span class="chip">5 Minuten</span></h2>
+    <p>Für eine Playlist „International“: alle Songs von Künstlern, die <strong>nicht aus Deutschland</strong> kommen. Zeig Titel, Künstlername und Herkunft.</p>
+    <div id="l2"></div>
+    <div id="hints2"></div>
+  </section>
+
+  <!-- 3 · GROUP BY -->
+  <section class="card">
+    <h2><span class="step-no">3</span> JOIN und GROUP BY: Songs je Künstler <span class="chip">5 Minuten</span></h2>
+    <p>In Lektion 8 hast du nach <code>kuenstler</code> gruppiert – da stand der Name noch in <code>songs</code>. Jetzt steht dort nur die Nummer.
+      Mit <code>JOIN</code> holst du den Namen dazu und gruppierst nach ihm. Wähle in den Lücken.</p>
+    <div id="l3"></div>
+  </section>
+
+  <!-- 4 · Drei Tabellen -->
+  <section class="card">
+    <h2><span class="step-no">4</span> Drei Tabellen hintereinander <span class="chip">6 Minuten</span></h2>
+    <div id="er"></div>
+    <p>Ein Song kennt seinen Künstler, ein Künstler kennt sein Label. Für „Songs mit Label“ verbindest du <strong>zweimal</strong>:</p>
+    <pre class="sql" data-farbe>SELECT songs.titel, labels.name
+FROM songs
+JOIN kuenstler ON songs.kuenstler_id = kuenstler.id
+JOIN labels ON kuenstler.label_id = labels.id</pre>
+    <div id="l4a"></div>
+    <p><strong>Jetzt du:</strong> Die Chefin fragt: <em>„Wie viele Likes hat jedes Label insgesamt? Das stärkste zuerst.“</em> Zeig den Labelnamen und die Summe.</p>
+    <div id="l4b"></div>
+    <div id="hints4"></div>
+  </section>
+
+  <!-- 5 · Fehlerdetektiv -->
+  <section class="card">
+    <h2><span class="step-no">5</span> Fehlerdetektiv: das falsche Label <span class="chip">4 Minuten</span></h2>
+    <p>Jonas wollte <strong>alle 36 Songs</strong> mit ihrem Label. Seine Abfrage läuft ohne Fehler – aber es fehlen Songs.
+      Führ sie aus und vergleich mit dem ER-Diagramm oben.</p>
+    <ol class="howto">
+      <li>Wie viele Zeilen sollten es sein? Wie viele sind es?</li>
+      <li>Welche Spalten verbindet der zweite <code>ON</code>?</li>
+      <li>Welcher Fremdschlüssel zeigt auf <code>labels</code>?</li>
+    </ol>
+    <div id="l5"></div>
+    <div id="hints5"></div>
+  </section>
+
+  <!-- Plus -->
+  <section class="card">
+    <h2><span class="badge plus">Plus</span> Noch nicht zurück: IS NULL <span class="chip">für Schnelle</span></h2>
+    <p>In der Bücherei ist <code>zurueck</code> leer (<code>NULL</code>), solange ein Buch noch ausgeliehen ist. Leere Werte findet man nicht mit <code>= NULL</code>,
+      sondern mit <code>IS NULL</code>. Zeig <strong>Vorname, Nachname und Buchtitel</strong> aller Bücher, die noch nicht zurück sind – drei Tabellen!</p>
+    <div id="lplus"></div>
+    <div id="hintsplus"></div>
+  </section>
+
+  <!-- Kurz-Check -->
+  <section class="card">
+    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
+    <div id="quiz"></div>
+  </section>
+
+  <section class="card merke">
+    <h2>Merke</h2>
+    <ul>
+      <li>Nach dem <code>JOIN</code> funktionieren <code>WHERE</code>, <code>GROUP BY</code>, <code>ORDER BY</code> wie gewohnt – mit allen Spalten beider Tabellen.</li>
+      <li>Drei Tabellen: zwei <code>JOIN … ON …</code> hintereinander. Jeder <code>ON</code> verbindet einen Fremdschlüssel mit seiner <code>id</code>.</li>
+      <li>Gleiche Namen sind nicht dieselbe Person: Gruppiere nach der <code>id</code>, wenn Namen doppelt sein können.</li>
+      <li>Leere Werte: <code>IS NULL</code> bzw. <code>IS NOT NULL</code> – nie <code>= NULL</code>.</li>
+    </ul>
+  </section>
+
+  <!-- Training -->
+  <section class="card frei" id="training">
+    <h2><span class="step-no">🏋</span> Training</h2>
+    <p class="lead">Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
+
+    <h3 class="sub"><span class="badge ueben">● Basis</span> Tonspur: Songs, Künstler, Labels</h3>
+    <div id="tr1"></div>
+
+    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Die Schülerbücherei</h3>
+    <p>Tabellen <code>ausleihen</code>, <code>leser</code>, <code>buecher</code>. Achtung: Es gibt zwei Leon Müller!</p>
+    <div id="tr2"></div>
+
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Pfotenglück: die Partnersuche</h3>
+    <p><code>tiere</code>, <code>besitzer</code>, <code>arten</code>.</p>
+    <div id="tr3"></div>
+  </section>
+
+  <nav class="pager">
+    <a href="09-join.html">← Lektion 9: Zwei Tabellen: JOIN</a>
+    <a href="11-der-fall.html">Lektion 11: Der Fall →</a>
+  </nav>
+</main>
+
+<footer>
+  <div class="wrap t">Lernmaterial von <a href="https://herrseibert.de">herrseibert.de</a> · Lizenz <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">CC BY-SA 4.0</a> · ohne Tracking, ohne Cookies<br>Erstellt von der KI Claude von Anthropic.</div>
+  <div class="wrap t gh">Fehler gefunden oder eine Idee? → <a href="https://github.com/baumlaube/sql-course">Kurs auf GitHub</a></div>
+  <div class="wrap t gh">Das SQL-Labor nutzt SQLite (gemeinfrei) über sql.js (MIT-Lizenz) – alles läuft in deinem Browser.</div>
+  <div class="wrap legal"><a href="../impressum.html">Impressum</a> · <a href="../datenschutz.html">Datenschutz</a></div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { pick, quiz, hints } = window.Kurs;
+  const L = window.Labor;
+  const $ = (id) => document.getElementById(id);
+  const EXTRA = ["JOIN", "ON", "AND", "OR", "GROUP BY", "ORDER BY", "DESC", "LIMIT", "AS", "COUNT(*)", "SUM(", "IS NULL", "(", ")"];
+  const GLEICH_NULL = { muster: /=\s*NULL\b/i, text: "Mit <code>= NULL</code> findet SQL nie etwas – leer ist kein Wert, mit dem man vergleichen kann. Schreib <code>IS NULL</code>." };
+  const IMMER = [GLEICH_NULL];
+
+  L.tabelle($("tabs1"), { db: "musik", tabelle: "kuenstler", offen: true });
+
+  quiz($("wdh"), [
+    { q: "Was steht nach <code>ON</code>?", options: ["Fremdschlüssel = id der anderen Tabelle", "Die Spalten, die man sehen will", "Ein Filter wie <code>jahr = 2025</code>"], right: 0,
+      miss: [null, "Die stehen nach <code>SELECT</code>.", "Filter kommen nach <code>WHERE</code>."], why: "<code>ON</code> sagt, welche Zeilen zusammengehören." },
+    { q: "Wo steht <code>WHERE</code>, wenn auch <code>GROUP BY</code> dabei ist?", options: ["davor", "danach"], right: 0,
+      miss: [null, "Erst filtern, dann gruppieren."], why: "<code>WHERE</code> vor <code>GROUP BY</code>." },
+  ]);
+
+  pick($("pred1"), { right: 1, fb: $("fb1"),
+    miss: ["Nach dem <code>JOIN</code> gehören die Spalten beider Tabellen zum Ergebnis – auch <code>kuenstler.herkunft</code>.", null,
+      "Es werden Spalten aus <code>songs</code> und <code>kuenstler</code> gezeigt – also Songs."],
+    why: "Erst werden die Tabellen verbunden, dann filtert <code>WHERE</code>. Nova Lindqvist kommt aus Schweden – ihre drei Songs bleiben.",
+    onDone() { $("probe1").hidden = false; } });
+  L.create($("l1"), { db: "musik", modus: "lesen", tabellen: false,
+    sql: "SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id WHERE kuenstler.herkunft = 'Schweden'" });
+
+  L.create($("l2"), { db: "musik", modus: "frei", tabellen: false, extra: EXTRA,
+    loesung: "SELECT songs.titel, kuenstler.name, kuenstler.herkunft FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id WHERE kuenstler.herkunft <> 'Deutschland'",
+    fallen: [{ sql: "SELECT songs.titel, kuenstler.name, kuenstler.herkunft FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id", text: "Das sind alle Songs. Filtere noch: Herkunft <strong>nicht</strong> Deutschland." },
+      { muster: /WHERE[\s\S]*\bJOIN\b/i, text: "Erst verbinden, dann filtern: <code>JOIN … ON …</code> steht vor <code>WHERE</code>." }],
+    ok: "✔ Richtig! 11 Songs aus Schweden, Österreich, Großbritannien und der Schweiz." });
+  hints($("hints2"), [
+    "<code>… JOIN kuenstler ON songs.kuenstler_id = kuenstler.id WHERE kuenstler.herkunft &lt;&gt; 'Deutschland'</code>",
+    "Lösung: <code>SELECT songs.titel, kuenstler.name, kuenstler.herkunft FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id WHERE kuenstler.herkunft &lt;&gt; 'Deutschland'</code>",
+  ]);
+
+  L.create($("l3"), { db: "musik", modus: "luecke", tabellen: false,
+    sql: "SELECT kuenstler.name, COUNT(*) FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id GROUP BY [[kuenstler.name|songs.titel|songs.genre]]",
+    loesung: "SELECT kuenstler.name, COUNT(*) FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id GROUP BY kuenstler.name",
+    fallen: [{ muster: /songs\.titel/i, text: "Jeder Titel ist eine eigene Gruppe – dann steht überall 1." }, { muster: /songs\.genre/i, text: "Dann zählst du je Genre. Gesucht ist: je Künstler." }],
+    ok: "✔ Richtig! Die Kaltfront hat mit 5 Songs die meisten." });
+
+  L.er($("er"), {
+    tabellen: [
+      { name: "songs", x: 10, y: 10, spalten: [{ name: "id", pk: true }, { name: "titel" }, { name: "kuenstler_id", fk: "kuenstler" }, { name: "likes" }] },
+      { name: "kuenstler", x: 340, y: 10, spalten: [{ name: "id", pk: true }, { name: "name" }, { name: "herkunft" }, { name: "label_id", fk: "labels" }] },
+      { name: "labels", x: 670, y: 10, spalten: [{ name: "id", pk: true }, { name: "name" }, { name: "stadt" }] },
+    ],
+    beziehungen: [{ von: "kuenstler", nach: "songs", text: "singt", kard: ["1", "n"] }, { von: "labels", nach: "kuenstler", text: "vertritt", kard: ["1", "n"] }],
+  });
+  L.create($("l4a"), { db: "musik", modus: "lesen", tabellen: false,
+    sql: "SELECT songs.titel, labels.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id JOIN labels ON kuenstler.label_id = labels.id" });
+  L.create($("l4b"), { db: "musik", modus: "frei", tabellen: false, reihenfolge: true, extra: EXTRA,
+    loesung: "SELECT labels.name, SUM(songs.likes) AS likes FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id JOIN labels ON kuenstler.label_id = labels.id GROUP BY labels.name ORDER BY likes DESC",
+    fallen: [
+      { sql: "SELECT labels.name, SUM(songs.likes) FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id JOIN labels ON kuenstler.label_id = labels.id GROUP BY labels.name", text: "Die Summen stimmen – jetzt noch sortieren, das stärkste Label zuerst." },
+      { muster: /COUNT/i, text: "<code>COUNT</code> zählt die Songs. Gefragt sind die Likes zusammen: <code>SUM(songs.likes)</code>." },
+      ...IMMER,
+    ],
+    ok: "✔ Stark! Sonnendeck Records liegt vorn – drei Tabellen, gruppiert und sortiert." });
+  hints($("hints4"), [
+    "Zuerst die drei Tabellen verbinden (wie oben). Dann <code>GROUP BY labels.name</code> mit <code>SUM(songs.likes)</code>. Am Ende sortieren.",
+    "Lösung: <code>SELECT labels.name, SUM(songs.likes) AS likes FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id JOIN labels ON kuenstler.label_id = labels.id GROUP BY labels.name ORDER BY likes DESC</code>",
+  ]);
+
+  L.create($("l5"), { db: "musik", modus: "frei", tabellen: false, zeilen: 4, erkunden: true, extra: EXTRA,
+    sql: "SELECT songs.titel, labels.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id JOIN labels ON kuenstler.id = labels.id",
+    loesung: "SELECT songs.titel, labels.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id JOIN labels ON kuenstler.label_id = labels.id",
+    ok: "✔ Fall gelöst! <code>kuenstler.id = labels.id</code> hat Künstler 1 mit Label 1, Künstler 2 mit Label 2 … verbunden. Bei den ersten vier passte das zufällig – ab Künstler 5 gibt es kein Label mit dieser Nummer, darum fehlten ihre Songs. Richtig ist der Fremdschlüssel <code>kuenstler.label_id</code>." });
+  hints($("hints5"), [
+    "Es sind nur 14 Zeilen statt 36. Viele Songs fehlen ganz.",
+    "Der zweite <code>ON</code> verbindet <code>kuenstler.id</code> mit <code>labels.id</code> – zwei Primärschlüssel. Welche Spalte in <code>kuenstler</code> zeigt auf <code>labels</code>?",
+    "Lösung: <code>… JOIN labels ON kuenstler.label_id = labels.id</code>",
+  ]);
+
+  L.create($("lplus"), { db: "buecherei", modus: "frei", tabellen: true, extra: EXTRA,
+    loesung: "SELECT leser.vorname, leser.nachname, buecher.titel FROM ausleihen JOIN leser ON ausleihen.leser_id = leser.id JOIN buecher ON ausleihen.buch_id = buecher.id WHERE ausleihen.zurueck IS NULL",
+    fallen: IMMER,
+    ok: "✔ Richtig! 11 Bücher sind noch unterwegs." });
+  hints($("hintsplus"), [
+    "Starte bei <code>ausleihen</code> – dort stehen beide Fremdschlüssel.",
+    "Lösung: <code>SELECT leser.vorname, leser.nachname, buecher.titel FROM ausleihen JOIN leser ON ausleihen.leser_id = leser.id JOIN buecher ON ausleihen.buch_id = buecher.id WHERE ausleihen.zurueck IS NULL</code>",
+  ]);
+
+  quiz($("quiz"), [
+    { q: "In welcher Reihenfolge stehen die Teile?", options: ["SELECT · FROM · WHERE · JOIN · ON", "SELECT · FROM · JOIN · ON · WHERE · GROUP BY", "SELECT · JOIN · FROM · WHERE"], right: 1,
+      miss: ["Erst verbinden, dann filtern: <code>JOIN … ON</code> vor <code>WHERE</code>.", null, "Nach <code>SELECT</code> kommt immer <code>FROM</code>."], why: "Verbinden, filtern, gruppieren, sortieren." },
+    { q: "Songs mit Labelnamen: Wie viele <code>JOIN</code> brauchst du?", options: ["einen", "zwei", "drei"], right: 1,
+      miss: ["<code>songs</code> kennt das Label nicht – nur den Künstler.", null, "Drei Tabellen brauchen zwei Verbindungen."], why: "songs → kuenstler → labels: zwei Verbindungen." },
+    { q: "Zwei Schüler heißen Leon Müller. Du zählst Ausleihen mit <code>GROUP BY leser.vorname, leser.nachname</code>. Was passiert?", options: ["Beide werden zu einer Gruppe zusammengezählt", "SQL meldet einen Fehler", "Alles richtig"], right: 0,
+      miss: [null, "SQL merkt das nicht – für die Datenbank sind das gleiche Werte.", "Leider nicht: Die beiden Leons werden zusammengezählt."], why: "Gruppiere nach <code>leser.id</code> – die ist eindeutig." },
+    { q: "Welche Bedingung findet Ausleihen ohne Rückgabedatum?", options: ["<code>zurueck = NULL</code>", "<code>zurueck IS NULL</code>", "<code>zurueck = ''</code>"], right: 1,
+      miss: ["Mit <code>=</code> kann man nicht mit „leer“ vergleichen – es kommt nie etwas heraus.", null, "<code>''</code> ist ein leerer Text, nicht NULL."], why: "Leere Werte prüft man mit <code>IS NULL</code>." },
+  ]);
+
+  const mit = (arr) => arr.map((a) => Object.assign({ extra: EXTRA }, a, { fallen: [...(a.fallen || []), ...IMMER] }));
+
+  L.training($("tr1"), { db: "musik", key: "l10-basis", tabelle: false, aufgaben: mit([
+    { text: "Alle Songs von Künstlern aus <strong>Österreich</strong>: Titel und Künstlername.",
+      loesung: "SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id WHERE kuenstler.herkunft = 'Österreich'",
+      hints: ["Lösung: <code>SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id WHERE kuenstler.herkunft = 'Österreich'</code>"] },
+    { text: "Wie viele Songs gibt es <strong>je Herkunftsland</strong>?",
+      loesung: "SELECT kuenstler.herkunft, COUNT(*) FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id GROUP BY kuenstler.herkunft",
+      hints: ["Lösung: <code>SELECT kuenstler.herkunft, COUNT(*) FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id GROUP BY kuenstler.herkunft</code>"] },
+    { text: "Alle Songs, deren Label in <strong>München</strong> sitzt: nur die Titel.",
+      loesung: "SELECT songs.titel FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id JOIN labels ON kuenstler.label_id = labels.id WHERE labels.stadt = 'München'",
+      hints: ["Drei Tabellen: songs → kuenstler → labels.", "Lösung: <code>SELECT songs.titel FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id JOIN labels ON kuenstler.label_id = labels.id WHERE labels.stadt = 'München'</code>"] },
+    { text: "Wie viele Songs hat <strong>jedes Label</strong>?",
+      loesung: "SELECT labels.name, COUNT(*) FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id JOIN labels ON kuenstler.label_id = labels.id GROUP BY labels.name",
+      hints: ["Lösung: <code>SELECT labels.name, COUNT(*) FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id JOIN labels ON kuenstler.label_id = labels.id GROUP BY labels.name</code>"] },
+    { text: "Der Song mit den <strong>meisten Likes</strong> – mit Künstlername und Label.",
+      loesung: "SELECT songs.titel, kuenstler.name, labels.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id JOIN labels ON kuenstler.label_id = labels.id ORDER BY songs.likes DESC LIMIT 1",
+      hints: ["Verbinden, sortieren nach <code>songs.likes DESC</code>, <code>LIMIT 1</code>.", "Lösung: <code>SELECT songs.titel, kuenstler.name, labels.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id JOIN labels ON kuenstler.label_id = labels.id ORDER BY songs.likes DESC LIMIT 1</code>"] },
+  ]) });
+
+  L.training($("tr2"), { db: "buecherei", key: "l10-sicher", aufgaben: mit([
+    { text: "Welche Bücher hat <strong>Elif Kaya</strong> ausgeliehen? Nur die Titel.",
+      loesung: "SELECT buecher.titel FROM ausleihen JOIN leser ON ausleihen.leser_id = leser.id JOIN buecher ON ausleihen.buch_id = buecher.id WHERE leser.vorname = 'Elif' AND leser.nachname = 'Kaya'",
+      hints: ["Drei Tabellen, dann <code>WHERE leser.vorname = 'Elif' AND leser.nachname = 'Kaya'</code>.", "Lösung: <code>SELECT buecher.titel FROM ausleihen JOIN leser ON ausleihen.leser_id = leser.id JOIN buecher ON ausleihen.buch_id = buecher.id WHERE leser.vorname = 'Elif' AND leser.nachname = 'Kaya'</code>"] },
+    { text: "Wie oft wurde <strong>jedes Genre</strong> ausgeliehen?",
+      loesung: "SELECT buecher.genre, COUNT(*) FROM ausleihen JOIN buecher ON ausleihen.buch_id = buecher.id GROUP BY buecher.genre",
+      hints: ["Lösung: <code>SELECT buecher.genre, COUNT(*) FROM ausleihen JOIN buecher ON ausleihen.buch_id = buecher.id GROUP BY buecher.genre</code>"] },
+    { text: "Wie viele Ausleihen hat <strong>jeder Leser</strong>? Zeig id, Vorname, Nachname und Anzahl. <strong>Vorsicht, Namensvettern!</strong>",
+      loesung: "SELECT leser.id, leser.vorname, leser.nachname, COUNT(*) FROM ausleihen JOIN leser ON ausleihen.leser_id = leser.id GROUP BY leser.id",
+      fallen: [{ muster: /GROUP\s+BY\s+leser\.(vorname|nachname)/i, text: "Gruppierst du nach dem Namen, werden die beiden Leon Müller zusammengezählt. Gruppiere nach <code>leser.id</code>." }],
+      hints: ["Gruppiere nach der eindeutigen <code>leser.id</code>.", "Lösung: <code>SELECT leser.id, leser.vorname, leser.nachname, COUNT(*) FROM ausleihen JOIN leser ON ausleihen.leser_id = leser.id GROUP BY leser.id</code>"] },
+    { text: "Welche <strong>Klassen</strong> haben gerade Bücher, die <strong>noch nicht zurück</strong> sind? Jede Klasse nur einmal.",
+      loesung: "SELECT DISTINCT leser.klasse FROM ausleihen JOIN leser ON ausleihen.leser_id = leser.id WHERE ausleihen.zurueck IS NULL",
+      hints: ["<code>DISTINCT</code> und <code>IS NULL</code>.", "Lösung: <code>SELECT DISTINCT leser.klasse FROM ausleihen JOIN leser ON ausleihen.leser_id = leser.id WHERE ausleihen.zurueck IS NULL</code>"] },
+  ].map((a) => Object.assign(a, { extra: [...EXTRA, "DISTINCT"] }))) });
+
+  L.training($("tr3"), { db: "pfoten", key: "l10-profi", aufgaben: mit([
+    { text: "Alle Tiere, deren Besitzer in <strong>Augsburg</strong> wohnt: Tiername und Besitzer-Vorname.",
+      loesung: "SELECT tiere.name, besitzer.vorname FROM tiere JOIN besitzer ON tiere.besitzer_id = besitzer.id WHERE besitzer.wohnort = 'Augsburg'",
+      hints: ["Lösung: <code>SELECT tiere.name, besitzer.vorname FROM tiere JOIN besitzer ON tiere.besitzer_id = besitzer.id WHERE besitzer.wohnort = 'Augsburg'</code>"] },
+    { text: "Alle Tiere, die <strong>fliegen können</strong>: nur die Namen.",
+      loesung: "SELECT tiere.name FROM tiere JOIN arten ON tiere.art_id = arten.id WHERE arten.kann_fliegen = 'ja'",
+      hints: ["Lösung: <code>SELECT tiere.name FROM tiere JOIN arten ON tiere.art_id = arten.id WHERE arten.kann_fliegen = 'ja'</code>"] },
+    { text: "Wie viele Tiere gibt es <strong>je Art</strong>? Artname und Anzahl.",
+      loesung: "SELECT arten.name, COUNT(*) FROM tiere JOIN arten ON tiere.art_id = arten.id GROUP BY arten.name",
+      hints: ["Lösung: <code>SELECT arten.name, COUNT(*) FROM tiere JOIN arten ON tiere.art_id = arten.id GROUP BY arten.name</code>"] },
+    { text: "Partnersuche: alle <strong>Kuschelpartner</strong> suchenden Tiere mit Fell – Tiername, Art und Wohnort des Besitzers. (Drei Tabellen!)",
+      loesung: "SELECT tiere.name, arten.name, besitzer.wohnort FROM tiere JOIN arten ON tiere.art_id = arten.id JOIN besitzer ON tiere.besitzer_id = besitzer.id WHERE tiere.sucht = 'Kuschelpartner' AND arten.fell = 'ja'",
+      hints: ["Zwei JOINs von <code>tiere</code> aus, dann zwei Bedingungen mit <code>AND</code>.", "Lösung: <code>SELECT tiere.name, arten.name, besitzer.wohnort FROM tiere JOIN arten ON tiere.art_id = arten.id JOIN besitzer ON tiere.besitzer_id = besitzer.id WHERE tiere.sucht = 'Kuschelpartner' AND arten.fell = 'ja'</code>"] },
+  ]) });
+});
+</script>
+</body>
+</html>

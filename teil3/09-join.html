@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JOIN – zwei Tabellen verbinden · SQL-Kurs</title>
+<meta name="description" content="Lektion 9 im SQL-Lernpfad: Mit JOIN … ON zwei Tabellen über Fremdschlüssel und ID verbinden – Songtitel und Künstlername in einer Liste. Mit JOIN-Zeitlupe, Puzzle, Fehlerdetektiv und viel Training. Echtes SQLite im Browser.">
+<link rel="canonical" href="https://sql.herrseibert.de/teil3/09-join.html">
+<!-- vorschau -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SQL-Kurs">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://sql.herrseibert.de/teil3/09-join.html">
+<meta property="og:title" content="JOIN – zwei Tabellen verbinden · SQL-Kurs">
+<meta property="og:description" content="Lektion 9 im SQL-Lernpfad: Mit JOIN … ON zwei Tabellen über Fremdschlüssel und ID verbinden – Songtitel und Künstlername in einer Liste. Mit JOIN-Zeitlupe, Puzzle, Fehlerdetektiv und viel Training. Echtes SQLite im Browser.">
+<meta property="og:image" content="https://sql.herrseibert.de/vorschau.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SQL-Kurs – Datenbanken und SQL Schritt für Schritt, mit SQL-Labor im Browser">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /vorschau -->
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/kurs.css?v=2b9f3c7d0f">
+<link rel="stylesheet" href="../assets/labor.css?v=543649a01b">
+<script src="../assets/i18n.js?v=2890af4da9" data-page="teil3-09-join" data-langs="de"></script>
+<script src="../assets/kurs.js?v=c26439e733"></script>
+<script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
+<script src="../assets/labor.js?v=2f69012746"></script>
+<script src="../assets/labor-extra.js?v=e94bd060f6"></script>
+<script src="../assets/daten/musik.js?v=c1bfd9240c"></script>
+<script src="../assets/daten/buecherei.js?v=c99f5e2d8a"></script>
+<script src="../assets/daten/pfoten.js?v=7b482f3862"></script>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html"><img class="logo" src="../favicon.svg" alt="" width="34" height="34"> SQL-Kurs <span>· Datenbanken verstehen</span></a>
+    <span class="spacer"></span>
+    <button class="theme-btn" type="button" aria-label="Hell oder dunkel umschalten">◐ Hell/Dunkel</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="path" aria-label="Lernpfad">
+    <strong class="t">Lernpfad:</strong>
+    <ol>
+      <li class="done"><a href="../teil1/01-datenbanken.html" title="1 · Datenbanken sind überall">1</a></li>
+      <li class="done"><a href="../teil1/02-ids.html" title="2 · IDs und Verknüpfung">2</a></li>
+      <li class="done"><a href="../teil2/03-select.html" title="3 · SELECT – Spalten auswählen">3</a></li>
+      <li class="done"><a href="../teil2/04-where.html" title="4 · WHERE – Zeilen filtern">4</a></li>
+      <li class="done"><a href="../teil2/05-and-or-not.html" title="5 · AND, OR, NOT">5</a></li>
+      <li class="done"><a href="../teil2/06-like-in-between.html" title="6 · LIKE, IN, BETWEEN">6</a></li>
+      <li class="done"><a href="../teil2/07-sortieren-rechnen.html" title="7 · Sortieren und rechnen">7</a></li>
+      <li class="done"><a href="../teil2/08-group-by.html" title="8 · GROUP BY – Gruppen bilden">8</a></li>
+      <li class="now"><span title="9 · Zwei Tabellen: JOIN" aria-current="step">9</span></li>
+      <li class="done"><a href="10-join-mehr.html" title="10 · JOIN mit WHERE und GROUP BY">10</a></li>
+      <li class="done"><a href="11-der-fall.html" title="11 · Der Fall">11</a></li>
+      <li class="soon"><span title="12 · Projekt planen (in Arbeit)">12</span></li>
+      <li class="soon"><span title="13 · Tabellen anlegen und füllen (in Arbeit)">13</span></li>
+      <li class="soon"><span title="14 · Ändern und löschen (in Arbeit)">14</span></li>
+      <li class="soon"><span title="15 · Suchformular (in Arbeit)">15</span></li>
+      <li class="soon"><span title="16 · Eingabeformular (in Arbeit)">16</span></li>
+    </ol>
+  </nav>
+
+  <section class="hero">
+    <h1>JOIN – zwei Tabellen, eine Liste</h1>
+    <div class="meta">
+      <span class="chip">Teil 3 · Lektion 9</span>
+      <span class="chip">⏱ ca. 35 Minuten</span>
+    </div>
+    <p class="erklaerung">In Lektion 2 bist du dem ID-Faden von Hand gefolgt: von der Nummer in einer Tabelle zur passenden Zeile in der anderen.
+      Genau das erledigt <code>JOIN</code> für dich – für alle Zeilen auf einmal. So bekommst du Songtitel und Künstlernamen in einer Liste,
+      obwohl sie in zwei Tabellen stehen. Fast jede App macht das ständig.</p>
+  </section>
+
+  <section class="card wdh">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
+  <details class="card woerter">
+    <summary>📖 Wörter für diese Lektion</summary>
+    <p class="note">Die SQL-Befehle bleiben englisch – so heißen sie in jeder Datenbank der Welt.</p>
+    <div class="tbl-scroll"><table class="plain">
+      <tr><th class="wort">verbinden <small>die Verbindung</small></th><td>Zwei Tabellen zusammenlegen. In SQL: <code>JOIN</code>.</td></tr>
+      <tr><th class="wort">die Bedingung der Verbindung</th><td>Welche Spalten zusammenpassen müssen. In SQL nach <code>ON</code>.</td></tr>
+      <tr><th class="wort">der Fremdschlüssel</th><td>Die Spalte mit der Nummer, die auf die andere Tabelle zeigt, z. B. <code>kuenstler_id</code>.</td></tr>
+      <tr><th class="wort">eindeutig benennen</th><td>Bei zwei Tabellen den Tabellennamen davor schreiben: <code>kuenstler.name</code>.</td></tr>
+      <tr><th class="wort">der Partner <small>die Partner</small></th><td>Die passende Zeile in der anderen Tabelle.</td></tr>
+    </table></div>
+  </details>
+
+  <section class="card szenario">
+    <h2><span class="step-no">🎧</span> Szenario</h2>
+    <p><strong>Tonspur</strong> hat aufgeräumt: Die Künstler stehen jetzt in einer eigenen Tabelle <code>kuenstler</code>. In <code>songs</code> steht nur noch ihre Nummer
+      (<code>kuenstler_id</code>). Die App soll aber natürlich Namen zeigen, keine Nummern.</p>
+  </section>
+
+  <!-- 1 · Überleg -->
+  <section class="card">
+    <h2><span class="step-no">1</span> Überleg: Nummern statt Namen <span class="chip">4 Minuten</span></h2>
+    <div id="tabs1"></div>
+    <pre class="sql" data-farbe>SELECT titel, kuenstler_id FROM songs</pre>
+    <p>So zeigt die App „Mitternachtsbus – 1“. Niemand weiß, wer 1 ist.</p>
+    <p><strong>Überleg:</strong> Wie bekommt die App den Namen dazu?</p>
+    <div class="choices" id="pred1">
+      <button type="button" class="choice">Den Namen wieder in jede Zeile von <code>songs</code> schreiben</button>
+      <button type="button" class="choice">Zu jeder Zeile in <code>songs</code> die Zeile aus <code>kuenstler</code> holen, deren <code>id</code> zur <code>kuenstler_id</code> passt</button>
+      <button type="button" class="choice">Zwei Abfragen machen und die Listen nebeneinanderlegen</button>
+    </div>
+    <p class="fb" id="fb1"></p>
+  </section>
+
+  <!-- 2 · Zeitlupe -->
+  <section class="card">
+    <h2><span class="step-no">2</span> JOIN in Zeitlupe <span class="chip">5 Minuten</span></h2>
+    <p>Tipp auf <strong>👣 Nächste Zeile</strong>: Jede Zeile aus <code>songs</code> sucht ihren Partner in <code>kuenstler</code> – genau wie beim ID-Faden.</p>
+    <div id="jl"></div>
+    <p class="rule"><code>FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id</code><br>
+      heißt: Leg zu jeder Zeile aus <code>songs</code> die Zeile aus <code>kuenstler</code>, deren <code>id</code> zur <code>kuenstler_id</code> passt.</p>
+  </section>
+
+  <!-- 3 · Schritt für Schritt / Lücken -->
+  <section class="card">
+    <h2><span class="step-no">3</span> Schritt für Schritt aufbauen <span class="chip">5 Minuten</span></h2>
+    <ol class="howto">
+      <li>Mit <code>SELECT … FROM</code> die erste Tabelle wählen.</li>
+      <li>Mit <code>JOIN</code> die zweite Tabelle dazunehmen.</li>
+      <li>Nach <code>ON</code> sagen, was zusammenpasst: <strong>Fremdschlüssel = id</strong>.</li>
+      <li>Spalten mit dem Tabellennamen davor auswählen: <code>songs.titel</code>, <code>kuenstler.name</code>.</li>
+    </ol>
+    <p>Füll die Bedingung nach <code>ON</code> aus:</p>
+    <div id="l3"></div>
+  </section>
+
+  <!-- 4 · Puzzle -->
+  <section class="card">
+    <h2><span class="step-no">4</span> Puzzle: Woher kommt der Künstler? <span class="chip">5 Minuten</span></h2>
+    <p>Für eine Weltkarte in der App: zu jedem Song <strong>Titel und Herkunftsland des Künstlers</strong>. Zwei Bausteine brauchst du nicht.</p>
+    <div id="l4"></div>
+  </section>
+
+  <!-- 5 · Fehlerdetektiv -->
+  <section class="card">
+    <h2><span class="step-no">5</span> Fehlerdetektiv: 432 Zeilen? <span class="chip">4 Minuten</span></h2>
+    <p>Jonas wollte Titel und Künstlername. Es gibt 36 Songs – aber sein Ergebnis hat viel mehr Zeilen. Führ die Abfrage aus und schau genau hin.</p>
+    <ol class="howto">
+      <li>Wie viele Zeilen sind es? Wie oft steht „Mitternachtsbus“ da?</li>
+      <li>Zu welchen Künstlern wird „Mitternachtsbus“ gelegt?</li>
+      <li>Was fehlt, damit nur der richtige Partner dazukommt?</li>
+    </ol>
+    <div id="l5"></div>
+    <div id="hints5"></div>
+  </section>
+
+  <!-- 6 · Selbst -->
+  <section class="card">
+    <h2><span class="step-no">6</span> Jetzt du: Künstler und Labels <span class="chip">5 Minuten</span></h2>
+    <p>Jeder Künstler ist bei einer Plattenfirma (<code>labels</code>). <code>kuenstler.label_id</code> zeigt auf <code>labels.id</code>.
+      Zeig zu jedem Künstler <strong>seinen Namen und den Namen seines Labels</strong>.</p>
+    <div id="l6"></div>
+    <div id="hints6"></div>
+  </section>
+
+  <!-- Plus -->
+  <section class="card">
+    <h2><span class="badge plus">Plus</span> Kürzer schreiben mit Abkürzungen <span class="chip">für Schnelle</span></h2>
+    <p>Nach dem Tabellennamen kannst du eine Abkürzung setzen und sie dann statt des langen Namens benutzen:</p>
+    <pre class="sql" data-farbe>SELECT s.titel, k.name FROM songs s JOIN kuenstler k ON s.kuenstler_id = k.id</pre>
+    <p>Schreib damit: <strong>alle Songs mit Titel, Jahr und Künstlername</strong>.</p>
+    <div id="lplus"></div>
+  </section>
+
+  <!-- Kurz-Check -->
+  <section class="card">
+    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
+    <div id="quiz"></div>
+  </section>
+
+  <section class="card merke">
+    <h2>Merke</h2>
+    <ul>
+      <li><code>SELECT … FROM a JOIN b ON a.b_id = b.id</code> legt zu jeder Zeile von <code>a</code> den passenden Partner aus <code>b</code>.</li>
+      <li>Nach <code>ON</code> steht immer: <strong>Fremdschlüssel = id</strong> der anderen Tabelle.</li>
+      <li>Ohne <code>ON</code> wird jede Zeile mit jeder verbunden – viel zu viele Zeilen.</li>
+      <li>Gibt es eine Spalte in beiden Tabellen (z. B. <code>id</code>, <code>name</code>), schreib den Tabellennamen davor: <code>kuenstler.name</code>.</li>
+    </ul>
+  </section>
+
+  <!-- Training -->
+  <section class="card frei" id="training">
+    <h2><span class="step-no">🏋</span> Training</h2>
+    <p class="lead">Je mehr JOINs du schreibst, desto selbstverständlicher werden sie. Fang bei ● an.</p>
+
+    <h3 class="sub"><span class="badge ueben">● Basis</span> Tonspur: Songs und Künstler</h3>
+    <p>Tabellen <code>songs</code> und <code>kuenstler</code> (und <code>labels</code>).</p>
+    <div id="tr1"></div>
+
+    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Die Schülerbücherei</h3>
+    <p>Tabellen <code>ausleihen</code>, <code>leser</code> und <code>buecher</code> – die kennst du aus Lektion 2.</p>
+    <div id="tr2"></div>
+
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Pfotenglück</h3>
+    <p>Die Partnerbörse für Tiere: <code>tiere</code>, <code>besitzer</code>, <code>arten</code>.</p>
+    <div id="tr3"></div>
+  </section>
+
+  <nav class="pager">
+    <a href="../teil2/08-group-by.html">← Lektion 8: GROUP BY – Gruppen bilden</a>
+    <a href="10-join-mehr.html">Lektion 10: JOIN mit WHERE und GROUP BY →</a>
+  </nav>
+</main>
+
+<footer>
+  <div class="wrap t">Lernmaterial von <a href="https://herrseibert.de">herrseibert.de</a> · Lizenz <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">CC BY-SA 4.0</a> · ohne Tracking, ohne Cookies<br>Erstellt von der KI Claude von Anthropic.</div>
+  <div class="wrap t gh">Fehler gefunden oder eine Idee? → <a href="https://github.com/baumlaube/sql-course">Kurs auf GitHub</a></div>
+  <div class="wrap t gh">Das SQL-Labor nutzt SQLite (gemeinfrei) über sql.js (MIT-Lizenz) – alles läuft in deinem Browser.</div>
+  <div class="wrap legal"><a href="../impressum.html">Impressum</a> · <a href="../datenschutz.html">Datenschutz</a></div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { pick, quiz, hints } = window.Kurs;
+  const L = window.Labor;
+  const $ = (id) => document.getElementById(id);
+  const EXTRA = ["JOIN", "ON", "AND", "ORDER BY", "DESC", "AS"];
+  const ON_VERDREHT = { muster: /ON\s+\w+\.id\s*=\s*\w+\.id\b/i, text: "Du verbindest <code>id</code> mit <code>id</code>. Verbunden wird der Fremdschlüssel (z. B. <code>songs.kuenstler_id</code>) mit der <code>id</code> der anderen Tabelle." };
+  const IMMER = [ON_VERDREHT];
+
+  L.tabelle($("tabs1"), { db: "musik", tabelle: "songs", offen: true });
+  L.tabelle($("tabs1"), { db: "musik", tabelle: "kuenstler", offen: true });
+
+  quiz($("wdh"), [
+    { q: "In <code>songs</code> steht <code>kuenstler_id = 4</code>. Was bedeutet das?", options: ["Der Song hat die Nummer 4", "Der Song ist vom Künstler, der in <code>kuenstler</code> die <code>id</code> 4 hat", "Der Künstler hat 4 Songs"], right: 1,
+      miss: ["Die Nummer des Songs steht in <code>songs.id</code>.", null, "Das ist ein Verweis, keine Anzahl."], why: "<code>kuenstler_id</code> ist ein Fremdschlüssel: Er zeigt auf <code>kuenstler.id</code>." },
+    { q: "Wie viele Songs gibt es je Genre? Welche Abfrage?", options: ["<code>SELECT genre, COUNT(*) FROM songs GROUP BY genre</code>", "<code>SELECT COUNT(genre) FROM songs</code>"], right: 0,
+      miss: [null, "Das zählt alle Songs mit Genre zusammen – eine Zahl."], why: "Je Gruppe rechnen: <code>GROUP BY</code>." },
+  ]);
+
+  pick($("pred1"), { right: 1, fb: $("fb1"),
+    miss: ["Dann steht jeder Name wieder mehrfach da – genau das wollten wir in Lektion 2 vermeiden.", null,
+      "Wer legt die Listen dann zusammen? Die Datenbank kann das selbst – in einer Abfrage."],
+    why: "Genau das ist ein <code>JOIN</code>: Zu jeder Zeile aus <code>songs</code> holt die Datenbank den Partner aus <code>kuenstler</code> – über <code>kuenstler_id = id</code>." });
+
+  L.joinlupe($("jl"), { db: "musik", sql: "SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id" });
+
+  L.create($("l3"), { db: "musik", modus: "luecke", tabellen: false,
+    sql: "SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler ON songs.[[kuenstler_id|id|titel]] = kuenstler.[[id|name|kuenstler_id]]",
+    loesung: "SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id",
+    fallen: [
+      { muster: /songs\.id\s*=\s*kuenstler\.id/i, text: "So würde Song 1 mit Künstler 1 verbunden, Song 2 mit Künstler 2 … – das ist Zufall. Der Verweis steht in <code>songs.kuenstler_id</code>." },
+      { muster: /kuenstler\.name/i, text: "<code>kuenstler_id</code> ist eine Nummer – die passt zur <code>id</code>, nicht zum Namen." },
+      { muster: /kuenstler\.kuenstler_id/i, text: "Die Spalte <code>kuenstler_id</code> gibt es nur in <code>songs</code>. In <code>kuenstler</code> heißt die Nummer einfach <code>id</code>." },
+      { muster: /songs\.titel\s*=/i, text: "Ein Titel passt zu keiner Spalte in <code>kuenstler</code>. Verbunden wird über die Nummer." },
+    ],
+    ok: "✔ Richtig! Fremdschlüssel <code>songs.kuenstler_id</code> = <code>kuenstler.id</code> – 36 Songs, jeder mit seinem Künstler." });
+
+  L.create($("l4"), { db: "musik", modus: "puzzle", tabellen: false,
+    bausteine: ["SELECT", "songs.titel", ",", "kuenstler.herkunft", "FROM", "songs", "JOIN", "kuenstler", "ON", "songs.kuenstler_id", "=", "kuenstler.id", "WHERE", "songs.id"],
+    loesung: "SELECT songs.titel, kuenstler.herkunft FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id",
+    fallen: [{ muster: /WHERE/i, text: "<code>WHERE</code> brauchst du nicht – die Verbindung kommt nach <code>ON</code>." }, ...IMMER],
+    ok: "✔ Geschafft! Jetzt weiß die App bei jedem Song, woher der Künstler kommt." });
+
+  L.create($("l5"), { db: "musik", modus: "frei", tabellen: false, zeilen: 2, erkunden: true, extra: EXTRA,
+    sql: "SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler",
+    loesung: "SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id",
+    fallen: IMMER,
+    ok: "✔ Fall gelöst! Ohne <code>ON</code> wurde jeder der 36 Songs mit jedem der 12 Künstler verbunden: 36 · 12 = 432. Mit <code>ON</code> bekommt jeder Song nur seinen Partner." });
+  hints($("hints5"), [
+    "„Mitternachtsbus“ steht 12-mal da – einmal mit jedem Künstler.",
+    "Die Datenbank weiß nicht, welcher Künstler zu welchem Song gehört. Das sagt man nach <code>ON</code>.",
+    "Lösung: <code>… JOIN kuenstler ON songs.kuenstler_id = kuenstler.id</code>",
+  ]);
+
+  L.create($("l6"), { db: "musik", modus: "frei", tabellen: true, extra: EXTRA,
+    loesung: "SELECT kuenstler.name, labels.name FROM kuenstler JOIN labels ON kuenstler.label_id = labels.id",
+    fallen: [{ muster: /SELECT\s+name\s*,\s*name/i, text: "Beide Tabellen haben eine Spalte <code>name</code>. Schreib den Tabellennamen davor: <code>kuenstler.name</code>, <code>labels.name</code>." }, ...IMMER],
+    ok: "✔ Richtig! 12 Künstler mit ihrem Label." });
+  hints($("hints6"), [
+    "Erste Tabelle <code>kuenstler</code>, dazu <code>JOIN labels</code>. Fremdschlüssel: <code>kuenstler.label_id</code>.",
+    "Lösung: <code>SELECT kuenstler.name, labels.name FROM kuenstler JOIN labels ON kuenstler.label_id = labels.id</code>",
+  ]);
+
+  L.create($("lplus"), { db: "musik", modus: "frei", tabellen: false, extra: EXTRA,
+    loesung: "SELECT s.titel, s.jahr, k.name FROM songs s JOIN kuenstler k ON s.kuenstler_id = k.id",
+    fallen: IMMER,
+    ok: "✔ Richtig – kürzer und genauso eindeutig." });
+
+  quiz($("quiz"), [
+    { q: "Was steht nach <code>ON</code>?", options: ["Welche Spalten man sehen will", "Welche Spalten zusammenpassen: Fremdschlüssel = id", "Eine Bedingung wie <code>jahr = 2025</code>"], right: 1,
+      miss: ["Die Spalten stehen nach <code>SELECT</code>.", null, "Filter stehen nach <code>WHERE</code>."], why: "<code>ON</code> sagt, wie die Tabellen verbunden sind." },
+    { q: "Was passiert ohne <code>ON</code>?", options: ["Fehler", "Jede Zeile wird mit jeder verbunden", "Nur die erste Zeile kommt"], right: 1,
+      miss: ["SQLite meldet keinen Fehler – das macht es so gemein.", null, "Es kommen sogar viel mehr Zeilen."], why: "36 Songs · 12 Künstler = 432 Zeilen." },
+    { q: "<code>SELECT name FROM kuenstler JOIN labels ON …</code> meldet „ambiguous column name: name“. Warum?", options: ["Die Spalte <code>name</code> gibt es in beiden Tabellen", "Die Spalte gibt es gar nicht", "<code>name</code> ist verboten"], right: 0,
+      miss: [null, "Doch – sogar zweimal.", "Erlaubt ist es – nur nicht eindeutig."], why: "Mehrdeutig: Schreib <code>kuenstler.name</code> oder <code>labels.name</code>." },
+    { q: "Welche ON-Bedingung ist richtig für Ausleihen und Leser?", options: ["<code>ON ausleihen.id = leser.id</code>", "<code>ON ausleihen.leser_id = leser.id</code>", "<code>ON ausleihen.leser_id = leser.nachname</code>"], right: 1,
+      miss: ["Ausleihe 5 hätte dann zufällig Leser 5. Verbunden wird über den Fremdschlüssel.", null, "Eine Nummer passt nicht zu einem Namen."], why: "Fremdschlüssel <code>leser_id</code> = <code>leser.id</code>." },
+  ]);
+
+  const mit = (arr) => arr.map((a) => Object.assign({ extra: EXTRA }, a, { fallen: [...(a.fallen || []), ...IMMER] }));
+
+  L.training($("tr1"), { db: "musik", key: "l09-basis", tabelle: false, aufgaben: mit([
+    { text: "Zu jedem Song <strong>Titel und Künstlername</strong>.",
+      loesung: "SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id",
+      hints: ["Lösung: <code>SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id</code>"] },
+    { text: "Zu jedem Song <strong>Titel, Genre und Künstlername</strong>.",
+      loesung: "SELECT songs.titel, songs.genre, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id",
+      hints: ["Lösung: <code>SELECT songs.titel, songs.genre, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id</code>"] },
+    { text: "Zu jedem Künstler <strong>Name und Stadt seines Labels</strong>.",
+      loesung: "SELECT kuenstler.name, labels.stadt FROM kuenstler JOIN labels ON kuenstler.label_id = labels.id",
+      hints: ["Lösung: <code>SELECT kuenstler.name, labels.stadt FROM kuenstler JOIN labels ON kuenstler.label_id = labels.id</code>"] },
+    { text: "Zu jedem Song <strong>Titel, Likes und Herkunft</strong> des Künstlers.",
+      loesung: "SELECT songs.titel, songs.likes, kuenstler.herkunft FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id",
+      hints: ["Lösung: <code>SELECT songs.titel, songs.likes, kuenstler.herkunft FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id</code>"] },
+  ]) });
+
+  L.training($("tr2"), { db: "buecherei", key: "l09-sicher", aufgaben: mit([
+    { text: "Zu jeder Ausleihe: <strong>Datum (ausgeliehen) und Vorname, Nachname</strong> des Lesers.",
+      loesung: "SELECT ausleihen.ausgeliehen, leser.vorname, leser.nachname FROM ausleihen JOIN leser ON ausleihen.leser_id = leser.id",
+      hints: ["Fremdschlüssel <code>ausleihen.leser_id</code> → <code>leser.id</code>.", "Lösung: <code>SELECT ausleihen.ausgeliehen, leser.vorname, leser.nachname FROM ausleihen JOIN leser ON ausleihen.leser_id = leser.id</code>"] },
+    { text: "Zu jeder Ausleihe: <strong>Datum und Buchtitel</strong>.",
+      loesung: "SELECT ausleihen.ausgeliehen, buecher.titel FROM ausleihen JOIN buecher ON ausleihen.buch_id = buecher.id",
+      fallen: [{ muster: /buecher_id/i, text: "In <code>ausleihen</code> heißt die Spalte <code>buch_id</code> – schau in die Tabelle." }],
+      hints: ["Lösung: <code>SELECT ausleihen.ausgeliehen, buecher.titel FROM ausleihen JOIN buecher ON ausleihen.buch_id = buecher.id</code>"] },
+    { text: "Zu jeder Ausleihe: <strong>Buchtitel und Autor</strong> und das <strong>Rückgabedatum</strong>.",
+      loesung: "SELECT buecher.titel, buecher.autor, ausleihen.zurueck FROM ausleihen JOIN buecher ON ausleihen.buch_id = buecher.id",
+      hints: ["Lösung: <code>SELECT buecher.titel, buecher.autor, ausleihen.zurueck FROM ausleihen JOIN buecher ON ausleihen.buch_id = buecher.id</code>"] },
+    { text: "Zu jeder Ausleihe <strong>die Klasse</strong> des Lesers und das <strong>Datum</strong>.",
+      loesung: "SELECT leser.klasse, ausleihen.ausgeliehen FROM ausleihen JOIN leser ON ausleihen.leser_id = leser.id",
+      hints: ["Lösung: <code>SELECT leser.klasse, ausleihen.ausgeliehen FROM ausleihen JOIN leser ON ausleihen.leser_id = leser.id</code>"] },
+  ]) });
+
+  L.training($("tr3"), { db: "pfoten", key: "l09-profi", aufgaben: mit([
+    { text: "Zu jedem Tier: <strong>Name des Tiers und Vorname</strong> seines Besitzers.",
+      loesung: "SELECT tiere.name, besitzer.vorname FROM tiere JOIN besitzer ON tiere.besitzer_id = besitzer.id",
+      hints: ["Lösung: <code>SELECT tiere.name, besitzer.vorname FROM tiere JOIN besitzer ON tiere.besitzer_id = besitzer.id</code>"] },
+    { text: "Zu jedem Tier: <strong>Name des Tiers und Name seiner Art</strong> (z. B. Bello – Hund).",
+      loesung: "SELECT tiere.name, arten.name FROM tiere JOIN arten ON tiere.art_id = arten.id",
+      fallen: [{ muster: /SELECT\s+name\s*,\s*name/i, text: "Beide Tabellen haben <code>name</code>. Schreib den Tabellennamen davor." }],
+      hints: ["Achtung: <code>name</code> gibt es in <code>tiere</code> und in <code>arten</code>.", "Lösung: <code>SELECT tiere.name, arten.name FROM tiere JOIN arten ON tiere.art_id = arten.id</code>"] },
+    { text: "Zu jedem Tier: <strong>Name, was es sucht, und Wohnort</strong> des Besitzers.",
+      loesung: "SELECT tiere.name, tiere.sucht, besitzer.wohnort FROM tiere JOIN besitzer ON tiere.besitzer_id = besitzer.id",
+      hints: ["Lösung: <code>SELECT tiere.name, tiere.sucht, besitzer.wohnort FROM tiere JOIN besitzer ON tiere.besitzer_id = besitzer.id</code>"] },
+    { text: "Zu jedem Tier: <strong>Name und ob seine Art fliegen kann</strong>.",
+      loesung: "SELECT tiere.name, arten.kann_fliegen FROM tiere JOIN arten ON tiere.art_id = arten.id",
+      hints: ["Lösung: <code>SELECT tiere.name, arten.kann_fliegen FROM tiere JOIN arten ON tiere.art_id = arten.id</code>"] },
+  ]) });
+});
+</script>
+</body>
+</html>
