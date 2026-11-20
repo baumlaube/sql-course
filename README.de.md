@@ -24,8 +24,9 @@ Ein freier Lernpfad für **Datenbanken und SQL**, gemacht für die Mittelschule 
 
 ## Stand
 
-Online: Startseite und Teil 2 (Lektionen 3–8: SELECT, WHERE, AND/OR/NOT, LIKE/IN/BETWEEN, Sortieren und rechnen, GROUP BY).
-Teil 1, 3, 4 und 5 (Einstieg, JOIN, Projekt, Formulare) sind in Arbeit.
+Alle 16 Lektionen sind online: Datenbanken und IDs (1–2), Abfragen in einer Tabelle bis GROUP BY (3–8), JOIN und ein Kriminalfall (9–11),
+ein eigenes Datenbank-Projekt – eine Partnerbörse für Tiere – mit CREATE TABLE, INSERT, UPDATE, DELETE (12–14) und ein Formular-Baukasten für Such- und Eingabeformulare (15–16).
+Sprachhilfe Englisch: bisher Startseite und Lektionen 3–8.
 
 ## Benutzung
 

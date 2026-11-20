@@ -24,8 +24,9 @@ grade 10 (curriculum LehrplanPLUS Informatik M10). 16 lessons of 35 minutes, plu
 
 ## Status
 
-Online: start page and part 2 (lessons 3–8: SELECT, WHERE, AND/OR/NOT, LIKE/IN/BETWEEN, sorting and calculating, GROUP BY).
-Parts 1, 3, 4 and 5 (introduction, JOIN, project, forms) are in progress.
+All 16 lessons are online: databases and IDs (1–2), queries on one table up to GROUP BY (3–8), JOIN and a crime case (9–11),
+an own database project – a dating site for pets – with CREATE TABLE, INSERT, UPDATE, DELETE (12–14) and a form builder for search and input forms (15–16).
+English language help: start page and lessons 3–8 so far.
 
 ## Usage
 
