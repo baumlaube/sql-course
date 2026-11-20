@@ -67,8 +67,9 @@
     return String(sql).replace(/[‘’‚‛´`]/g, "'").replace(/[“”„‟«»]/g, '"').replace(/ /g, " ");
   }
 
-  function ausfuehren(SQL, name, sql) {
+  function ausfuehren(SQL, name, sql, messen) {
     const db = oeffnen(SQL, name);
+    const t0 = performance.now();
     try {
       // Anweisung für Anweisung, damit auch bei 0 Zeilen die Spaltennamen bekannt sind
       let last = null;
@@ -78,7 +79,7 @@
         if (spalten.length) last = { spalten, zeilen };
         stmt.free();
       }
-      return { ok: true, spalten: last ? last.spalten : [], zeilen: last ? last.zeilen : [], leer: !last };
+      return { ok: true, spalten: last ? last.spalten : [], zeilen: last ? last.zeilen : [], leer: !last, ms: messen ? performance.now() - t0 : null };
     } catch (e) {
       return { ok: false, fehler: String(e.message || e) };
     } finally {
@@ -320,7 +321,10 @@
       const leiste = codeBox.querySelector(".labor-bausteine");
       const teile = [...(o.leiste || STANDARD_LEISTE), ...(o.extra || [])];   // extra: Befehle späterer Lektionen (AND, OR, …)
       if (o.leiste === undefined) {
+        const mehrere = Object.keys(m.tabellen).length > 1;
         Object.keys(m.tabellen).forEach((t) => { teile.push(t); m.tabellen[t].forEach((c) => teile.push(c.name)); });
+        // Bei mehreren Tabellen: auch tabelle.spalte zum Antippen (für JOIN)
+        if (mehrere && o.punkt !== false) Object.keys(m.tabellen).forEach((t) => m.tabellen[t].forEach((c) => teile.push(`${t}.${c.name}`)));
       }
       [...new Set(teile)].forEach((t) => {
         const b = document.createElement("button");
@@ -412,9 +416,12 @@
       if (!sql) { zeige(T("Da steht noch nichts. Schreib zuerst eine Abfrage."), "hint"); return; }
       const leerFeld = modus === "luecke" && [...codeBox.querySelectorAll(".luecke")].some((f) => !f.value.trim());
       if (leerFeld) { zeige(T("Füll zuerst alle gelben Lücken aus."), "hint"); return; }
-      const res = ausfuehren(SQL, o.db, sql);
+      const t0 = performance.now();
+      const res = ausfuehren(SQL, o.db, sql, !!o.zeit);
+      const ms = Math.max(1, Math.round(res.ms != null ? res.ms : performance.now() - t0));
       erg.hidden = !res.ok;
-      if (res.ok) erg.innerHTML = `<p class="labor-erg-t">${T("Ergebnis")}</p>` + ergebnisHTML(res);
+      if (res.ok) erg.innerHTML = `<p class="labor-erg-t">${T("Ergebnis")}</p>` + ergebnisHTML(res)
+        + (o.zeit ? `<p class="labor-zeit">⚡ ${T(`Die Datenbank hat dafür ${ms} Millisekunden gebraucht.`)}</p>` : "");
       if (!o.loesung && !o.pruefe) {           // nur ausprobieren
         if (!res.ok) zeige("✘ " + T(fehlerText(res.fehler, sql, m)), "hint");
         else fb.className = "fb labor-fb";
@@ -479,6 +486,17 @@
         const gb = ((ohneTexte(sql).match(/\bGROUP\s+BY\s+([\s\S]*?)(?:\bHAVING\b|\bORDER\b|\bLIMIT\b|;|$)/i) || [])[1] || "").split(",").map((t) => t.trim().toLowerCase());
         const fremd = sel.split(",").map((t) => t.trim()).find((t) => /^[a-z_]+$/i.test(t) && !gb.includes(t.toLowerCase()));
         if (fremd) return T(`<code>${esc(fremd)}</code> steht weder in <code>GROUP BY</code> noch in einer Rechnung. Welcher Wert soll für eine ganze Gruppe dastehen? Nimm die Spalte heraus – oder gruppiere auch nach ihr.`);
+      }
+      // JOIN-typische Fehler
+      const rs = ohneTexte(sql);
+      if (/\bJOIN\b/i.test(rs) && !/\bON\b/i.test(rs))
+        return T(`Ohne <code>ON</code> verbindet SQL <strong>jede</strong> Zeile mit <strong>jeder</strong> – darum so viele Zeilen (${res.zeilen.length}). Sag mit <code>ON</code>, welche Spalten zusammenpassen.`);
+      const on = rs.match(/\bON\s+(\w+)\.(\w+)\s*=\s*(\w+)\.(\w+)/i);
+      if (on && ref && !(cmp && cmp.gleich)) {
+        if (on[2].toLowerCase() === "id" && on[4].toLowerCase() === "id")
+          return T("Du verbindest <code>id</code> mit <code>id</code>. Die Verbindung läuft aber über den Fremdschlüssel: <code>tabelle.…_id = andere_tabelle.id</code>.");
+        if (!/_id$/i.test(on[2]) && !/_id$/i.test(on[4]))
+          return T("Prüf die Bedingung nach <code>ON</code>: Verbunden wird der Fremdschlüssel (endet auf <code>_id</code>) mit der <code>id</code> der anderen Tabelle.");
       }
       if (!ref) return T("Noch nicht.");
       return diagnose(sql, res, ref, cmp);
@@ -735,7 +753,9 @@
     });
   }
 
-  window.Labor = { daten, bereit, create, tabelle, zeitlupe, gruppen, training, abfrage, beurteile, sqlHTML, glaetten };
+  window.Labor = { daten, bereit, create, tabelle, zeitlupe, gruppen, training, abfrage, beurteile, sqlHTML, glaetten,
+    /* für Erweiterungen (labor-extra.js, projekt.js) */
+    _intern: { oeffnen, ausfuehren, ergebnisHTML, esc, T, DATEN, fehlerText, meta } };
 
   /* Statische SQL-Beispiele einfärben: <pre class="sql" data-sql>…</pre> */
   document.addEventListener("DOMContentLoaded", () => {

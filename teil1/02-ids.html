@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IDs und Verknüpfung – Primärschlüssel, Fremdschlüssel, ER-Diagramm · SQL-Kurs</title>
+<meta name="description" content="Lektion 2 im SQL-Lernpfad: Warum jede Zeile eine eindeutige ID braucht, warum man Daten auf mehrere Tabellen verteilt und wie Fremdschlüssel Tabellen verbinden. Einer ID von Tabelle zu Tabelle folgen und ein ER-Diagramm lesen – mit echtem SQLite im Browser.">
+<link rel="canonical" href="https://sql.herrseibert.de/teil1/02-ids.html">
+<!-- vorschau -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SQL-Kurs">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://sql.herrseibert.de/teil1/02-ids.html">
+<meta property="og:title" content="IDs und Verknüpfung – Primärschlüssel, Fremdschlüssel, ER-Diagramm · SQL-Kurs">
+<meta property="og:description" content="Lektion 2 im SQL-Lernpfad: Warum jede Zeile eine eindeutige ID braucht, warum man Daten auf mehrere Tabellen verteilt und wie Fremdschlüssel Tabellen verbinden. Einer ID von Tabelle zu Tabelle folgen und ein ER-Diagramm lesen – mit echtem SQLite im Browser.">
+<meta property="og:image" content="https://sql.herrseibert.de/vorschau.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SQL-Kurs – Datenbanken und SQL Schritt für Schritt, mit SQL-Labor im Browser">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /vorschau -->
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/kurs.css?v=2b9f3c7d0f">
+<link rel="stylesheet" href="../assets/labor.css?v=543649a01b">
+<script src="../assets/i18n.js?v=2890af4da9" data-page="teil1-02-ids" data-langs="de"></script>
+<script src="../assets/kurs.js?v=c26439e733"></script>
+<script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
+<script src="../assets/labor.js?v=2f69012746"></script>
+<script src="../assets/labor-extra.js?v=e94bd060f6"></script>
+<script src="../assets/daten/buecherei.js?v=c99f5e2d8a"></script>
+<script src="../assets/daten/musik.js?v=c1bfd9240c"></script>
+<script src="../assets/daten/pfoten.js?v=7b482f3862"></script>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html"><img class="logo" src="../favicon.svg" alt="" width="34" height="34"> SQL-Kurs <span>· Datenbanken verstehen</span></a>
+    <span class="spacer"></span>
+    <button class="theme-btn" type="button" aria-label="Hell oder dunkel umschalten">◐ Hell/Dunkel</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="path" aria-label="Lernpfad">
+    <strong class="t">Lernpfad:</strong>
+    <ol>
+      <li class="done"><a href="01-datenbanken.html" title="1 · Datenbanken sind überall">1</a></li>
+      <li class="now"><span title="2 · IDs und Verknüpfung" aria-current="step">2</span></li>
+      <li class="done"><a href="../teil2/03-select.html" title="3 · SELECT – Spalten auswählen">3</a></li>
+      <li class="done"><a href="../teil2/04-where.html" title="4 · WHERE – Zeilen filtern">4</a></li>
+      <li class="done"><a href="../teil2/05-and-or-not.html" title="5 · AND, OR, NOT">5</a></li>
+      <li class="done"><a href="../teil2/06-like-in-between.html" title="6 · LIKE, IN, BETWEEN">6</a></li>
+      <li class="done"><a href="../teil2/07-sortieren-rechnen.html" title="7 · Sortieren und rechnen">7</a></li>
+      <li class="done"><a href="../teil2/08-group-by.html" title="8 · GROUP BY – Gruppen bilden">8</a></li>
+      <li class="soon"><span title="9 · Zwei Tabellen: JOIN (in Arbeit)">9</span></li>
+      <li class="soon"><span title="10 · JOIN mit WHERE und GROUP BY (in Arbeit)">10</span></li>
+      <li class="soon"><span title="11 · Der Fall (in Arbeit)">11</span></li>
+      <li class="soon"><span title="12 · Projekt planen (in Arbeit)">12</span></li>
+      <li class="soon"><span title="13 · Tabellen anlegen und füllen (in Arbeit)">13</span></li>
+      <li class="soon"><span title="14 · Ändern und löschen (in Arbeit)">14</span></li>
+      <li class="soon"><span title="15 · Suchformular (in Arbeit)">15</span></li>
+      <li class="soon"><span title="16 · Eingabeformular (in Arbeit)">16</span></li>
+    </ol>
+  </nav>
+
+  <section class="hero">
+    <h1>IDs – damit nichts verwechselt wird</h1>
+    <div class="meta">
+      <span class="chip">Teil 1 · Lektion 2</span>
+      <span class="chip">⏱ ca. 35 Minuten</span>
+    </div>
+    <p class="erklaerung">An deiner Schule gibt es zwei Schüler, die Leon Müller heißen. Wer von beiden hat das Buch ausgeliehen?
+      Damit eine Datenbank nie verwechselt, bekommt jede Zeile eine eindeutige Nummer: die <strong>ID</strong>.
+      Und statt Namen immer wieder abzuschreiben, verweist man einfach auf diese Nummer – so hängen Tabellen zusammen.</p>
+  </section>
+
+  <section class="card wdh">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
+  <details class="card woerter">
+    <summary>📖 Wörter für diese Lektion</summary>
+    <p class="note">Die Fachwörter links bleiben deutsch – so heißen sie im Unterricht.</p>
+    <div class="tbl-scroll"><table class="plain">
+      <tr><th class="wort">die ID <small>die IDs</small></th><td>Eine Nummer, die jede Zeile einer Tabelle genau einmal hat.</td></tr>
+      <tr><th class="wort">eindeutig</th><td>Kommt nur ein einziges Mal vor. Es gibt keine Verwechslung.</td></tr>
+      <tr><th class="wort">der Primärschlüssel <small>die Primärschlüssel</small></th><td>Die Spalte, die jede Zeile eindeutig macht – meistens <code>id</code>.</td></tr>
+      <tr><th class="wort">der Fremdschlüssel <small>die Fremdschlüssel</small></th><td>Eine Spalte, die auf die ID in einer <strong>anderen</strong> Tabelle zeigt, z. B. <code>leser_id</code>.</td></tr>
+      <tr><th class="wort">verweisen <small>der Verweis</small></th><td>Auf etwas zeigen: <code>leser_id = 7</code> verweist auf den Leser mit der ID 7.</td></tr>
+      <tr><th class="wort">die Beziehung <small>die Beziehungen</small></th><td>Wie zwei Tabellen zusammenhängen, z. B. „ein Leser leiht viele Bücher aus“.</td></tr>
+    </table></div>
+  </details>
+
+  <section class="card szenario">
+    <h2><span class="step-no">📚</span> Szenario</h2>
+    <p>Die <strong>Schülerbücherei</strong> deiner Schule wird digital. Bisher stand alles in einer langen Liste. Die Bücherei-AG baut daraus eine richtige Datenbank – und du hilfst mit.</p>
+  </section>
+
+  <!-- 1 · Überleg -->
+  <section class="card">
+    <h2><span class="step-no">1</span> Überleg: Welcher Leon? <span class="chip">4 Minuten</span></h2>
+    <p>So sah die alte Ausleihliste aus:</p>
+    <div class="tbl-scroll"><table class="labor-tab">
+      <thead><tr><th>Name</th><th>Klasse</th><th>Buch</th><th>ausgeliehen</th></tr></thead>
+      <tbody>
+        <tr><td>Leon Müller</td><td>9b</td><td>Abseits</td><td>2025-09-22</td></tr>
+        <tr><td>Mia Schuster</td><td>8a</td><td>Sternenstaub</td><td>2025-09-16</td></tr>
+        <tr><td>Leon Müller</td><td>7a</td><td>Die Insel der Roboter</td><td>2025-09-22</td></tr>
+        <tr><td>Leon Müller</td><td>8a</td><td>Das Haus am Nebelsee</td><td>2025-11-12</td></tr>
+      </tbody>
+    </table></div>
+    <p><strong>Überleg:</strong> Wer hat „Das Haus am Nebelsee“ ausgeliehen?</p>
+    <div class="choices" id="pred1">
+      <button type="button" class="choice">Leon aus der 9b</button>
+      <button type="button" class="choice">Leon aus der 7a</button>
+      <button type="button" class="choice">Ein dritter Leon aus der 8a</button>
+      <button type="button" class="choice">Das kann man nicht sicher sagen</button>
+    </div>
+    <p class="fb" id="fb1"></p>
+  </section>
+
+  <!-- 2 · Primärschlüssel -->
+  <section class="card">
+    <h2><span class="step-no">2</span> Der Primärschlüssel <span class="chip">4 Minuten</span></h2>
+    <p>Namen können doppelt sein, Klassen wechseln jedes Jahr, Tippfehler passieren. Darum bekommt jede Zeile eine <strong>ID</strong>:
+      eine Nummer, die es in dieser Tabelle nur einmal gibt. Sie heißt <strong>Primärschlüssel</strong>.</p>
+    <p class="rule">Ein Primärschlüssel ist <strong>eindeutig</strong>, <strong>nie leer</strong> und <strong>ändert sich nie</strong>.</p>
+    <p><strong>Überleg:</strong> Welche Spalte der Tabelle <code>leser</code> eignet sich als Primärschlüssel?</p>
+    <div id="q2"></div>
+  </section>
+
+  <!-- 3 · Warum mehrere Tabellen -->
+  <section class="card">
+    <h2><span class="step-no">3</span> Warum mehrere Tabellen? <span class="chip">5 Minuten</span></h2>
+    <p>Mia Schuster leiht gern aus. In der alten Liste steht sie so:</p>
+    <div class="tbl-scroll"><table class="labor-tab">
+      <thead><tr><th>Name</th><th>Klasse</th><th>Buch</th></tr></thead>
+      <tbody>
+        <tr><td>Mia Schuster</td><td>8a</td><td>Sternenstaub</td></tr>
+        <tr><td>Mia Schuster</td><td>8a</td><td>Schattenwald</td></tr>
+        <tr><td>Mia Schuser</td><td>8a</td><td>Das Flüstern der Steine</td></tr>
+      </tbody>
+    </table></div>
+    <p><strong>Überleg:</strong> Was ist hier das Problem?</p>
+    <div id="q3"></div>
+    <p>Die Lösung: Jede Sache steht in <strong>ihrer eigenen</strong> Tabelle, genau einmal. Mia steht einmal in <code>leser</code>.
+      In <code>ausleihen</code> steht nur ihre Nummer: <code>leser_id = 1</code>. Wechselt sie die Klasse, ändert man <strong>eine</strong> Zeile.</p>
+    <p class="rule">Jede Information steht nur <strong>einmal</strong> in der Datenbank.<br>Andere Tabellen <strong>verweisen</strong> mit der ID darauf.</p>
+  </section>
+
+  <!-- 4 · ID-Faden -->
+  <section class="card">
+    <h2><span class="step-no">4</span> Folge dem Faden <span class="chip">8 Minuten</span></h2>
+    <p>So sieht die Bücherei jetzt aus: drei Tabellen. In <code>ausleihen</code> stehen keine Namen und keine Titel mehr – nur Nummern.
+      <strong>Tipp eine blaue Nummer an</strong> und schau, wohin sie zeigt.</p>
+    <div id="faden"></div>
+    <p><strong>a)</strong> Die Ausleihe mit der <code>id</code> 25: Wer hat welches Buch?</p>
+    <div id="q4a"></div>
+    <p><strong>b)</strong> Jetzt andersherum: Wer hat „Mission Mars“ (Buch-ID 2) ausgeliehen? Such in <code>ausleihen</code> alle Zeilen mit <code>buch_id = 2</code>.</p>
+    <div id="q4b"></div>
+    <p class="rule"><code>leser_id</code> und <code>buch_id</code> sind <strong>Fremdschlüssel</strong>:<br>Sie zeigen auf die <code>id</code> in einer anderen Tabelle.</p>
+  </section>
+
+  <!-- 5 · ER-Diagramm -->
+  <section class="card">
+    <h2><span class="step-no">5</span> Das ER-Diagramm <span class="chip">5 Minuten</span></h2>
+    <p>Wie Tabellen zusammenhängen, zeichnet man in einem <strong>ER-Diagramm</strong> (Entity-Relationship-Diagramm). Jeder Kasten ist eine Tabelle,
+      die Linien sind Beziehungen. <strong>1</strong> und <strong>n</strong> sagen, wie viele zusammengehören.</p>
+    <div id="er"></div>
+    <div id="q5"></div>
+  </section>
+
+  <!-- Plus -->
+  <section class="card">
+    <h2><span class="badge plus">Plus</span> Ein Faden ins Nichts <span class="chip">für Schnelle</span></h2>
+    <p>In dieser kaputten Bücherei-Datenbank stimmt etwas nicht. Tipp alle blauen Nummern an. Was fällt dir auf?</p>
+    <div id="kaputt"></div>
+    <div id="qplus"></div>
+  </section>
+
+  <!-- Kurz-Check -->
+  <section class="card">
+    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
+    <div id="quiz"></div>
+  </section>
+
+  <section class="card merke">
+    <h2>Merke</h2>
+    <ul>
+      <li>Jede Tabelle hat einen <strong>Primärschlüssel</strong> (meist <code>id</code>): eindeutig, nie leer, ändert sich nie.</li>
+      <li>Jede Information steht nur <strong>einmal</strong> in der Datenbank – in ihrer eigenen Tabelle.</li>
+      <li>Ein <strong>Fremdschlüssel</strong> (z. B. <code>leser_id</code>) zeigt auf die <code>id</code> einer anderen Tabelle.</li>
+      <li>Im <strong>ER-Diagramm</strong>: Kästen = Tabellen, Linien = Beziehungen, 1 und n = eins und viele. Der Fremdschlüssel steht auf der n-Seite.</li>
+    </ul>
+  </section>
+
+  <!-- Training -->
+  <section class="card frei" id="training">
+    <h2><span class="step-no">🏋</span> Training</h2>
+    <p class="lead">Folge den Fäden. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
+
+    <h3 class="sub"><span class="badge ueben">● Basis</span> Noch mehr Fäden in der Bücherei</h3>
+    <p>Benutze die drei Tabellen von Schritt 4.</p>
+    <div id="tr1"></div>
+
+    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Tonspur: Songs, Künstler, Labels</h3>
+    <p>Bei Tonspur stehen die Songs, die Künstler und ihre Plattenfirmen (Labels) in drei Tabellen. Hier zeigt <code>songs.kuenstler_id</code> auf <code>kuenstler</code>
+      und <code>kuenstler.label_id</code> auf <code>labels</code> – ein Faden über zwei Stationen.</p>
+    <div id="faden2"></div>
+    <div id="tr2"></div>
+
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Ein ER-Diagramm lesen und weiterdenken</h3>
+    <p>So ist die Partnerbörse für Tiere „Pfotenglück“ aufgebaut – die baust du in Teil 4 selbst.</p>
+    <div id="er2"></div>
+    <div id="tr3"></div>
+  </section>
+
+  <nav class="pager">
+    <a href="01-datenbanken.html">← Lektion 1: Datenbanken sind überall</a>
+    <a href="../teil2/03-select.html">Lektion 3: SELECT – Spalten auswählen →</a>
+  </nav>
+</main>
+
+<footer>
+  <div class="wrap t">Lernmaterial von <a href="https://herrseibert.de">herrseibert.de</a> · Lizenz <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">CC BY-SA 4.0</a> · ohne Tracking, ohne Cookies<br>Erstellt von der KI Claude von Anthropic.</div>
+  <div class="wrap t gh">Fehler gefunden oder eine Idee? → <a href="https://github.com/baumlaube/sql-course">Kurs auf GitHub</a></div>
+  <div class="wrap t gh">Das SQL-Labor nutzt SQLite (gemeinfrei) über sql.js (MIT-Lizenz) – alles läuft in deinem Browser.</div>
+  <div class="wrap legal"><a href="../impressum.html">Impressum</a> · <a href="../datenschutz.html">Datenschutz</a></div>
+</footer>
+
+<script>
+Labor.daten("kaputt", { titel: "Kaputte Bücherei", sql: `
+CREATE TABLE leser (id INTEGER PRIMARY KEY, vorname TEXT, nachname TEXT);
+CREATE TABLE ausleihen (id INTEGER PRIMARY KEY, leser_id INTEGER, buch TEXT);
+INSERT INTO leser VALUES (1,'Mia','Schuster'),(2,'Leon','Müller'),(3,'Elif','Kaya');
+INSERT INTO ausleihen VALUES (1,1,'Sternenstaub'),(2,3,'Mission Mars'),(3,7,'Funkstille'),(4,2,'Abseits');` });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const { pick, quiz } = window.Kurs;
+  const L = window.Labor;
+  const $ = (id) => document.getElementById(id);
+  const BUECHEREI_VERWEISE = { "ausleihen.leser_id": "leser", "ausleihen.buch_id": "buecher" };
+
+  quiz($("wdh"), [
+    { q: "Eine Zeile in einer Tabelle heißt …", options: ["Datensatz", "Attribut", "Datentyp"], right: 0,
+      miss: [null, "Ein Attribut ist eine Spalte.", "Der Datentyp sagt, welche Werte in eine Spalte dürfen."], why: "Eine Zeile ist ein Datensatz." },
+    { q: "Welcher Datentyp passt für <code>klasse</code> mit Werten wie <code>8a</code>?", options: ["INTEGER", "TEXT", "REAL"], right: 1,
+      miss: ["Da ist ein Buchstabe drin.", null, "Das ist keine Kommazahl."], why: "Mit Buchstaben: TEXT." },
+  ]);
+
+  pick($("pred1"), { right: 3, fb: $("fb1"),
+    miss: ["Der Leon aus der 9b hat „Abseits“. Aber vielleicht ist er inzwischen in einer anderen Klasse?",
+      "Die Klasse 7a gehört zu einem Leon – aber das Buch steht bei 8a.",
+      "Vielleicht – oder es ist der Leon aus der 7a, der inzwischen in der 8a ist? Oder ein Tippfehler?"],
+    why: "Zwei (oder drei?) Leon Müller, Klassen, die sich jedes Jahr ändern, mögliche Tippfehler: Mit Namen ist das nicht sicher zu klären. Es fehlt etwas, das jede Person <strong>eindeutig</strong> macht." });
+
+  quiz($("q2"), [
+    { q: "Welche Spalte eignet sich als Primärschlüssel für Leser?",
+      options: ["<code>nachname</code>", "<code>klasse</code>", "<code>id</code> – eine fortlaufende Nummer", "<code>vorname</code>"], right: 2,
+      miss: ["Nachnamen sind oft doppelt (zwei Müller!) und können sich ändern.", "In einer Klasse sind viele Schüler – und die Klasse ändert sich jedes Jahr.", null, "Vornamen gibt es viele Male."],
+      why: "Eine Nummer, die die Datenbank vergibt, ist eindeutig, nie leer und ändert sich nie." },
+  ]);
+
+  quiz($("q3"), [
+    { q: "Mia steht dreimal da. Was passiert, wenn sie in die 9a kommt?", options: ["Man muss eine Zeile ändern", "Man muss drei Zeilen ändern – und keine vergessen", "Nichts"], right: 1,
+      miss: ["Ihr Name und ihre Klasse stehen in jeder Ausleihe – also drei Mal.", null, "Doch: Die Klasse steht in jeder ihrer Zeilen."],
+      why: "Doppelte Daten heißt: Jede Änderung muss an vielen Stellen passieren. Vergisst man eine, widersprechen sich die Daten." },
+    { q: "In der dritten Zeile steht „Schuser“. Was folgt daraus?", options: ["Nichts, das merkt keiner", "Für die Datenbank ist das eine andere Person", "Die Datenbank korrigiert es selbst"], right: 1,
+      miss: ["Eine Suche nach „Schuster“ findet diese Ausleihe nicht mehr.", null, "Eine Datenbank weiß nicht, was gemeint war."],
+      why: "Tippfehler machen aus einer Person zwei. Steht der Name nur einmal da, kann das nicht passieren." },
+  ]);
+
+  L.faden($("faden"), { db: "buecherei", tabellen: ["ausleihen", "leser", "buecher"], verweise: BUECHEREI_VERWEISE });
+
+  quiz($("q4a"), [
+    { q: "Ausleihe 25: Wer hat welches Buch?",
+      options: ["Leon Müller (9b) – Abseits", "Leon Müller (7a) – Das Haus am Nebelsee", "Mia Schuster – Sternenstaub", "Elif Kaya – Mission Mars"], right: 1,
+      miss: ["Schau genau: In Ausleihe 25 steht <code>leser_id = 5</code>. Welcher Leon hat die ID 5?", null,
+        "Mia hat die ID 1. In Ausleihe 25 steht eine andere Nummer.", "Elif hat die ID 3. Tipp in Zeile 25 auf die blauen Nummern."],
+      why: "<code>leser_id = 5</code> → Leon Müller aus der 7a. <code>buch_id = 1</code> → „Das Haus am Nebelsee“. Mit der ID ist klar, welcher Leon es war." },
+  ]);
+  quiz($("q4b"), [
+    { q: "Wer hat „Mission Mars“ ausgeliehen?",
+      options: ["Nur Elif Kaya", "Elif Kaya und Luca Rossi", "Ben Sander", "Niemand"], right: 1,
+      miss: ["Es gibt zwei Zeilen mit <code>buch_id = 2</code>: Ausleihe 1 und Ausleihe 19.", null,
+        "Ben Sander ist der Autor – er steht in <code>buecher</code>, nicht in <code>leser</code>.", "Doch: In <code>ausleihen</code> steht zweimal <code>buch_id = 2</code>."],
+      why: "Ausleihe 1: <code>leser_id = 3</code> → Elif Kaya. Ausleihe 19: <code>leser_id = 15</code> → Luca Rossi. Ein Buch kann oft ausgeliehen werden." },
+  ]);
+
+  L.er($("er"), {
+    tabellen: [
+      { name: "leser", x: 10, y: 10, spalten: [{ name: "id", pk: true }, { name: "vorname" }, { name: "nachname" }, { name: "klasse" }] },
+      { name: "ausleihen", x: 340, y: 10, spalten: [{ name: "id", pk: true }, { name: "leser_id", fk: "leser" }, { name: "buch_id", fk: "buecher" }, { name: "ausgeliehen" }, { name: "zurueck" }] },
+      { name: "buecher", x: 670, y: 10, spalten: [{ name: "id", pk: true }, { name: "titel" }, { name: "autor" }, { name: "genre" }, { name: "jahr" }] },
+    ],
+    beziehungen: [
+      { von: "leser", nach: "ausleihen", text: "leiht", kard: ["1", "n"] },
+      { von: "buecher", nach: "ausleihen", text: "wird geliehen", kard: ["1", "n"] },
+    ],
+  });
+  quiz($("q5"), [
+    { q: "Was bedeutet die 1 bei <code>leser</code> und das n bei <code>ausleihen</code>?",
+      options: ["Ein Leser hat genau eine Ausleihe", "Ein Leser kann viele Ausleihen haben; jede Ausleihe gehört zu genau einem Leser", "Es gibt einen Leser und n Bücher"], right: 1,
+      miss: ["n heißt „viele“ – Mia hat drei Ausleihen.", null, "Die Zahlen beschreiben die Beziehung zwischen den beiden Tabellen an der Linie."],
+      why: "1:n – „eins zu viele“. Die häufigste Beziehung in Datenbanken." },
+    { q: "Warum steht der Fremdschlüssel <code>leser_id</code> in <code>ausleihen</code> – und nicht in <code>leser</code>?",
+      options: ["Zufall", "Weil ein Leser viele Ausleihen hat – in einer Leser-Zeile müssten sonst viele Nummern stehen", "Weil leser schon voll ist"], right: 1,
+      miss: ["Das hat einen Grund.", null, "Tabellen werden nicht „voll“."],
+      why: "Der Fremdschlüssel steht immer auf der <strong>n-Seite</strong>. Jede Ausleihe gehört zu genau einem Leser – das passt in eine Spalte." },
+  ]);
+
+  L.faden($("kaputt"), { db: "kaputt", tabellen: ["ausleihen", "leser"], verweise: { "ausleihen.leser_id": "leser" } });
+  quiz($("qplus"), [
+    { q: "Was stimmt nicht?",
+      options: ["Ausleihe 3 zeigt auf einen Leser mit der ID 7 – den gibt es nicht", "Leser 2 hat kein Buch", "Die Tabelle leser ist zu kurz"], right: 0,
+      miss: [null, "Leon hat Ausleihe 4. Und Leser ohne Ausleihe wären kein Fehler.", "Drei Leser sind in Ordnung – nur muss jeder Verweis passen."],
+      why: "Ein Fremdschlüssel muss immer auf eine vorhandene ID zeigen. Sonst weiß niemand, wer „Funkstille“ hat. Gute Datenbanken verhindern so etwas (referenzielle Integrität)." },
+  ]);
+
+  quiz($("quiz"), [
+    { q: "Welche Aussage über einen Primärschlüssel ist falsch?",
+      options: ["Er ist eindeutig", "Er darf leer sein", "Er ändert sich nie", "Meist ist es eine Nummer namens id"], right: 1,
+      miss: ["Doch, eindeutig muss er sein.", null, "Doch, er soll sich nie ändern.", "Das stimmt."],
+      why: "Ein Primärschlüssel ist nie leer – sonst wäre die Zeile nicht eindeutig zu finden." },
+    { q: "In <code>ausleihen</code> steht <code>buch_id = 13</code>. Was bedeutet das?",
+      options: ["Die Ausleihe hat die Nummer 13", "Ausgeliehen wurde das Buch, das in <code>buecher</code> die <code>id</code> 13 hat", "13 Bücher wurden ausgeliehen"], right: 1,
+      miss: ["Die Nummer der Ausleihe steht in <code>ausleihen.id</code>.", null, "Es ist ein Verweis auf ein Buch, keine Anzahl."],
+      why: "<code>buch_id</code> ist ein Fremdschlüssel: Er zeigt auf die Zeile mit <code>id = 13</code> in <code>buecher</code>." },
+    { q: "Warum speichert man den Namen des Lesers nicht in jeder Ausleihe?",
+      options: ["Damit er nicht doppelt steht und es keine Widersprüche gibt", "Weil Namen geheim sind", "Weil Namen zu lang sind"], right: 0,
+      miss: [null, "Darum geht es hier nicht – es geht um doppelte Daten.", "Länge spielt keine Rolle."],
+      why: "Jede Information nur einmal: Ändert sich etwas, ändert man eine Zeile." },
+    { q: "Ein Kunde kann viele Bestellungen haben, jede Bestellung gehört zu einem Kunden. Wo steht der Fremdschlüssel?",
+      options: ["In <code>kunden</code>: <code>bestellung_id</code>", "In <code>bestellungen</code>: <code>kunde_id</code>"], right: 1,
+      miss: ["Ein Kunde hat viele Bestellungen – dafür reicht eine Spalte nicht.", null],
+      why: "Der Fremdschlüssel steht auf der n-Seite: bei den Bestellungen." },
+  ]);
+
+  /* Training */
+  quiz($("tr1"), [
+    { q: "Ausleihe 13: Welches Buch ist es?", options: ["Sternenstaub", "Tatort Schulhof", "Funkstille"], right: 0,
+      miss: [null, "Tipp in Zeile 13 auf die <code>buch_id</code>.", "Tipp in Zeile 13 auf die <code>buch_id</code>."], why: "<code>buch_id = 7</code> → „Sternenstaub“." },
+    { q: "Wie viele Bücher hat Elif Kaya (ID 3) insgesamt ausgeliehen?", options: ["2", "4", "5"], right: 1,
+      miss: ["Zähl alle Zeilen mit <code>leser_id = 3</code> in <code>ausleihen</code>.", null, "Zähl genau nach: Ausleihen 1, 7, 18 und 30."], why: "Ausleihen 1, 7, 18 und 30 haben <code>leser_id = 3</code>." },
+    { q: "Welcher Leon hat „Abseits“ ausgeliehen?", options: ["Leon Müller aus der 9b (ID 2)", "Leon Müller aus der 7a (ID 5)"], right: 0,
+      miss: [null, "„Abseits“ hat die ID 9. In Ausleihe 4 steht <code>buch_id = 9</code> und <code>leser_id = 2</code>."], why: "Ausleihe 4: <code>leser_id = 2</code> → Leon aus der 9b." },
+    { q: "Ausleihe 20 hat bei <code>zurueck</code> den Eintrag NULL. Was heißt das?", options: ["Das Buch ist verloren", "Das Buch ist noch nicht zurückgegeben", "Der Leser ist gelöscht"], right: 1,
+      miss: ["Davon steht da nichts.", null, "Der Leser (ID 2) ist noch da."], why: "NULL heißt: Es gibt (noch) keinen Wert." },
+  ]);
+
+  L.faden($("faden2"), { db: "musik", tabellen: ["songs", "kuenstler", "labels"],
+    spalten: { songs: ["id", "titel", "kuenstler_id", "jahr"] },
+    verweise: { "songs.kuenstler_id": "kuenstler", "kuenstler.label_id": "labels" } });
+  quiz($("tr2"), [
+    { q: "Von wem ist der Song „Wolke 8“ (Song-ID 22)?", options: ["Juna", "Sunny Öztürk", "Frida Falk"], right: 1,
+      miss: ["Tipp bei Song 22 auf die <code>kuenstler_id</code>.", null, "Tipp bei Song 22 auf die <code>kuenstler_id</code>."], why: "<code>kuenstler_id = 7</code> → Sunny Öztürk." },
+    { q: "Bei welchem Label ist der Künstler von „Polarlicht“ (Song-ID 4)?", options: ["Sonnendeck Records", "Pixelwelle", "Beton Beats"], right: 1,
+      miss: ["Zwei Stationen: erst zum Künstler, dann von dort zum Label.", null, "Zwei Stationen: erst zum Künstler, dann von dort zum Label."],
+      why: "Song 4 → <code>kuenstler_id = 4</code> (Nova Lindqvist) → <code>label_id = 4</code> → Pixelwelle." },
+    { q: "In welcher Stadt sitzt das Label von MC Brezel?", options: ["München", "Hamburg", "Berlin"], right: 0,
+      miss: [null, "MC Brezel hat <code>label_id = 3</code>. Tipp sie an.", "MC Brezel hat <code>label_id = 3</code>. Tipp sie an."], why: "<code>label_id = 3</code> → Beton Beats in München." },
+    { q: "Wo steht der Fremdschlüssel zwischen Künstlern und Labels – und warum?", options: ["In <code>labels</code>, weil ein Label wichtig ist", "In <code>kuenstler</code> (<code>label_id</code>), weil ein Label viele Künstler hat"], right: 1,
+      miss: ["Ein Label hat viele Künstler – das passt nicht in eine Spalte.", null], why: "1 Label : n Künstler – der Fremdschlüssel steht auf der n-Seite." },
+  ]);
+
+  L.er($("er2"), {
+    tabellen: [
+      { name: "besitzer", x: 10, y: 10, spalten: [{ name: "id", pk: true }, { name: "vorname" }, { name: "wohnort" }] },
+      { name: "tiere", x: 340, y: 10, spalten: [{ name: "id", pk: true }, { name: "name" }, { name: "besitzer_id", fk: "besitzer" }, { name: "art_id", fk: "arten" }, { name: "alter_jahre" }, { name: "hobby" }, { name: "sucht" }] },
+      { name: "arten", x: 670, y: 10, spalten: [{ name: "id", pk: true }, { name: "name" }, { name: "fell" }, { name: "kann_fliegen" }] },
+    ],
+    beziehungen: [
+      { von: "besitzer", nach: "tiere", text: "hat", kard: ["1", "n"] },
+      { von: "arten", nach: "tiere", text: "gehört zu", kard: ["1", "n"] },
+    ],
+  });
+  quiz($("tr3"), [
+    { q: "Kann ein Besitzer mehrere Tiere haben?", options: ["Ja", "Nein"], right: 0, miss: [null, "Schau auf die Linie: 1 Besitzer – n Tiere."], why: "1:n – ein Besitzer, viele Tiere." },
+    { q: "Kann ein Tier zu zwei Arten gehören?", options: ["Ja", "Nein"], right: 1, miss: ["Ein Tier hat genau eine <code>art_id</code>.", null], why: "Jedes Tier hat genau eine Art; eine Art hat viele Tiere." },
+    { q: "Die Börse soll auch speichern, <strong>welche Tiere sich mögen</strong> (ein Tier mag viele, wird von vielen gemocht). Reicht dafür eine Spalte in <code>tiere</code>?",
+      options: ["Ja, z. B. <code>mag_id</code>", "Nein – man braucht eine eigene Tabelle, z. B. <code>likes</code> mit <code>von_tier_id</code> und <code>an_tier_id</code>"], right: 1,
+      miss: ["Eine Spalte hat nur Platz für <strong>ein</strong> gemochtes Tier.", null],
+      why: "Viele zu viele (n:m) braucht eine Zwischentabelle. Genau wie <code>ausleihen</code> zwischen Lesern und Büchern!" },
+  ]);
+});
+</script>
+</body>
+</html>

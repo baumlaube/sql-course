@@ -118,3 +118,40 @@ table.labor-tab .null { color: var(--muted); font-style: italic; }
 .labor-gruppen tr.gr-neu-gr td { border-top: 3px solid var(--accent); }
 .labor-gruppen th.zl-bed { color: var(--text); background: var(--zl-mark); }
 .labor-gruppen td.zl-bed { font-weight: 700; }
+
+/* ID-Faden */
+.faden-tabs { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); align-items: start; }
+.faden-tab .labor-scroll { max-height: 280px; border: 1px solid var(--line); border-radius: 10px; }
+.faden-name { margin: 4px 0; font-weight: 700; }
+.fk-pfeil { font-weight: 400; color: var(--accent); font-size: 12px; }
+button.fk {
+  font: inherit; font-weight: 800; min-width: 34px; padding: 1px 8px; border-radius: 6px; cursor: pointer;
+  border: 2px solid var(--accent); background: var(--surface); color: var(--accent);
+}
+button.fk:hover { background: var(--accent); color: var(--surface); }
+tr.faden-quelle td { background: var(--zl-mark); }
+tr.faden-ziel td { background: var(--zl-ja); font-weight: 700; }
+.labor-faden .zl-status { margin: 0 0 10px; padding: 8px 12px; border-radius: 10px; background: var(--surface-2); min-height: 2.6em; }
+
+/* ER-Diagramm */
+.er-diagramm { margin: 12px 0; overflow-x: auto; direction: ltr; }
+.er-diagramm svg { max-width: 100%; height: auto; min-width: 520px; font-family: system-ui, sans-serif; }
+.er-box { fill: var(--surface); stroke: var(--navy); stroke-width: 2; }
+.er-kopf { fill: var(--navy); }
+.er-name { fill: var(--surface); font-weight: 800; font-size: 15px; font-family: ui-monospace, "DejaVu Sans Mono", monospace; }
+.er-spalte { fill: var(--text); font-size: 13.5px; font-family: ui-monospace, "DejaVu Sans Mono", monospace; }
+.er-spalte.pk { font-weight: 800; text-decoration: underline; }
+.er-spalte.fk { fill: var(--accent); }
+.er-fkziel { fill: var(--muted); font-size: 11.5px; }
+.er-linie { stroke: var(--muted); stroke-width: 2; }
+.er-raute { fill: var(--surface-2); stroke: var(--muted); stroke-width: 1.5; }
+.er-rtext { fill: var(--text); font-size: 12px; font-weight: 700; }
+.er-kard { fill: var(--plus); font-size: 16px; font-weight: 800; }
+.er-legende { font-size: 13.5px; color: var(--muted); margin: 4px 0 0; }
+
+/* JOIN-Zeitlupe */
+.jl-paar { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); align-items: start; }
+.jl-paar .labor-scroll { max-height: 260px; border: 1px solid var(--line); border-radius: 10px; }
+.jl-erg .labor-scroll { max-height: 260px; }
+.labor-joinlupe .zl-status mark { background: var(--zl-mark); color: inherit; border-radius: 3px; padding: 0 2px; }
+.labor-zeit { margin: 6px 0 0; font-weight: 700; color: var(--ok-fg); }
