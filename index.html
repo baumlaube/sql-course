@@ -27,16 +27,36 @@
 <script src="assets/i18n.js?v=2890af4da9" data-page="index" data-langs="de en"></script>
 <script src="assets/kurs.js?v=c26439e733"></script>
 <style>
-  .teile { list-style: none; padding: 0; margin: 0; }
-  .teil { margin: 18px 0 0; }
-  .teil h3 { margin: 0 0 6px; color: var(--navy); font-size: 19px; }
-  .lektionen { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-  .lektionen a, .lektionen span { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 10px;
-    border: 2px solid var(--line); background: var(--surface); color: var(--text); text-decoration: none; }
-  .lektionen a:hover { border-color: var(--accent); }
-  .lektionen span { color: var(--muted); border-style: dashed; }
-  .lektionen b { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--surface-2); flex: none; }
-  .lektionen a b { background: var(--basis); color: #fff; }
+  .los { display: inline-block; padding: 10px 18px; border-radius: 10px; background: var(--basis); color: #fff; font-weight: 700; text-decoration: none; }
+  .los:hover { filter: brightness(1.1); }
+  :root[data-theme="dark"] .los { color: #111; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .los { color: #111; } }
+  /* Je Teil eine Farbe (hell / dunkel) */
+  .t1 { --tf: #0e7490; } .t2 { --tf: #2e7d32; } .t3 { --tf: #6a1b9a; } .t4 { --tf: #c2410c; } .t5 { --tf: #1d4ed8; }
+  :root[data-theme="dark"] .t1 { --tf: #67c3d4; } :root[data-theme="dark"] .t2 { --tf: #5cb860; } :root[data-theme="dark"] .t3 { --tf: #c48ae0; }
+  :root[data-theme="dark"] .t4 { --tf: #ff9a45; } :root[data-theme="dark"] .t5 { --tf: #8ab4ff; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .t1 { --tf: #67c3d4; } :root:not([data-theme="light"]) .t2 { --tf: #5cb860; }
+    :root:not([data-theme="light"]) .t3 { --tf: #c48ae0; } :root:not([data-theme="light"]) .t4 { --tf: #ff9a45; }
+    :root:not([data-theme="light"]) .t5 { --tf: #8ab4ff; }
+  }
+  .card.teil { border-top: 6px solid var(--tf); }
+  .card.teil > h2 { color: var(--tf); flex-wrap: nowrap; align-items: flex-start; }
+  .card.teil .step-no { background: var(--tf); color: var(--surface); }
+  .lektionen { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); }
+  .lektionen a, .lektionen .bald { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto 1fr; column-gap: 12px; align-items: start; height: 100%; box-sizing: border-box; padding: 12px;
+    border-radius: 12px; border: 2px solid var(--line); background: var(--surface); color: var(--text); text-decoration: none; font-weight: 600; line-height: 1.3; }
+  .lektionen a:hover, .lektionen a:focus-visible { border-color: var(--tf); transform: translateY(-2px); }
+  .lektionen a { transition: transform .15s, border-color .15s; }
+  .lektionen .bald { color: var(--muted); border-style: dashed; }
+  .lektionen small { color: var(--muted); font-weight: 600; font-size: 13px; }
+  .lektionen .bild { grid-row: 1 / span 3; }
+  .bild { width: 60px; height: 60px; padding: 6px; border-radius: 12px; background: var(--surface-2); color: var(--tf);
+    fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .bild .f { fill: currentColor; fill-opacity: .18; stroke: none; }
+  .bild .v { fill: currentColor; stroke: none; }
+  .bild text { fill: currentColor; stroke: none; font: 700 18px system-ui, sans-serif; }
+  @media (prefers-reduced-motion: reduce) { .lektionen a { transition: none; } .lektionen a:hover { transform: none; } }
 </style>
 </head>
 <body>
@@ -61,45 +81,57 @@
       wie man sie mit <strong>SQL</strong> befragt – und am Ende baust du deine eigene.</p>
     <p>Geübt wird im <strong>SQL-Labor</strong>: echtes SQLite direkt auf dieser Seite. Nichts installieren, kein Konto,
       und zu jedem Fehler sagt dir das Labor, was nicht stimmt.</p>
+    <p><a class="los" href="teil1/01-datenbanken.html">Mit Lektion 1 starten →</a></p>
   </section>
 
-  <section class="card">
-    <h2><span class="step-no">▶</span> Lernpfad</h2>
-    <p class="note">Der Kurs entsteht gerade. Fertige Lektionen sind grün.</p>
-    <ul class="teile">
-      <li class="teil"><h3>Teil 1 · Was ist eine Datenbank?</h3>
-        <ul class="lektionen">
-          <li><a href="teil1/01-datenbanken.html"><b>1</b> Datenbanken sind überall</a></li>
-          <li><a href="teil1/02-ids.html"><b>2</b> IDs und Verknüpfung</a></li>
-        </ul></li>
-      <li class="teil"><h3>Teil 2 · Abfragen in einer Tabelle</h3>
-        <ul class="lektionen">
-          <li><a href="teil2/03-select.html"><b>3</b> SELECT – Spalten auswählen</a></li>
-          <li><a href="teil2/04-where.html"><b>4</b> WHERE – Zeilen filtern</a></li>
-          <li><a href="teil2/05-and-or-not.html"><b>5</b> AND, OR, NOT</a></li>
-          <li><a href="teil2/06-like-in-between.html"><b>6</b> LIKE, IN, BETWEEN</a></li>
-          <li><a href="teil2/07-sortieren-rechnen.html"><b>7</b> Sortieren und rechnen</a></li>
-          <li><a href="teil2/08-group-by.html"><b>8</b> GROUP BY – Gruppen bilden</a></li>
-        </ul></li>
-      <li class="teil"><h3>Teil 3 · Mehrere Tabellen: JOIN</h3>
-        <ul class="lektionen">
-          <li><a href="teil3/09-join.html"><b>9</b> Zwei Tabellen: JOIN</a></li>
-          <li><a href="teil3/10-join-mehr.html"><b>10</b> JOIN mit WHERE und GROUP BY</a></li>
-          <li><a href="teil3/11-der-fall.html"><b>11</b> Der Fall</a></li>
-        </ul></li>
-      <li class="teil"><h3>Teil 4 · Projekt: Pfotenglück, die Partnerbörse für Tiere</h3>
-        <ul class="lektionen">
-          <li><a href="teil4/12-projekt-planen.html"><b>12</b> Projekt planen</a></li>
-          <li><a href="teil4/13-tabellen-anlegen.html"><b>13</b> Tabellen anlegen und füllen</a></li>
-          <li><a href="teil4/14-aendern-loeschen.html"><b>14</b> Ändern und löschen</a></li>
-        </ul></li>
-      <li class="teil"><h3>Teil 5 · Formulare</h3>
-        <ul class="lektionen">
-          <li><a href="teil5/15-suchformular.html"><b>15</b> Suchformular</a></li>
-          <li><a href="teil5/16-eingabeformular.html"><b>16</b> Eingabeformular</a></li>
-        </ul></li>
+  <!-- lernpfad: erzeugt von tools/lernpfad.py -->
+  <section class="card teil t1" aria-labelledby="teil1">
+    <h2 id="teil1"><span class="step-no">1</span> <span class="t">Was ist eine Datenbank?</span></h2>
+    <p class="lead">Wie eine Datenbank aufgebaut ist – und warum jede Zeile eine Nummer hat.</p>
+    <ul class="lektionen">
+      <li><a href="teil1/01-datenbanken.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><ellipse class="f" cx="32" cy="15" rx="18" ry="7"/><path d="M14 15v34c0 4 8 7 18 7s18-3 18-7V15"/><ellipse cx="32" cy="15" rx="18" ry="7"/><path d="M14 27c0 4 8 7 18 7s18-3 18-7M14 38c0 4 8 7 18 7s18-3 18-7"/></svg><small>Lektion 1</small><span class="t">Datenbanken sind überall</span></a></li>
+      <li><a href="teil1/02-ids.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><rect class="f" x="4" y="6" width="27" height="22" rx="3"/><rect x="4" y="6" width="27" height="22" rx="3"/><rect class="f" x="33" y="36" width="27" height="22" rx="3"/><rect x="33" y="36" width="27" height="22" rx="3"/><text x="17.5" y="23" text-anchor="middle">7</text><text x="46.5" y="53" text-anchor="middle">7</text><path d="M31 17c13 0 15 8 15 19" stroke-dasharray="3 5"/></svg><small>Lektion 2</small><span class="t">IDs und Verknüpfung</span></a></li>
     </ul>
   </section>
+  <section class="card teil t2" aria-labelledby="teil2">
+    <h2 id="teil2"><span class="step-no">2</span> <span class="t">Abfragen in einer Tabelle</span></h2>
+    <p class="lead">Du stellst Fragen an eine Tabelle: filtern, sortieren, zählen.</p>
+    <ul class="lektionen">
+      <li><a href="teil2/03-select.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><rect class="f" x="25" y="12" width="14" height="40"/><rect x="8" y="12" width="48" height="40" rx="3"/><path d="M8 22h48M25 12v40M39 12v40M8 32h48M8 42h48"/></svg><small>Lektion 3</small><span class="t">SELECT – Spalten auswählen</span></a></li>
+      <li><a href="teil2/04-where.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><path class="f" d="M8 10h48L37 32v16l-10 6V32z"/><path d="M8 10h48L37 32v16l-10 6V32z"/><path d="M44 58h12M44 52h8"/></svg><small>Lektion 4</small><span class="t">WHERE – Zeilen filtern</span></a></li>
+      <li><a href="teil2/05-and-or-not.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><path class="f" d="M32 17a16 16 0 0 1 0 30a16 16 0 0 1 0-30z"/><circle cx="24" cy="32" r="16"/><circle cx="40" cy="32" r="16"/></svg><small>Lektion 5</small><span class="t">AND, OR, NOT</span></a></li>
+      <li><a href="teil2/06-like-in-between.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><circle class="f" cx="27" cy="27" r="18"/><circle cx="27" cy="27" r="18"/><path d="M40 40l16 16" stroke-width="5"/><text x="27" y="34" text-anchor="middle">%</text></svg><small>Lektion 6</small><span class="t">LIKE, IN, BETWEEN</span></a></li>
+      <li><a href="teil2/07-sortieren-rechnen.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><rect class="f" x="8" y="40" width="9" height="14"/><rect class="f" x="21" y="30" width="9" height="24"/><rect class="f" x="34" y="18" width="9" height="36"/><path d="M8 40h9v14H8zM21 30h9v24h-9zM34 18h9v36h-9z"/><path d="M52 10v14M45 17h14"/></svg><small>Lektion 7</small><span class="t">Sortieren und rechnen</span></a></li>
+      <li><a href="teil2/08-group-by.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><rect class="f" x="4" y="24" width="16" height="32" rx="4"/><rect x="4" y="24" width="16" height="32" rx="4"/><rect class="f" x="24" y="36" width="16" height="20" rx="4"/><rect x="24" y="36" width="16" height="20" rx="4"/><rect class="f" x="44" y="12" width="16" height="44" rx="4"/><rect x="44" y="12" width="16" height="44" rx="4"/><circle class="v" cx="12" cy="32" r="3"/><circle class="v" cx="12" cy="40" r="3"/><circle class="v" cx="12" cy="48" r="3"/><circle class="v" cx="32" cy="42" r="3"/><circle class="v" cx="32" cy="50" r="3"/><circle class="v" cx="52" cy="20" r="3"/><circle class="v" cx="52" cy="28" r="3"/><circle class="v" cx="52" cy="36" r="3"/><circle class="v" cx="52" cy="44" r="3"/></svg><small>Lektion 8</small><span class="t">GROUP BY – Gruppen bilden</span></a></li>
+    </ul>
+  </section>
+  <section class="card teil t3" aria-labelledby="teil3">
+    <h2 id="teil3"><span class="step-no">3</span> <span class="t">Mehrere Tabellen: JOIN</span></h2>
+    <p class="lead">Die Antwort steckt in mehreren Tabellen. JOIN holt sie zusammen.</p>
+    <ul class="lektionen">
+      <li><a href="teil3/09-join.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><rect class="f" x="6" y="14" width="24" height="36" rx="3"/><rect x="6" y="14" width="24" height="36" rx="3"/><rect class="f" x="34" y="14" width="24" height="36" rx="3"/><rect x="34" y="14" width="24" height="36" rx="3"/><path d="M6 26h24M34 26h24M6 38h24M34 38h24"/><path d="M24 32h16" stroke-width="5"/></svg><small>Lektion 9</small><span class="t">Zwei Tabellen: JOIN</span></a></li>
+      <li><a href="teil3/10-join-mehr.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><rect class="f" x="4" y="8" width="18" height="18" rx="3"/><rect x="4" y="8" width="18" height="18" rx="3"/><rect class="f" x="23" y="38" width="18" height="18" rx="3"/><rect x="23" y="38" width="18" height="18" rx="3"/><rect class="f" x="42" y="8" width="18" height="18" rx="3"/><rect x="42" y="8" width="18" height="18" rx="3"/><path d="M13 26l14 12M51 26L37 38"/></svg><small>Lektion 10</small><span class="t">JOIN mit WHERE und GROUP BY</span></a></li>
+      <li><a href="teil3/11-der-fall.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><circle class="f" cx="26" cy="26" r="18"/><circle cx="26" cy="26" r="18"/><path d="M39 39l17 17" stroke-width="5"/><path d="M22 33V17l12-3v16"/><circle cx="19" cy="33" r="3.5"/><circle cx="31" cy="30" r="3.5"/></svg><small>Lektion 11</small><span class="t">Der Fall</span></a></li>
+    </ul>
+  </section>
+  <section class="card teil t4" aria-labelledby="teil4">
+    <h2 id="teil4"><span class="step-no">4</span> <span class="t">Projekt: Pfotenglück</span></h2>
+    <p class="lead">Du baust deine eigene Datenbank – eine Partnerbörse für Tiere.</p>
+    <ul class="lektionen">
+      <li><a href="teil4/12-projekt-planen.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><rect class="f" x="12" y="10" width="40" height="48" rx="4"/><rect x="12" y="10" width="40" height="48" rx="4"/><path d="M24 10V6h16v4"/><ellipse class="v" cx="32" cy="40" rx="7" ry="6"/><circle class="v" cx="23" cy="31" r="3"/><circle class="v" cx="29" cy="25" r="3"/><circle class="v" cx="35" cy="25" r="3"/><circle class="v" cx="41" cy="31" r="3"/></svg><small>Lektion 12</small><span class="t">Projekt planen</span></a></li>
+      <li><a href="teil4/13-tabellen-anlegen.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="10" width="40" height="36" rx="3"/><path d="M6 22h40M6 34h40M22 10v36"/><circle class="f" cx="48" cy="48" r="12"/><circle cx="48" cy="48" r="12"/><path d="M48 42v12M42 48h12"/></svg><small>Lektion 13</small><span class="t">Tabellen anlegen und füllen</span></a></li>
+      <li><a href="teil4/14-aendern-loeschen.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><rect class="f" x="6" y="12" width="40" height="12" rx="2"/><rect x="6" y="12" width="40" height="12" rx="2"/><rect x="6" y="34" width="40" height="12" rx="2"/><path d="M2 40h48"/><path class="f" d="M44 30l12-12 5 5-12 12-7 2z"/><path d="M44 30l12-12 5 5-12 12-7 2z"/></svg><small>Lektion 14</small><span class="t">Ändern und löschen</span></a></li>
+    </ul>
+  </section>
+  <section class="card teil t5" aria-labelledby="teil5">
+    <h2 id="teil5"><span class="step-no">5</span> <span class="t">Formulare</span></h2>
+    <p class="lead">Andere suchen und tragen ein – ohne ein Wort SQL.</p>
+    <ul class="lektionen">
+      <li><a href="teil5/15-suchformular.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><rect class="f" x="4" y="20" width="56" height="16" rx="8"/><rect x="4" y="20" width="56" height="16" rx="8"/><circle cx="48" cy="28" r="4"/><path d="M51 31l4 4"/><path d="M12 28h20"/><path d="M8 48h30M8 56h20"/></svg><small>Lektion 15</small><span class="t">Suchformular</span></a></li>
+      <li><a href="teil5/16-eingabeformular.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="6" width="44" height="52" rx="4"/><path d="M18 16h14"/><rect class="f" x="18" y="21" width="28" height="8" rx="2"/><path d="M18 36h14"/><rect class="f" x="18" y="41" width="28" height="8" rx="2"/><path d="M40 13l3 3 6-6"/></svg><small>Lektion 16</small><span class="t">Eingabeformular</span></a></li>
+    </ul>
+  </section>
+  <!-- /lernpfad -->
 </main>
 
 <footer>
