@@ -271,7 +271,6 @@ footer .legal a { color: inherit; }
   background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); min-width: 170px; }
 .lang-menu ul a { display: block; padding: 6px 10px; border-radius: 6px; color: var(--text); text-decoration: none; font-weight: 400; }
 .lang-menu ul a:hover, .lang-menu ul a[aria-current] { background: var(--surface-2); }
-.lang-note { margin: 16px 0 0; padding: 8px 14px; border-radius: 10px; background: var(--fix-bg); font-size: 15px; }
 /* Arabisch/Persisch: Seite von rechts nach links – SQL-Code und Tabellen bleiben links nach rechts */
 [dir="rtl"] code, [dir="rtl"] pre.sql, [dir="rtl"] .labor-code, [dir="rtl"] .labor-tabelle, [dir="rtl"] .labor-bausteine { direction: ltr; unicode-bidi: isolate; }
 [dir="rtl"] .goals li { padding: 6px 30px 6px 0; }

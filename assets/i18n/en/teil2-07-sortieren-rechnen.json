@@ -53,7 +53,6 @@
  "Die Azubi-Börse veröffentlicht eine Statistik aus der Tabelle stellen. verguetung = Euro pro Monat im 1. Jahr, plaetze = freie Plätze.": "The Azubi-Börse publishes statistics from the table <code>stellen</code>. <code>verguetung</code> = euros per month in the 1st year, <code>plaetze</code> = free places.",
  "Tabelle konzerte. Heute ist der 15. März 2026.": "Table <code>konzerte</code>. <strong>Today is 15 March 2026.</strong>",
  "← Lektion 6: LIKE, IN, BETWEEN": "← Lesson 6: LIKE, IN, BETWEEN",
- "Lektion 8: GROUP BY →": "Lesson 8: GROUP BY →",
  "Du bekommst eine Liste. Gefragt ist eine Zahl – lass die Datenbank rechnen, z. B. mit COUNT(*).": "You get a list. A <strong>number</strong> is asked for – let the database calculate, e.g. with <code>COUNT(*)</code>.",
  "Fast! Die Zahl hat noch viele Nachkommastellen. Runde sie mit ROUND(…).": "Almost! The number still has many decimal places. Round it with <code>ROUND(…)</code>.",
  "Welche Titel findet LIKE '%e'?": "Which titles does <code>LIKE '%e'</code> find?",
@@ -127,7 +126,6 @@
  "SUM ist die Summe, nicht der Durchschnitt.": "<code>SUM</code> is the total, not the average.",
  "AVG hat keine Stellen-Angabe – runden macht ROUND.": "<code>AVG</code> has no option for decimal places – rounding is done by <code>ROUND</code>.",
  "Erst rechnen (AVG), dann runden (ROUND außen herum).": "Calculate first (<code>AVG</code>), then round (<code>ROUND</code> around it).",
- "In welcher Reihenfolge stehen die Teile?": "In which order do the parts come?",
  "Erst filtern (WHERE), dann sortieren.": "Filter first (<code>WHERE</code>), then sort.",
  "Erst sortieren, dann abschneiden – LIMIT ganz am Ende.": "Sort first, then cut off – <code>LIMIT</code> at the very end.",
  "Filtern, sortieren, abschneiden: WHERE · ORDER BY · LIMIT.": "Filter, sort, cut off: <code>WHERE</code> · <code>ORDER BY</code> · <code>LIMIT</code>.",
@@ -183,5 +181,6 @@
  "Die Reihenfolge stimmt hier nur zufällig. Sag der Datenbank ausdrücklich, was bei gleichem Preis gilt: …, datum.": "The order is only right here by chance. Tell the database clearly what applies when the price is the same: <code>…, datum</code>.",
  "Bei gleichem Preis soll das frühere Datum zuerst stehen – aufsteigend.": "If the price is the same, the <strong>earlier</strong> date should come first – ascending.",
  "Zwei Sortierungen mit Komma: erst Preis absteigend, dann Datum aufsteigend.": "Two sort orders with a comma: first price descending, then date ascending.",
- "Lösung: SELECT kuenstler, preis, datum FROM konzerte ORDER BY preis DESC, datum": "Solution: <code>SELECT kuenstler, preis, datum FROM konzerte ORDER BY preis DESC, datum</code>"
+ "Lösung: SELECT kuenstler, preis, datum FROM konzerte ORDER BY preis DESC, datum": "Solution: <code>SELECT kuenstler, preis, datum FROM konzerte ORDER BY preis DESC, datum</code>",
+ "Lektion 8: GROUP BY – Gruppen bilden →": "Lesson 8: GROUP BY – forming groups →"
 }

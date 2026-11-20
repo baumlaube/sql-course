@@ -29,7 +29,6 @@
  "Reihenfolge: SELECT … FROM … WHERE … GROUP BY … ORDER BY … LIMIT …": "Order: <code>SELECT … FROM … WHERE … GROUP BY … ORDER BY … LIMIT …</code>",
  "6 Fehlerdetektiv: nur eine Zeile? 4 Minuten": "<span class=\"step-no\">6</span> Error detective: only one row? <span class=\"chip\">4 minutes</span>",
  "Jonas wollte die Anzahl der Songs je Genre. Seine Abfrage läuft ohne Fehler – aber das Ergebnis ist seltsam.": "Jonas wanted the <strong>number of songs per genre</strong>. His query runs without an error – but the result is strange.",
- "Wie viele Zeilen sollten es sein? Wie viele sind es?": "How many rows should there be? How many are there?",
  "Die Zahl ist 36. Wofür steht sie wirklich?": "The number is 36. What does it really stand for?",
  "Was fehlt, damit die Datenbank für jedes Genre einzeln rechnet?": "What is missing so that the database calculates for each genre separately?",
  "7 Jetzt du: erst filtern, dann gruppieren 5 Minuten": "<span class=\"step-no\">7</span> Your turn: filter first, then group <span class=\"chip\">5 minutes</span>",
@@ -99,7 +98,6 @@
  "Dafür bräuchte man noch ORDER BY … DESC LIMIT 1.": "For that you would also need <code>ORDER BY … DESC LIMIT 1</code>.",
  "Eine Zeile je Jahr, daneben die Anzahl.": "One row per year, with the count next to it.",
  "Was ist falsch an SELECT titel, genre, COUNT(*) FROM songs GROUP BY genre?": "What is wrong with <code>SELECT titel, genre, COUNT(*) FROM songs GROUP BY genre</code>?",
- "Nichts": "Nothing",
  "titel ist weder Gruppe noch Rechnung – welcher Titel soll für eine ganze Gruppe stehen?": "<code>titel</code> is neither a group nor a calculation – which title should stand for a whole group?",
  "COUNT(*) muss vorne stehen": "<code>COUNT(*)</code> must come first",
  "GROUP BY braucht zwei Spalten": "<code>GROUP BY</code> needs two columns",
@@ -107,7 +105,6 @@
  "Die Reihenfolge im SELECT ist egal.": "The order in the SELECT does not matter.",
  "Eine Spalte reicht.": "One column is enough.",
  "Im SELECT stehen nur die Gruppen-Spalte und Rechnungen.": "The <code>SELECT</code> only contains the group column and calculations.",
- "Wo steht WHERE, wenn auch GROUP BY dabei ist?": "Where does <code>WHERE</code> go when there is also a <code>GROUP BY</code>?",
  "vor GROUP BY": "before <code>GROUP BY</code>",
  "nach GROUP BY": "after <code>GROUP BY</code>",
  "ganz am Ende": "at the very end",
@@ -133,7 +130,6 @@
  "Die durchschnittliche Dauer je Genre, gerundet auf ganze Sekunden.": "The <strong>average length per genre</strong>, rounded to whole seconds.",
  "Lösung: SELECT genre, ROUND(AVG(dauer_sek)) FROM songs GROUP BY genre": "Solution: <code>SELECT genre, ROUND(AVG(dauer_sek)) FROM songs GROUP BY genre</code>",
  "Songs vor 2020 – wie viele davon je Genre?": "Songs <strong>before 2020</strong> – how many of them <strong>per genre</strong>?",
- "Erst filtern, dann gruppieren.": "Filter first, then group.",
  "Lösung: SELECT genre, COUNT(*) FROM songs WHERE jahr < 2020 GROUP BY genre": "Solution: <code>SELECT genre, COUNT(*) FROM songs WHERE jahr &lt; 2020 GROUP BY genre</code>",
  "Rangliste: Anzahl Songs je Künstler, die meisten zuerst. Bei Gleichstand alphabetisch. Nenn die Anzahl anzahl.": "Ranking: <strong>number of songs per artist</strong>, the most first. If it is a tie, <strong>alphabetical</strong>. Call the count <code>anzahl</code>.",
  "Stimmt hier nur zufällig. Sag ausdrücklich, was bei Gleichstand gilt: …, kuenstler.": "This is only right by chance. Say clearly what applies in a tie: <code>…, kuenstler</code>.",
@@ -173,5 +169,5 @@
  "Gruppieren, zählen, sortieren, abschneiden.": "Group, count, sort, cut off.",
  "Lösung: SELECT lieblingsgenre, COUNT(*) AS anzahl FROM nutzer GROUP BY lieblingsgenre ORDER BY anzahl DESC LIMIT 1": "Solution: <code>SELECT lieblingsgenre, COUNT(*) AS anzahl FROM nutzer GROUP BY lieblingsgenre ORDER BY anzahl DESC LIMIT 1</code>",
  "SELECT jahr, COUNT(*) FROM songs GROUP BY jahr – was kommt heraus?": "<code>SELECT jahr, COUNT(*) FROM songs GROUP BY jahr</code> – what comes out?",
- "Lektion 9: Zwei Tabellen: JOIN (in Arbeit) →": "Lesson 9: Two tables: JOIN (coming soon) →"
+ "Lektion 9: Zwei Tabellen: JOIN →": "Lesson 9: Two tables: JOIN →"
 }

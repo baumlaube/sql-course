@@ -58,12 +58,13 @@
   window.I18N = { lang, T, ready: false };
 
   /* ---------- Texte im Dokument ersetzen ---------- */
-  const UNIT = new Set(["H1", "H2", "H3", "P", "LI", "TH", "TD", "BUTTON", "LABEL", "SMALL", "FIGCAPTION", "A", "OPTION", "SUMMARY"]);
+  const UNIT = new Set(["H1", "H2", "H3", "P", "LI", "TH", "TD", "BUTTON", "LABEL", "SMALL", "FIGCAPTION", "A", "SUMMARY"]);   // OPTION nicht: ohne value-Attribut ist der Text der Wert
   const SKIP = ".labor-code, .labor-tabelle, .labor-bausteine, pre.sql, code, script, style, svg, .lang-menu, .wort";
   const CONTROLS = "input, select, textarea, [id]";
+  const BLOCK = "ul, ol, table, h1, h2, h3, div, p, pre";   // enthält Blöcke: Teile einzeln übersetzen
   // Der Logo-Link (.brand) ist keine Einheit: „SQL-Kurs“ bleibt, nur der Untertitel (<span>) wird übersetzt.
   const isUnit = (el) => (UNIT.has(el.tagName) || el.classList.contains("t") || el.matches(".chip, .badge, .rule, .brand span, .pager > span"))
-    && !el.classList.contains("brand") && !el.querySelector(CONTROLS) && /\p{L}{2}/u.test(el.textContent);
+    && !el.classList.contains("brand") && !el.querySelector(CONTROLS) && !el.querySelector(BLOCK) && /\p{L}{2}/u.test(el.textContent);
   /* Tooltips und Vorlesetexte (title, aria-label, data-tipp, …) – auch in Elementen, deren Text bleibt */
   const ATTRS = ["title", "aria-label", "data-tipp", "placeholder", "alt"];
   function attrs(root) {
@@ -113,12 +114,6 @@
     document.addEventListener("click", (ev) => { if (!wrap.contains(ev.target)) list.hidden = true; });
     wrap.append(btn, list);
     bar.insertBefore(wrap, bar.querySelector(".theme-btn"));
-    if (lang !== "de") {
-      const note = document.createElement("div");
-      note.className = "lang-note";
-      note.innerHTML = T("Sprachhilfe: SQL-Befehle und die Namen der Tabellen und Spalten bleiben, wie sie sind.");
-      document.querySelector("main")?.prepend(note);
-    }
   }
 
   const domReady = new Promise((r) => (document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", r) : r()));

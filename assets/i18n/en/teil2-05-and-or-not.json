@@ -126,7 +126,6 @@
  "Was zeigt WHERE genre = 'Pop' OR 'Rock'?": "What does <code>WHERE genre = 'Pop' OR 'Rock'</code> show?",
  "Pop- und Rock-Songs": "Pop and rock songs",
  "Nur Pop-Songs": "Only pop songs",
- "Eine Fehlermeldung": "An error message",
  "Gar nichts": "Nothing at all",
  "Das wäre richtig mit OR genre = 'Rock'. So fehlt der Vergleich.": "That would be right with <code>OR genre = 'Rock'</code>. Like this the comparison is missing.",
  "Leider nicht – SQL meldet hier keinen Fehler. Das macht den Fehler so gemein.": "Unfortunately not – SQL shows no error here. That is what makes this mistake so nasty.",

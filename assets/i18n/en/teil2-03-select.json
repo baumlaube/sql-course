@@ -51,9 +51,6 @@
  "Lektion 4: WHERE – Zeilen filtern →": "Lesson 4: WHERE – filtering rows →",
  "Die Spalten stimmen – aber die Reihenfolge noch nicht. Gewünscht: {}. Die Spalten erscheinen so, wie du sie nach SELECT schreibst.": "The columns are right – but the order is not right yet. Wanted: {}. The columns appear in the order you write them after <code>SELECT</code>.",
  "In der Tabelle songs steht jeder Song in einer eigenen …": "In the table <code>songs</code>, each song is in its own …",
- "Spalte": "column",
- "Zeile": "row",
- "Datenbank": "database",
  "Zelle": "cell",
  "Eine Spalte ist eine Eigenschaft, z. B. alle Titel untereinander.": "A column is a property, e.g. all titles one below the other.",
  "Die Datenbank ist das Ganze – darin stecken die Tabellen.": "The database is the whole thing – the tables are inside it.",
@@ -193,5 +190,5 @@
  "SELECT wählt die Spalten titel und kuenstler. Zeilen kommen alle – 36 Songs.": "<code>SELECT</code> chooses the columns <code>titel</code> and <code>kuenstler</code>. You get all rows – 36 songs.",
  "SELECT Spalten mit Komma, dann FROM Tabelle.": "<code>SELECT</code> columns with commas, then <code>FROM</code> table.",
  "SELECT DISTINCT ort FROM nutzer – was kommt heraus?": "<code>SELECT DISTINCT ort FROM nutzer</code> – what comes out?",
- "← Lektion 2: IDs und Verknüpfung (in Arbeit)": "← Lesson 2: IDs and links (coming soon)"
+ "← Lektion 2: IDs und Verknüpfung": "← Lesson 2: IDs and links"
 }

@@ -22,9 +22,9 @@
 <link rel="icon" href="../favicon.ico" sizes="any">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../assets/kurs.css?v=2b9f3c7d0f">
+<link rel="stylesheet" href="../assets/kurs.css?v=bbdff984c7">
 <link rel="stylesheet" href="../assets/labor.css?v=35dbf4b6b2">
-<script src="../assets/i18n.js?v=2890af4da9" data-page="teil1-01-datenbanken" data-langs="de"></script>
+<script src="../assets/i18n.js?v=370a818f9b" data-page="teil1-01-datenbanken" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=c26439e733"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
 <script src="../assets/labor.js?v=52374669fc"></script>
@@ -161,11 +161,11 @@
     </table></div>
     <p><strong>Ordne zu:</strong> Welcher Datentyp passt?</p>
     <div class="zuordnen" id="typen">
-      <label><code>titel</code> (z. B. Polarlicht) <select data-richtig="TEXT"><option value="">…</option><option>TEXT</option><option>INTEGER</option><option>REAL</option></select></label>
-      <label><code>likes</code> (z. B. 48210) <select data-richtig="INTEGER"><option value="">…</option><option>TEXT</option><option>INTEGER</option><option>REAL</option></select></label>
-      <label><code>preis</code> eines Tickets (z. B. 29,90 €) <select data-richtig="REAL"><option value="">…</option><option>TEXT</option><option>INTEGER</option><option>REAL</option></select></label>
-      <label><code>postleitzahl</code> (z. B. 01067) <select data-richtig="TEXT"><option value="">…</option><option>TEXT</option><option>INTEGER</option><option>REAL</option></select></label>
-      <label><code>datum</code> (z. B. 2025-11-14) <select data-richtig="TEXT"><option value="">…</option><option>TEXT</option><option>INTEGER</option><option>REAL</option></select></label>
+      <label><code>titel</code> <span class="t">(z. B. Polarlicht)</span> <select data-richtig="TEXT"><option value="">…</option><option>TEXT</option><option>INTEGER</option><option>REAL</option></select></label>
+      <label><code>likes</code> <span class="t">(z. B. 48210)</span> <select data-richtig="INTEGER"><option value="">…</option><option>TEXT</option><option>INTEGER</option><option>REAL</option></select></label>
+      <label><code>preis</code> <span class="t">eines Tickets (z. B. 29,90 €)</span> <select data-richtig="REAL"><option value="">…</option><option>TEXT</option><option>INTEGER</option><option>REAL</option></select></label>
+      <label><code>postleitzahl</code> <span class="t">(z. B. 01067)</span> <select data-richtig="TEXT"><option value="">…</option><option>TEXT</option><option>INTEGER</option><option>REAL</option></select></label>
+      <label><code>datum</code> <span class="t">(z. B. 2025-11-14)</span> <select data-richtig="TEXT"><option value="">…</option><option>TEXT</option><option>INTEGER</option><option>REAL</option></select></label>
     </div>
     <button type="button" class="btn" id="typen-pruefen">Prüfen</button>
     <p class="fb" id="fb3"></p>
@@ -281,11 +281,11 @@ document.addEventListener("DOMContentLoaded", () => {
     why: "Die App schickt eine Anfrage an den Server. Dort durchsucht ein DBMS die Datenbank und schickt die passenden Datensätze zurück – in Millisekunden." });
 
   zuordnen($("zuordnen"), $("zuordnen-pruefen"), $("fb2"), "✔ Richtig! A ist ein Datensatz (eine ganze Zeile), B ein Attribut (eine Spalte), C ein Wert (ein Feld).",
-    (f) => f.map((s) => ({ Datensatz: "A ist eine ganze Zeile – alles über einen Song.", Attribut: "B ist eine Spaltenüberschrift – eine Eigenschaft aller Songs.", Wert: "C ist ein einzelnes Feld." }[s.dataset.richtig])).join(" "));
+    (f) => f.map((s) => ({ Datensatz: "A ist eine ganze Zeile – alles über einen Song.", Attribut: "B ist eine Spaltenüberschrift – eine Eigenschaft aller Songs.", Wert: "C ist ein einzelnes Feld." }[s.dataset.richtig])).map(T).join(" "));
   zuordnen($("typen"), $("typen-pruefen"), $("fb3"), "✔ Richtig! Und gemerkt? Postleitzahl und Datum sind Text – mit Postleitzahlen rechnet niemand, und 01067 würde als Zahl seine Null verlieren.",
     (f) => f.map((s) => {
       const t = s.closest("label").querySelector("code").textContent;
-      return { postleitzahl: "Mit einer Postleitzahl rechnet man nicht – und 01067 würde als Zahl zu 1067.", datum: "Datum speichert SQLite als Text im Format JJJJ-MM-TT.", preis: "29,90 hat Nachkommastellen.", likes: "Likes sind ganze Zahlen.", titel: "Ein Titel besteht aus Buchstaben." }[t];
+      return T({ postleitzahl: "Mit einer Postleitzahl rechnet man nicht – und 01067 würde als Zahl zu 1067.", datum: "Datum speichert SQLite als Text im Format JJJJ-MM-TT.", preis: "29,90 hat Nachkommastellen.", likes: "Likes sind ganze Zahlen.", titel: "Ein Titel besteht aus Buchstaben." }[t]);
     }).join(" "));
 
   L.create($("l3"), { db: "typen", modus: "lesen", tabellen: false,

@@ -87,7 +87,7 @@
     box.querySelector(".pj-oeffnen input").addEventListener("change", async (ev) => {
       const f = ev.target.files[0]; if (!f) return;
       try { const art = await Projekt.oeffnen(f); meld(art === "db" ? T(`„${f.name}“ geöffnet.`) : T(`Plan „${f.name}“ ausgeführt – die Tabellen sind angelegt.`)); }
-      catch (e) { meld(T("Die Datei konnte nicht geöffnet werden: ") + e.message); }
+      catch (e) { meld(T("Die Datei konnte nicht geöffnet werden:") + " " + e.message); }
       ev.target.value = ""; if (nachher) nachher();
     });
     box.querySelector(".pj-muster").addEventListener("click", async () => {
@@ -132,7 +132,8 @@
       ${o.aufgaben ? `<div class="pj-pruefliste"><p class="labor-erg-t">${T("Prüfliste")}</p><ul class="pj-liste"></ul></div>` : ""}`;
     const $ = (s) => el.querySelector(s);
     const ta = $("textarea"), fb = $(".labor-fb"), erg = $(".labor-erg");
-    ta.value = o.sql || "";
+    // Startinhalt: Kommentarzeilen (-- …) werden übersetzt, SQL-Befehle nie
+    ta.value = (o.sql || "").split("\n").map((z) => (/^--/.test(z) ? T(z) : z)).join("\n");
     const zeige = (h, art) => { fb.className = "fb labor-fb show " + art; fb.innerHTML = h; };
 
     function aktualisieren() {
