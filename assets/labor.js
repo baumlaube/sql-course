@@ -87,6 +87,25 @@
     }
   }
 
+  /** Änderungsabfrage (INSERT/UPDATE/DELETE) auf frischer Kopie ausführen und danach den Zustand abfragen. */
+  function ausfuehrenZustand(SQL, name, sql, zustand) {
+    const db = oeffnen(SQL, name);
+    try {
+      let geaendert = 0;
+      for (const stmt of db.iterateStatements(sql)) {
+        while (stmt.step()) { /* Ergebnis einer SELECT-Zeile wird hier nicht gebraucht */ }
+        stmt.free();
+        geaendert += db.getRowsModified();
+      }
+      const st = db.exec(zustand)[0] || { columns: [], values: [] };
+      return { ok: true, spalten: st.columns, zeilen: st.values, geaendert, zustand: true };
+    } catch (e) {
+      return { ok: false, fehler: String(e.message || e) };
+    } finally {
+      db.close();
+    }
+  }
+
   const wert = (v) => (v === null ? "∅" : typeof v === "number" ? String(+v.toFixed(6)) : String(v));
   const zeileKey = (r) => r.map(wert).join("␟");
 
@@ -199,6 +218,12 @@
       if (t === "" ) return T("Die Abfrage hört zu früh auf. Fehlt am Ende etwas?");
       return T(`SQL versteht die Stelle bei ${code(t)} nicht. Prüfe Schreibweise, Kommas und Reihenfolge: <code>SELECT …</code> <code>FROM …</code> <code>WHERE …</code>`);
     }
+    if ((r = msg.match(/table (\S+) has (\d+) columns but (\d+) values were supplied/)))
+      return T(`Die Tabelle <code>${esc(r[1])}</code> hat ${r[2]} Spalten, du gibst ${r[3]} Werte an. Nenn die Spalten in Klammern: <code>INSERT INTO ${esc(r[1])} (spalte1, spalte2) VALUES (…)</code>.`);
+    if ((r = msg.match(/(\d+) values for (\d+) columns/))) return T(`${r[1]} Werte für ${r[2]} Spalten – die Anzahl muss gleich sein.`);
+    if ((r = msg.match(/table (\S+) already exists/))) return T(`Die Tabelle <code>${esc(r[1])}</code> gibt es schon.`);
+    if (/UNIQUE constraint failed/.test(msg)) return T("Diese ID gibt es schon. Jede ID darf nur einmal vorkommen – lass die <code>id</code> weg, dann vergibt die Datenbank selbst die nächste Nummer.");
+    if (/FOREIGN KEY constraint failed/.test(msg)) return T("Ein Fremdschlüssel zeigt auf eine ID, die es nicht gibt. Prüf die Nummern.");
     if (/misuse of aggregate/.test(msg))
       return T("<code>WHERE</code> prüft einzelne Zeilen und kann nicht mit <code>COUNT</code>, <code>SUM</code> & Co. rechnen. Bedingungen für Gruppen stehen in <code>HAVING</code> – nach <code>GROUP BY</code>.");
     if (/aggregate functions are not allowed in the GROUP BY clause/.test(msg))
@@ -320,7 +345,7 @@
       if (o.leiste === false) { codeBox.querySelector(".labor-bausteine").remove(); return; }
       const leiste = codeBox.querySelector(".labor-bausteine");
       const teile = [...(o.leiste || STANDARD_LEISTE), ...(o.extra || [])];   // extra: Befehle späterer Lektionen (AND, OR, …)
-      if (o.leiste === undefined) {
+      if (o.leiste === undefined || o.mitNamen) {
         const mehrere = Object.keys(m.tabellen).length > 1;
         Object.keys(m.tabellen).forEach((t) => { teile.push(t); m.tabellen[t].forEach((c) => teile.push(c.name)); });
         // Bei mehreren Tabellen: auch tabelle.spalte zum Antippen (für JOIN)
@@ -417,10 +442,11 @@
       const leerFeld = modus === "luecke" && [...codeBox.querySelectorAll(".luecke")].some((f) => !f.value.trim());
       if (leerFeld) { zeige(T("Füll zuerst alle gelben Lücken aus."), "hint"); return; }
       const t0 = performance.now();
-      const res = ausfuehren(SQL, o.db, sql, !!o.zeit);
+      const res = o.zustand ? ausfuehrenZustand(SQL, o.db, sql, o.zustand) : ausfuehren(SQL, o.db, sql, !!o.zeit);
       const ms = Math.max(1, Math.round(res.ms != null ? res.ms : performance.now() - t0));
       erg.hidden = !res.ok;
-      if (res.ok) erg.innerHTML = `<p class="labor-erg-t">${T("Ergebnis")}</p>` + ergebnisHTML(res)
+      if (res.ok && res.zustand) erg.innerHTML = `<p class="labor-erg-t">${res.geaendert === 1 ? T("1 Zeile geändert – so sieht die Tabelle jetzt aus") : T(`${res.geaendert} Zeilen geändert – so sieht die Tabelle jetzt aus`)}</p>` + ergebnisHTML(res);
+      else if (res.ok) erg.innerHTML = `<p class="labor-erg-t">${T("Ergebnis")}</p>` + ergebnisHTML(res)
         + (o.zeit ? `<p class="labor-zeit">⚡ ${T(`Die Datenbank hat dafür ${ms} Millisekunden gebraucht.`)}</p>` : "");
       if (!o.loesung && !o.pruefe) {           // nur ausprobieren
         if (!res.ok) zeige("✘ " + T(fehlerText(res.fehler, sql, m)), "hint");
@@ -446,7 +472,8 @@
     }
 
     function beurteilen(sql, res) {
-      const ref = o.loesung ? ausfuehren(SQL, o.db, o.loesung) : null;
+      const lauf = (q) => (o.zustand ? ausfuehrenZustand(SQL, o.db, q, o.zustand) : ausfuehren(SQL, o.db, q));
+      const ref = o.loesung ? lauf(o.loesung) : null;
       if (ref && !ref.ok) return "Interner Fehler in der Musterlösung: " + esc(ref.fehler);   // nur für die Lehrkraft
       const cmp = res.ok && ref ? vergleichen(res, ref, !!o.reihenfolge) : null;
       if (o.pruefe) {
@@ -474,7 +501,7 @@
       for (const f of o.fallen || []) {        // geplante Stolpersteine
         if (f.muster && f.muster.test(sql)) return f.text;
         if (f.sql && res.ok) {
-          const alt = ausfuehren(SQL, o.db, f.sql);
+          const alt = lauf(f.sql);
           if (alt.ok && vergleichen(res, alt, !!o.reihenfolge).gleich) return f.text;
         }
         if (f.wenn && f.wenn({ sql, res, ref, cmp })) return f.text;
@@ -486,6 +513,15 @@
         const gb = ((ohneTexte(sql).match(/\bGROUP\s+BY\s+([\s\S]*?)(?:\bHAVING\b|\bORDER\b|\bLIMIT\b|;|$)/i) || [])[1] || "").split(",").map((t) => t.trim().toLowerCase());
         const fremd = sel.split(",").map((t) => t.trim()).find((t) => /^[a-z_]+$/i.test(t) && !gb.includes(t.toLowerCase()));
         if (fremd) return T(`<code>${esc(fremd)}</code> steht weder in <code>GROUP BY</code> noch in einer Rechnung. Welcher Wert soll für eine ganze Gruppe dastehen? Nimm die Spalte heraus – oder gruppiere auch nach ihr.`);
+      }
+      if (o.zustand && ref) {
+        const r0 = ohneTexte(sql);
+        if (/\b(UPDATE|DELETE)\b/i.test(r0) && !/\bWHERE\b/i.test(r0))
+          return T(`Stopp – <code>WHERE</code> vergessen! Das hat <strong>alle ${res.geaendert} Zeilen</strong> erwischt. Zum Glück ist das hier nur eine Übungskopie.`);
+        if (res.geaendert === 0) return T("Es wurde keine Zeile geändert. Passt die Bedingung nach <code>WHERE</code> genau?");
+        if (res.geaendert > ref.geaendert) return T(`Es wurden ${res.geaendert} Zeilen geändert, richtig wären ${ref.geaendert}. Deine Bedingung trifft zu viele.`);
+        if (res.geaendert < ref.geaendert) return T(`Es wurden ${res.geaendert} Zeilen geändert, richtig wären ${ref.geaendert}. Deine Bedingung trifft zu wenige.`);
+        return T("Gleich viele Zeilen geändert – aber die Tabelle sieht noch anders aus. Prüf die neuen Werte nach <code>SET</code> bzw. in <code>VALUES</code>.");
       }
       // JOIN-typische Fehler
       const rs = ohneTexte(sql);
@@ -755,7 +791,7 @@
 
   window.Labor = { daten, bereit, create, tabelle, zeitlupe, gruppen, training, abfrage, beurteile, sqlHTML, glaetten,
     /* für Erweiterungen (labor-extra.js, projekt.js) */
-    _intern: { oeffnen, ausfuehren, ergebnisHTML, esc, T, DATEN, fehlerText, meta } };
+    _intern: { oeffnen, ausfuehren, ergebnisHTML, esc, T, DATEN, fehlerText, meta, metaLesen, glaetten, sqlHTML } };
 
   /* Statische SQL-Beispiele einfärben: <pre class="sql" data-sql>…</pre> */
   document.addEventListener("DOMContentLoaded", () => {

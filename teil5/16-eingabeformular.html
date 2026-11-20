@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eingabeformular: aus Eingaben wird INSERT · SQL-Kurs</title>
+<meta name="description" content="Lektion 16 im SQL-Lernpfad: Ein Eingabeformular für die eigene Partnerbörse bauen – aus den Eingaben wird ein INSERT INTO. Zusammen mit dem Suchformular wird daraus eine kleine Anwendung. Abschluss des Projekts und Rückblick auf den Kurs.">
+<link rel="canonical" href="https://sql.herrseibert.de/teil5/16-eingabeformular.html">
+<!-- vorschau -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SQL-Kurs">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://sql.herrseibert.de/teil5/16-eingabeformular.html">
+<meta property="og:title" content="Eingabeformular: aus Eingaben wird INSERT · SQL-Kurs">
+<meta property="og:description" content="Lektion 16 im SQL-Lernpfad: Ein Eingabeformular für die eigene Partnerbörse bauen – aus den Eingaben wird ein INSERT INTO. Zusammen mit dem Suchformular wird daraus eine kleine Anwendung. Abschluss des Projekts und Rückblick auf den Kurs.">
+<meta property="og:image" content="https://sql.herrseibert.de/vorschau.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SQL-Kurs – Datenbanken und SQL Schritt für Schritt, mit SQL-Labor im Browser">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /vorschau -->
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/kurs.css?v=2b9f3c7d0f">
+<link rel="stylesheet" href="../assets/labor.css?v=35dbf4b6b2">
+<script src="../assets/i18n.js?v=2890af4da9" data-page="teil5-16-eingabeformular" data-langs="de"></script>
+<script src="../assets/kurs.js?v=c26439e733"></script>
+<script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
+<script src="../assets/labor.js?v=52374669fc"></script>
+<script src="../assets/labor-extra.js?v=e94bd060f6"></script>
+<script src="../assets/projekt.js?v=b5f4ff4251"></script>
+<script src="../assets/daten/pfoten.js?v=7b482f3862"></script>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html"><img class="logo" src="../favicon.svg" alt="" width="34" height="34"> SQL-Kurs <span>· Datenbanken verstehen</span></a>
+    <span class="spacer"></span>
+    <button class="theme-btn" type="button" aria-label="Hell oder dunkel umschalten">◐ Hell/Dunkel</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="path" aria-label="Lernpfad">
+    <strong class="t">Lernpfad:</strong>
+    <ol>
+      <li class="done"><a href="../teil1/01-datenbanken.html" title="1 · Datenbanken sind überall">1</a></li>
+      <li class="done"><a href="../teil1/02-ids.html" title="2 · IDs und Verknüpfung">2</a></li>
+      <li class="done"><a href="../teil2/03-select.html" title="3 · SELECT – Spalten auswählen">3</a></li>
+      <li class="done"><a href="../teil2/04-where.html" title="4 · WHERE – Zeilen filtern">4</a></li>
+      <li class="done"><a href="../teil2/05-and-or-not.html" title="5 · AND, OR, NOT">5</a></li>
+      <li class="done"><a href="../teil2/06-like-in-between.html" title="6 · LIKE, IN, BETWEEN">6</a></li>
+      <li class="done"><a href="../teil2/07-sortieren-rechnen.html" title="7 · Sortieren und rechnen">7</a></li>
+      <li class="done"><a href="../teil2/08-group-by.html" title="8 · GROUP BY – Gruppen bilden">8</a></li>
+      <li class="done"><a href="../teil3/09-join.html" title="9 · Zwei Tabellen: JOIN">9</a></li>
+      <li class="done"><a href="../teil3/10-join-mehr.html" title="10 · JOIN mit WHERE und GROUP BY">10</a></li>
+      <li class="done"><a href="../teil3/11-der-fall.html" title="11 · Der Fall">11</a></li>
+      <li class="done"><a href="../teil4/12-projekt-planen.html" title="12 · Projekt planen">12</a></li>
+      <li class="done"><a href="../teil4/13-tabellen-anlegen.html" title="13 · Tabellen anlegen und füllen">13</a></li>
+      <li class="done"><a href="../teil4/14-aendern-loeschen.html" title="14 · Ändern und löschen">14</a></li>
+      <li class="done"><a href="15-suchformular.html" title="15 · Suchformular">15</a></li>
+      <li class="now"><span title="16 · Eingabeformular" aria-current="step">16</span></li>
+    </ol>
+  </nav>
+
+  <section class="hero">
+    <h1>Eingabeformular – deine Börse wird eine Anwendung</h1>
+    <div class="meta">
+      <span class="chip">Teil 5 · Lektion 16</span>
+      <span class="chip">⏱ ca. 35 Minuten</span>
+    </div>
+    <p class="erklaerung">Wenn du dich bei einer App registrierst, füllst du ein Formular aus – und im Hintergrund läuft ein <code>INSERT INTO</code>.
+      Heute baust du genau das: Neue Tiere melden sich über ein Formular an, ohne SQL. Zusammen mit dem Suchformular ist deine Partnerbörse
+      dann eine kleine <strong>Anwendung</strong>: Daten eingeben, Daten finden.</p>
+  </section>
+
+  <section class="card wdh">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
+  <details class="card woerter">
+    <summary>📖 Wörter für diese Lektion</summary>
+    <p class="note">Die Fachwörter links bleiben deutsch – so heißen sie im Unterricht.</p>
+    <div class="tbl-scroll"><table class="plain">
+      <tr><th class="wort">die Anwendung <small>die App</small></th><td>Ein Programm, das Menschen benutzen, ohne zu wissen, wie es innen funktioniert.</td></tr>
+      <tr><th class="wort">das Pflichtfeld <small>die Pflichtfelder</small></th><td>Ein Feld, das man ausfüllen muss.</td></tr>
+      <tr><th class="wort">prüfen <small>die Prüfung</small></th><td>Vor dem Speichern schauen, ob die Eingaben passen (z. B. eine Zahl beim Alter).</td></tr>
+      <tr><th class="wort">abgeben <small>die Abgabe</small></th><td>Deine fertige <code>.db</code>-Datei an die Lehrkraft geben.</td></tr>
+    </table></div>
+  </details>
+
+  <section class="card szenario">
+    <h2><span class="step-no">🐾</span> Szenario</h2>
+    <p>Die Firmenleitung von <strong>Pfotenglück</strong> ist begeistert von deiner Suche. Jetzt sollen sich Tiere selbst anmelden können. Letzte Aufgabe: das <strong>Eingabeformular</strong>.</p>
+  </section>
+
+  <!-- 1 · Überleg -->
+  <section class="card">
+    <h2><span class="step-no">1</span> Überleg: Aus dem Formular wird … <span class="chip">4 Minuten</span></h2>
+    <div class="fb-form" style="max-width:360px;margin:10px 0">
+      <label class="fb-feld"><span>Name</span><input disabled value="Flocki"></label>
+      <label class="fb-feld"><span>Art</span><select disabled><option>Kaninchen (3)</option></select></label>
+      <label class="fb-feld"><span>Hobby</span><input disabled value="Hüpfen"></label>
+      <button type="button" class="btn" disabled>➕ Speichern</button>
+    </div>
+    <div id="q1"></div>
+  </section>
+
+  <!-- 2 · Baukasten -->
+  <section class="card">
+    <h2><span class="step-no">2</span> Jetzt du: das Formular „Tier anmelden“ <span class="chip">14 Minuten</span></h2>
+    <ol class="howto">
+      <li>Öffne deine <code>.db</code>-Datei (oder lade die Muster-Börse).</li>
+      <li>Wähle die Tabelle mit deinen Tieren. Gib den Feldern verständliche Beschriftungen. Fremdschlüssel bekommen eine Auswahlliste.</li>
+      <li>Melde mindestens <strong>zwei neue Tiere</strong> über dein Formular an – und schau dir an, welches <code>INSERT</code> jedes Mal entsteht.</li>
+    </ol>
+    <div id="eingabe"></div>
+  </section>
+
+  <!-- 3 · Anwendung testen -->
+  <section class="card">
+    <h2><span class="step-no">3</span> Die Anwendung testen: Findet die Suche die neuen Tiere? <span class="chip">8 Minuten</span></h2>
+    <p>Baue hier dein Suchformular aus Lektion 15 noch einmal (es geht schnell) und such nach den Tieren, die du gerade angemeldet hast.
+      Wenn sie gefunden werden, arbeiten Eingabe und Suche zusammen – <strong>deine Anwendung funktioniert</strong>.</p>
+    <div id="suche"></div>
+  </section>
+
+  <!-- 4 · Abgabe -->
+  <section class="card">
+    <h2><span class="step-no">4</span> Abgabe <span class="chip">2 Minuten</span></h2>
+    <p>Speichere deine Datenbank ein letztes Mal mit <strong>„Als Datei speichern (.db)“</strong> und gib die Datei bei deiner Lehrkraft ab.
+      Die Lehrkraft kann sie hier im Kurs mit „Datei öffnen“ ansehen – mit allen Tabellen und Daten.</p>
+  </section>
+
+  <!-- Kurz-Check -->
+  <section class="card">
+    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
+    <div id="quiz"></div>
+  </section>
+
+  <section class="card merke">
+    <h2>Merke</h2>
+    <ul>
+      <li>Ein Eingabeformular wird zu <code>INSERT INTO tabelle (spalten) VALUES (:platzhalter)</code>.</li>
+      <li>Vor dem Speichern prüft die Anwendung die Eingaben: Pflichtfelder, Zahlen, gültige Auswahl.</li>
+      <li>Fremdschlüssel wählt man aus einer Liste – so zeigen sie nie ins Nichts.</li>
+      <li>Eingabe + Suche über Formulare = eine Anwendung, die jeder ohne SQL benutzen kann.</li>
+    </ul>
+  </section>
+
+  <!-- Rückblick -->
+  <section class="card frei" id="training">
+    <h2><span class="step-no">🎓</span> Rückblick auf den Kurs</h2>
+    <p class="lead">Du kannst jetzt erklären, wozu Datenbanken da sind, sie planen, bauen, befragen und mit Formularen bedienen. Teste dich zum Abschluss quer durch alle Teile.</p>
+    <div id="rueck"></div>
+  </section>
+
+  <nav class="pager">
+    <a href="15-suchformular.html">← Lektion 15: Suchformular</a>
+    <a href="../index.html">Zur Kursübersicht →</a>
+  </nav>
+</main>
+
+<footer>
+  <div class="wrap t">Lernmaterial von <a href="https://herrseibert.de">herrseibert.de</a> · Lizenz <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">CC BY-SA 4.0</a> · ohne Tracking, ohne Cookies<br>Erstellt von der KI Claude von Anthropic.</div>
+  <div class="wrap t gh">Fehler gefunden oder eine Idee? → <a href="https://github.com/baumlaube/sql-course">Kurs auf GitHub</a></div>
+  <div class="wrap t gh">Das SQL-Labor nutzt SQLite (gemeinfrei) über sql.js (MIT-Lizenz) – alles läuft in deinem Browser.</div>
+  <div class="wrap legal"><a href="../impressum.html">Impressum</a> · <a href="../datenschutz.html">Datenschutz</a></div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { quiz } = window.Kurs;
+  const L = window.Labor;
+  const $ = (id) => document.getElementById(id);
+
+  quiz($("wdh"), [
+    { q: "Was wird aus einem Suchfeld „Hobby enthält …“?", options: ["<code>hobby LIKE '%…%'</code>", "<code>hobby = …</code>"], right: 0,
+      miss: [null, "Dann müsste das Hobby genau stimmen."], why: "enthält = LIKE mit % vorne und hinten." },
+    { q: "Wie fügt man eine Zeile ein?", options: ["<code>INSERT INTO tiere (name) VALUES ('Flocki')</code>", "<code>UPDATE tiere SET name = 'Flocki'</code>"], right: 0,
+      miss: [null, "<code>UPDATE</code> ändert vorhandene Zeilen – und ohne WHERE alle!"], why: "Neue Zeile: <code>INSERT INTO</code>." },
+  ]);
+
+  quiz($("q1"), [
+    { q: "Welcher Befehl entsteht beim Klick auf Speichern?",
+      options: ["<code>INSERT INTO tiere (name, art_id, hobby) VALUES ('Flocki', 3, 'Hüpfen')</code>",
+        "<code>INSERT INTO tiere (name, art_id, hobby) VALUES ('Flocki', 'Kaninchen', 'Hüpfen')</code>",
+        "<code>SELECT * FROM tiere WHERE name = 'Flocki'</code>"], right: 0,
+      miss: [null, "In <code>tiere</code> steht nur die Nummer der Art – die Liste zeigt den Namen, schickt aber die id.", "Das wäre eine Suche, keine Anmeldung."],
+      why: "Jedes Feld liefert einen Wert für eine Spalte – die Auswahlliste liefert die id." },
+  ]);
+
+  L.formular($("eingabe"), { art: "eingabe" });
+  L.formular($("suche"), { art: "suche", leiste: false });
+
+  quiz($("quiz"), [
+    { q: "Warum fehlt das Feld <code>id</code> im Eingabeformular?", options: ["Vergessen", "Die Datenbank vergibt die id selbst", "IDs sind geheim"], right: 1,
+      miss: ["Mit Absicht weggelassen.", null, "Geheim sind sie nicht – aber die Datenbank zählt selbst."], why: "<code>INTEGER PRIMARY KEY</code> zählt automatisch weiter." },
+    { q: "Jemand tippt beim Alter „drei“. Was sollte die Anwendung tun?", options: ["Speichern", "Nicht speichern und um eine Zahl bitten", "Die Datenbank löschen"], right: 1,
+      miss: ["Dann stünde Text in einer Zahlenspalte – Rechnen und Sortieren gingen schief.", null, "Bitte nicht."], why: "Eingaben prüfen, bevor gespeichert wird." },
+    { q: "Was macht aus deiner Datenbank eine Anwendung?", options: ["Möglichst viele Tabellen", "Formulare, mit denen man ohne SQL Daten eingeben und finden kann", "Ein schönes Logo"], right: 1,
+      miss: ["Tabellen allein bedient niemand ohne SQL.", null, "Schön, aber nicht entscheidend."], why: "Eingabe und Suche über Formulare." },
+  ]);
+
+  quiz($("rueck"), [
+    { q: "Teil 1: Was ist ein Fremdschlüssel?", options: ["Eine Spalte, die auf die id einer anderen Tabelle zeigt", "Ein geheimes Passwort", "Die erste Spalte jeder Tabelle"], right: 0,
+      miss: [null, "Mit Passwörtern hat er nichts zu tun.", "Das ist meist der Primärschlüssel."], why: "z. B. <code>besitzer_id</code> → <code>besitzer.id</code>." },
+    { q: "Teil 2: Songs ab 2023, Pop oder Rock – welche Bedingung?", options: ["<code>jahr &gt;= 2023 AND genre = 'Pop' OR genre = 'Rock'</code>", "<code>jahr &gt;= 2023 AND (genre = 'Pop' OR genre = 'Rock')</code>", "<code>jahr &gt; 2023 AND genre IN ('Pop', 'Rock')</code>"], right: 1,
+      miss: ["Ohne Klammern kommen alle Rock-Songs dazu – auch alte.", null, "„ab“ heißt <code>&gt;=</code>."], why: "AND vor OR – Klammern setzen. (<code>jahr &gt;= 2023 AND genre IN ('Pop','Rock')</code> ginge auch.)" },
+    { q: "Teil 2: Wie viele Songs je Genre?", options: ["<code>SELECT genre, COUNT(*) FROM songs GROUP BY genre</code>", "<code>SELECT COUNT(genre) FROM songs</code>"], right: 0,
+      miss: [null, "Das ist eine einzige Zahl für alle."], why: "Je Gruppe: GROUP BY." },
+    { q: "Teil 3: Was fehlt? <code>SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler</code>", options: ["Nichts", "<code>ON songs.kuenstler_id = kuenstler.id</code>", "<code>WHERE</code>"], right: 1,
+      miss: ["Ohne ON wird jede Zeile mit jeder verbunden.", null, "Verbunden wird mit ON."], why: "Fremdschlüssel = id." },
+    { q: "Teil 4: Was passiert bei <code>DELETE FROM tiere</code>?", options: ["Ein Tier wird gelöscht", "Alle Tiere werden gelöscht", "Fehler"], right: 1,
+      miss: ["Welches denn? Es gibt kein WHERE.", null, "Leider kein Fehler."], why: "Immer mit WHERE!" },
+    { q: "Teil 5: Warum Platzhalter statt Eingaben direkt in den SQL-Text?", options: ["Wegen der Geschwindigkeit", "Damit keine SQL-Injection möglich ist", "Weil es kürzer ist"], right: 1,
+      miss: ["Darum geht es nicht.", null, "Darum geht es nicht."], why: "Mit Platzhaltern bleibt eine Eingabe immer nur ein Wert." },
+  ]);
+});
+</script>
+</body>
+</html>

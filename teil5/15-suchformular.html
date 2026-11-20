@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suchformular: Abfragen mit Platzhaltern · SQL-Kurs</title>
+<meta name="description" content="Lektion 15 im SQL-Lernpfad: Ein Suchformular für die eigene Partnerbörse bauen. Jedes Feld setzt seinen Wert in eine Abfrage mit WHERE ein – parametrisierte Abfragen, so wie hinter jedem Suchfeld einer App. Mit Ausflug zu SQL-Injection.">
+<link rel="canonical" href="https://sql.herrseibert.de/teil5/15-suchformular.html">
+<!-- vorschau -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SQL-Kurs">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://sql.herrseibert.de/teil5/15-suchformular.html">
+<meta property="og:title" content="Suchformular: Abfragen mit Platzhaltern · SQL-Kurs">
+<meta property="og:description" content="Lektion 15 im SQL-Lernpfad: Ein Suchformular für die eigene Partnerbörse bauen. Jedes Feld setzt seinen Wert in eine Abfrage mit WHERE ein – parametrisierte Abfragen, so wie hinter jedem Suchfeld einer App. Mit Ausflug zu SQL-Injection.">
+<meta property="og:image" content="https://sql.herrseibert.de/vorschau.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SQL-Kurs – Datenbanken und SQL Schritt für Schritt, mit SQL-Labor im Browser">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /vorschau -->
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/kurs.css?v=2b9f3c7d0f">
+<link rel="stylesheet" href="../assets/labor.css?v=35dbf4b6b2">
+<script src="../assets/i18n.js?v=2890af4da9" data-page="teil5-15-suchformular" data-langs="de"></script>
+<script src="../assets/kurs.js?v=c26439e733"></script>
+<script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
+<script src="../assets/labor.js?v=52374669fc"></script>
+<script src="../assets/labor-extra.js?v=e94bd060f6"></script>
+<script src="../assets/projekt.js?v=b5f4ff4251"></script>
+<script src="../assets/daten/pfoten.js?v=7b482f3862"></script>
+<script src="../assets/daten/nutzer.js?v=533561c012"></script>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html"><img class="logo" src="../favicon.svg" alt="" width="34" height="34"> SQL-Kurs <span>· Datenbanken verstehen</span></a>
+    <span class="spacer"></span>
+    <button class="theme-btn" type="button" aria-label="Hell oder dunkel umschalten">◐ Hell/Dunkel</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="path" aria-label="Lernpfad">
+    <strong class="t">Lernpfad:</strong>
+    <ol>
+      <li class="done"><a href="../teil1/01-datenbanken.html" title="1 · Datenbanken sind überall">1</a></li>
+      <li class="done"><a href="../teil1/02-ids.html" title="2 · IDs und Verknüpfung">2</a></li>
+      <li class="done"><a href="../teil2/03-select.html" title="3 · SELECT – Spalten auswählen">3</a></li>
+      <li class="done"><a href="../teil2/04-where.html" title="4 · WHERE – Zeilen filtern">4</a></li>
+      <li class="done"><a href="../teil2/05-and-or-not.html" title="5 · AND, OR, NOT">5</a></li>
+      <li class="done"><a href="../teil2/06-like-in-between.html" title="6 · LIKE, IN, BETWEEN">6</a></li>
+      <li class="done"><a href="../teil2/07-sortieren-rechnen.html" title="7 · Sortieren und rechnen">7</a></li>
+      <li class="done"><a href="../teil2/08-group-by.html" title="8 · GROUP BY – Gruppen bilden">8</a></li>
+      <li class="done"><a href="../teil3/09-join.html" title="9 · Zwei Tabellen: JOIN">9</a></li>
+      <li class="done"><a href="../teil3/10-join-mehr.html" title="10 · JOIN mit WHERE und GROUP BY">10</a></li>
+      <li class="done"><a href="../teil3/11-der-fall.html" title="11 · Der Fall">11</a></li>
+      <li class="done"><a href="../teil4/12-projekt-planen.html" title="12 · Projekt planen">12</a></li>
+      <li class="done"><a href="../teil4/13-tabellen-anlegen.html" title="13 · Tabellen anlegen und füllen">13</a></li>
+      <li class="done"><a href="../teil4/14-aendern-loeschen.html" title="14 · Ändern und löschen">14</a></li>
+      <li class="now"><span title="15 · Suchformular" aria-current="step">15</span></li>
+      <li class="done"><a href="16-eingabeformular.html" title="16 · Eingabeformular">16</a></li>
+    </ol>
+  </nav>
+
+  <section class="hero">
+    <h1>Suchformular – die Abfrage hinter dem Suchfeld</h1>
+    <div class="meta">
+      <span class="chip">Teil 5 · Lektion 15</span>
+      <span class="chip">⏱ ca. 35 Minuten</span>
+    </div>
+    <p class="erklaerung">Niemand tippt in einer App SQL. Man füllt ein Formular aus – und das Programm baut daraus die Abfrage. Jedes Feld setzt seinen Wert
+      an eine bestimmte Stelle nach <code>WHERE</code>: Das nennt man eine <strong>parametrisierte Abfrage</strong>. Heute baust du so ein Formular für deine Partnerbörse.</p>
+  </section>
+
+  <section class="card wdh">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
+  <details class="card woerter">
+    <summary>📖 Wörter für diese Lektion</summary>
+    <p class="note">Die Fachwörter links bleiben deutsch – so heißen sie im Unterricht.</p>
+    <div class="tbl-scroll"><table class="plain">
+      <tr><th class="wort">das Formular <small>die Formulare</small></th><td>Eine Seite mit Feldern zum Ausfüllen und einem Knopf zum Abschicken.</td></tr>
+      <tr><th class="wort">das Eingabefeld <small>die Eingabefelder</small></th><td>Ein Kästchen, in das man etwas schreibt.</td></tr>
+      <tr><th class="wort">die Auswahlliste <small>die Auswahllisten</small></th><td>Ein Feld, in dem man aus vorgegebenen Werten wählt.</td></tr>
+      <tr><th class="wort">der Platzhalter <small>Parameter</small></th><td>Eine Stelle in der Abfrage, an die später die Eingabe kommt, z. B. <code>:sucht</code>.</td></tr>
+      <tr><th class="wort">parametrisiert</th><td>Die Abfrage hat Platzhalter, die mit den Eingaben gefüllt werden.</td></tr>
+    </table></div>
+  </details>
+
+  <section class="card szenario">
+    <h2><span class="step-no">🐾</span> Szenario</h2>
+    <p>Die Partnerbörse <strong>Pfotenglück</strong> geht online. Besucher sollen passende Tiere finden – ohne SQL zu können. Dafür brauchst du ein <strong>Suchformular</strong>.</p>
+  </section>
+
+  <!-- 1 · Überleg -->
+  <section class="card">
+    <h2><span class="step-no">1</span> Überleg: Welche Abfrage steckt dahinter? <span class="chip">5 Minuten</span></h2>
+    <div class="fb-form" style="max-width:360px;margin:10px 0">
+      <label class="fb-feld"><span>Tier sucht …</span><select disabled><option>Kuschelpartner</option></select></label>
+      <label class="fb-feld"><span>Hobby enthält …</span><input disabled value="Gras"></label>
+      <button type="button" class="btn" disabled>🔍 Suchen</button>
+    </div>
+    <p>Jemand füllt das Formular so aus und klickt auf Suchen. <strong>Überleg:</strong> Welche Abfrage schickt die App an die Datenbank?</p>
+    <div id="q1"></div>
+  </section>
+
+  <!-- 2 · Platzhalter -->
+  <section class="card">
+    <h2><span class="step-no">2</span> Platzhalter: die Abfrage mit Lücken <span class="chip">4 Minuten</span></h2>
+    <p>Der Programmierer schreibt die Abfrage einmal – mit <strong>Platzhaltern</strong> statt fester Werte:</p>
+    <pre class="sql" data-farbe>SELECT name, hobby FROM tiere
+WHERE sucht = :sucht
+  AND hobby LIKE '%' || :hobby || '%'</pre>
+    <p>Beim Klick auf „Suchen“ setzt das Programm die Eingaben an die Stellen <code>:sucht</code> und <code>:hobby</code>. (<code>||</code> klebt Texte zusammen.)
+      Bleibt ein Feld leer, lässt der Baukasten diese Bedingung einfach weg.</p>
+    <div id="q2"></div>
+  </section>
+
+  <!-- 3 · Baukasten -->
+  <section class="card">
+    <h2><span class="step-no">3</span> Jetzt du: das Formular „Partner finden“ <span class="chip">17 Minuten</span></h2>
+    <ol class="howto">
+      <li>Öffne deine <code>.db</code>-Datei (oder lade die Muster-Börse).</li>
+      <li>Wähle die Tabelle mit deinen Tieren und baue Suchfelder: mindestens eines mit <strong>Auswahlliste</strong> und eines mit <strong>enthält</strong>.</li>
+      <li>Wähle, welche Spalten im Ergebnis stehen.</li>
+      <li>Teste dein Formular unten: Füll es aus, klick auf Suchen – und schau, welches SQL entsteht.</li>
+    </ol>
+    <p class="note">Fremdschlüssel wie <code>art_id</code> zeigt die Auswahlliste mit Namen an – gespeichert und gesucht wird aber die Nummer.</p>
+    <div id="baukasten"></div>
+  </section>
+
+  <!-- Kurz-Check -->
+  <section class="card">
+    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
+    <div id="quiz"></div>
+  </section>
+
+  <section class="card merke">
+    <h2>Merke</h2>
+    <ul>
+      <li>Hinter jedem Suchformular steht eine Abfrage mit <strong>Platzhaltern</strong> nach <code>WHERE</code> – eine parametrisierte Abfrage.</li>
+      <li>Jedes Feld wird eine Bedingung, verknüpft mit <code>AND</code>. „enthält“ wird zu <code>LIKE '%…%'</code>.</li>
+      <li>Eine Auswahlliste verhindert Tippfehler – man kann nur wählen, was es gibt.</li>
+      <li>Eingaben dürfen nie einfach in den SQL-Text geklebt werden (siehe Expedition).</li>
+    </ul>
+  </section>
+
+  <!-- Training -->
+  <section class="card frei" id="training">
+    <h2><span class="step-no">🏋</span> Training</h2>
+    <h3 class="sub"><span class="badge ueben">● Basis</span> Formular → SQL</h3>
+    <div id="tr1"></div>
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Expedition: SQL-Injection</h3>
+    <p>Ein schlecht programmiertes Login klebt die Eingabe einfach in die Abfrage:
+      <code>"SELECT * FROM nutzer WHERE benutzername = '" + eingabe + "'"</code>. Jemand tippt als Benutzernamen: <code>' OR '1'='1</code></p>
+    <div id="inj"></div>
+    <div id="tr3"></div>
+  </section>
+
+  <nav class="pager">
+    <a href="../teil4/14-aendern-loeschen.html">← Lektion 14: Ändern und löschen</a>
+    <a href="16-eingabeformular.html">Lektion 16: Eingabeformular →</a>
+  </nav>
+</main>
+
+<footer>
+  <div class="wrap t">Lernmaterial von <a href="https://herrseibert.de">herrseibert.de</a> · Lizenz <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">CC BY-SA 4.0</a> · ohne Tracking, ohne Cookies<br>Erstellt von der KI Claude von Anthropic.</div>
+  <div class="wrap t gh">Fehler gefunden oder eine Idee? → <a href="https://github.com/baumlaube/sql-course">Kurs auf GitHub</a></div>
+  <div class="wrap t gh">Das SQL-Labor nutzt SQLite (gemeinfrei) über sql.js (MIT-Lizenz) – alles läuft in deinem Browser.</div>
+  <div class="wrap legal"><a href="../impressum.html">Impressum</a> · <a href="../datenschutz.html">Datenschutz</a></div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { quiz } = window.Kurs;
+  const L = window.Labor;
+  const $ = (id) => document.getElementById(id);
+
+  quiz($("wdh"), [
+    { q: "Was findet <code>hobby LIKE '%gras%'</code>?", options: ["Hobbys, in denen „gras“ irgendwo vorkommt", "Nur das Hobby „gras“", "Hobbys, die mit „gras“ beginnen"], right: 0,
+      miss: [null, "Dafür bräuchte man <code>=</code>.", "Dafür stünde das % nur hinten."], why: "% vorne und hinten: irgendwo." },
+    { q: "Zwei Bedingungen, die beide stimmen müssen, verbindet man mit …", options: ["AND", "OR", "Komma"], right: 0,
+      miss: [null, "Bei <code>OR</code> reicht eine.", "Das Komma trennt Spalten, keine Bedingungen."], why: "AND: beide müssen stimmen." },
+  ]);
+
+  quiz($("q1"), [
+    { q: "Welche Abfrage passt zum ausgefüllten Formular?",
+      options: ["<code>SELECT … FROM tiere WHERE sucht = 'Kuschelpartner' OR hobby LIKE '%Gras%'</code>",
+        "<code>SELECT … FROM tiere WHERE sucht = 'Kuschelpartner' AND hobby LIKE '%Gras%'</code>",
+        "<code>SELECT … FROM tiere WHERE sucht = 'Kuschelpartner' AND hobby = 'Gras'</code>"], right: 1,
+      miss: ["Mit <code>OR</code> kämen auch Tiere, die etwas ganz anderes suchen. Ein Suchformular grenzt mit jedem Feld weiter ein.", null,
+        "„enthält“ heißt <code>LIKE '%…%'</code> – mit <code>=</code> muss das Hobby genau „Gras“ heißen."],
+      why: "Jedes ausgefüllte Feld ist eine Bedingung, alle mit <code>AND</code> verknüpft." },
+  ]);
+  quiz($("q2"), [
+    { q: "Was steht in der Abfrage, wenn jemand bei „sucht“ <strong>Freundschaft</strong> wählt?", options: ["<code>sucht = :sucht</code>", "<code>sucht = 'Freundschaft'</code>", "<code>sucht = Freundschaft</code>"], right: 1,
+      miss: ["Der Platzhalter wird beim Abschicken ersetzt.", null, "Text braucht Anführungszeichen – das erledigt das Programm."], why: "Der Platzhalter wird durch die Eingabe ersetzt – als Text." },
+    { q: "Warum schreibt man die Abfrage mit Platzhaltern statt jedes Mal neu?", options: ["Weil sie dann schneller tippt", "Weil das Programm so für jede Eingabe dieselbe, geprüfte Abfrage benutzt", "Weil Platzhalter hübscher sind"], right: 1,
+      miss: ["Das Programm tippt nicht.", null, "Es geht um Sicherheit und Ordnung."], why: "Einmal geschrieben, für alle Eingaben benutzt – und die Eingaben werden sicher eingesetzt." },
+  ]);
+
+  L.formular($("baukasten"), { art: "suche" });
+
+  quiz($("quiz"), [
+    { q: "Ein Feld „Wohnort“ mit Vergleich „ist gleich“ – was wird daraus?", options: ["<code>wohnort LIKE :wohnort</code>", "<code>wohnort = :wohnort</code>", "<code>SELECT wohnort</code>"], right: 1,
+      miss: ["„ist gleich“ heißt <code>=</code>.", null, "Das wäre eine Spalte im Ergebnis, kein Suchfeld."], why: "Gleich: <code>=</code>, dahinter der Platzhalter." },
+    { q: "Warum ist eine Auswahlliste für „Art“ besser als ein Textfeld?", options: ["Sie ist bunter", "Man kann nur wählen, was es gibt – keine Tippfehler, keine 0 Treffer", "Textfelder sind verboten"], right: 1,
+      miss: ["Darum geht es nicht.", null, "Erlaubt sind sie – aber fehleranfälliger."], why: "Vorgegebene Werte passen immer zur Datenbank." },
+    { q: "Ein Besucher lässt alle Felder leer und klickt auf Suchen. Was zeigt dein Formular?", options: ["Nichts", "Alle Tiere – es gibt keine Bedingung", "Eine Fehlermeldung"], right: 1,
+      miss: ["Leere Felder werden übersprungen – dann bleibt kein <code>WHERE</code>.", null, "Das ist kein Fehler."], why: "Ohne Bedingung: alle Zeilen." },
+  ]);
+
+  quiz($("tr1"), [
+    { q: "Formular: „Alter mindestens [5]“. Welche Bedingung?", options: ["<code>alter_jahre &gt;= 5</code>", "<code>alter_jahre &gt; 5</code>", "<code>alter_jahre = 5</code>"], right: 0,
+      miss: [null, "Dann wäre 5 nicht dabei.", "Das wäre „genau 5“."], why: "„mindestens“ = <code>&gt;=</code>." },
+    { q: "Formular: „Name enthält [mi]“. Welche Bedingung?", options: ["<code>name = 'mi'</code>", "<code>name LIKE '%mi%'</code>", "<code>name LIKE 'mi'</code>"], right: 1,
+      miss: ["Dann müsste der Name genau „mi“ heißen.", null, "Ohne % ist <code>LIKE</code> wie <code>=</code>."], why: "enthält = <code>LIKE '%…%'</code>." },
+    { q: "Formular mit Auswahlliste „Art“: Gewählt wird „Katze“, in <code>arten</code> hat sie die id 2. Was steht in der Abfrage auf <code>tiere</code>?", options: ["<code>art_id = 'Katze'</code>", "<code>art_id = 2</code>"], right: 1,
+      miss: ["In <code>tiere</code> steht nur die Nummer der Art.", null], why: "Die Liste zeigt den Namen, schickt aber die id." },
+  ]);
+
+  L.create($("inj"), { db: "nutzer", modus: "lesen", tabellen: false, sql: "SELECT benutzername, email FROM nutzer WHERE benutzername = '' OR '1'='1'" });
+  quiz($("tr3"), [
+    { q: "Was ist passiert?", options: ["Nichts – kein Nutzer heißt so", "Die Bedingung ist immer wahr (<code>'1'='1'</code>) – das Login zeigt alle 24 Konten mit E-Mail", "Die Datenbank ist abgestürzt"], right: 1,
+      miss: ["Schau aufs Ergebnis: alle Konten.", null, "Sie hat genau getan, was in der Abfrage stand."], why: "Die Eingabe wurde Teil des SQL-Befehls. Das heißt <strong>SQL-Injection</strong> – eine der häufigsten Sicherheitslücken." },
+    { q: "Wie verhindert man das?", options: ["Kürzere Passwörter", "Eingaben nie in den SQL-Text kleben, sondern über Platzhalter (Parameter) übergeben", "Großbuchstaben verbieten"], right: 1,
+      miss: ["Das hilft nicht.", null, "Das hilft nicht."], why: "Mit Platzhaltern bleibt die Eingabe immer nur ein Wert – nie Teil des Befehls. Dein Baukasten setzt Anführungszeichen in Eingaben deshalb sicher." },
+  ]);
+});
+</script>
+</body>
+</html>

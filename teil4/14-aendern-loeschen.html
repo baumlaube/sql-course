@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ändern und löschen: UPDATE und DELETE · SQL-Kurs</title>
+<meta name="description" content="Lektion 14 im SQL-Lernpfad: Mit UPDATE Daten ändern und mit DELETE löschen – und warum ein vergessenes WHERE alle Zeilen trifft. Geübt an einer Kopie, danach das eigene Projekt Pfotenglück testen und als .db abgeben.">
+<link rel="canonical" href="https://sql.herrseibert.de/teil4/14-aendern-loeschen.html">
+<!-- vorschau -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SQL-Kurs">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://sql.herrseibert.de/teil4/14-aendern-loeschen.html">
+<meta property="og:title" content="Ändern und löschen: UPDATE und DELETE · SQL-Kurs">
+<meta property="og:description" content="Lektion 14 im SQL-Lernpfad: Mit UPDATE Daten ändern und mit DELETE löschen – und warum ein vergessenes WHERE alle Zeilen trifft. Geübt an einer Kopie, danach das eigene Projekt Pfotenglück testen und als .db abgeben.">
+<meta property="og:image" content="https://sql.herrseibert.de/vorschau.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SQL-Kurs – Datenbanken und SQL Schritt für Schritt, mit SQL-Labor im Browser">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /vorschau -->
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/kurs.css?v=2b9f3c7d0f">
+<link rel="stylesheet" href="../assets/labor.css?v=35dbf4b6b2">
+<script src="../assets/i18n.js?v=2890af4da9" data-page="teil4-14-aendern-loeschen" data-langs="de"></script>
+<script src="../assets/kurs.js?v=c26439e733"></script>
+<script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
+<script src="../assets/labor.js?v=52374669fc"></script>
+<script src="../assets/labor-extra.js?v=e94bd060f6"></script>
+<script src="../assets/projekt.js?v=b5f4ff4251"></script>
+<script src="../assets/daten/pfoten.js?v=7b482f3862"></script>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html"><img class="logo" src="../favicon.svg" alt="" width="34" height="34"> SQL-Kurs <span>· Datenbanken verstehen</span></a>
+    <span class="spacer"></span>
+    <button class="theme-btn" type="button" aria-label="Hell oder dunkel umschalten">◐ Hell/Dunkel</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="path" aria-label="Lernpfad">
+    <strong class="t">Lernpfad:</strong>
+    <ol>
+      <li class="done"><a href="../teil1/01-datenbanken.html" title="1 · Datenbanken sind überall">1</a></li>
+      <li class="done"><a href="../teil1/02-ids.html" title="2 · IDs und Verknüpfung">2</a></li>
+      <li class="done"><a href="../teil2/03-select.html" title="3 · SELECT – Spalten auswählen">3</a></li>
+      <li class="done"><a href="../teil2/04-where.html" title="4 · WHERE – Zeilen filtern">4</a></li>
+      <li class="done"><a href="../teil2/05-and-or-not.html" title="5 · AND, OR, NOT">5</a></li>
+      <li class="done"><a href="../teil2/06-like-in-between.html" title="6 · LIKE, IN, BETWEEN">6</a></li>
+      <li class="done"><a href="../teil2/07-sortieren-rechnen.html" title="7 · Sortieren und rechnen">7</a></li>
+      <li class="done"><a href="../teil2/08-group-by.html" title="8 · GROUP BY – Gruppen bilden">8</a></li>
+      <li class="done"><a href="../teil3/09-join.html" title="9 · Zwei Tabellen: JOIN">9</a></li>
+      <li class="done"><a href="../teil3/10-join-mehr.html" title="10 · JOIN mit WHERE und GROUP BY">10</a></li>
+      <li class="done"><a href="../teil3/11-der-fall.html" title="11 · Der Fall">11</a></li>
+      <li class="done"><a href="12-projekt-planen.html" title="12 · Projekt planen">12</a></li>
+      <li class="done"><a href="13-tabellen-anlegen.html" title="13 · Tabellen anlegen und füllen">13</a></li>
+      <li class="now"><span title="14 · Ändern und löschen" aria-current="step">14</span></li>
+      <li class="done"><a href="../teil5/15-suchformular.html" title="15 · Suchformular">15</a></li>
+      <li class="done"><a href="../teil5/16-eingabeformular.html" title="16 · Eingabeformular">16</a></li>
+    </ol>
+  </nav>
+
+  <section class="hero">
+    <h1>Ändern und löschen – mit Vorsicht</h1>
+    <div class="meta">
+      <span class="chip">Teil 4 · Lektion 14</span>
+      <span class="chip">⏱ ca. 35 Minuten</span>
+    </div>
+    <p class="erklaerung">Daten ändern sich: Ein Tier wird älter, ein Besitzer zieht um, ein Tier hat seinen Partner gefunden und verlässt die Börse.
+      Mit <code>UPDATE</code> änderst du, mit <code>DELETE</code> löschst du. Beide brauchen ein <code>WHERE</code> – sonst trifft es <strong>alle</strong> Zeilen.
+      Das ist in echten Firmen schon passiert.</p>
+  </section>
+
+  <section class="card wdh">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
+  <details class="card woerter">
+    <summary>📖 Wörter für diese Lektion</summary>
+    <p class="note">Die SQL-Befehle bleiben englisch – so heißen sie in jeder Datenbank der Welt.</p>
+    <div class="tbl-scroll"><table class="plain">
+      <tr><th class="wort">ändern <small>UPDATE</small></th><td>Werte in vorhandenen Zeilen überschreiben.</td></tr>
+      <tr><th class="wort">setzen <small>SET</small></th><td>Sagt, welche Spalte welchen neuen Wert bekommt.</td></tr>
+      <tr><th class="wort">löschen <small>DELETE</small></th><td>Ganze Zeilen entfernen.</td></tr>
+      <tr><th class="wort">rückgängig machen</th><td>Eine Änderung zurücknehmen. Bei <code>DELETE</code> geht das nicht!</td></tr>
+      <tr><th class="wort">die Sicherung <small>das Backup</small></th><td>Eine Kopie der Daten, falls etwas schiefgeht – z. B. deine <code>.db</code>-Datei.</td></tr>
+    </table></div>
+  </details>
+
+  <section class="card szenario">
+    <h2><span class="step-no">🐾</span> Szenario</h2>
+    <p>Bei <strong>Pfotenglück</strong> ist Betrieb: Steckbriefe ändern sich, Tiere finden Partner. Du übst an einer <strong>Kopie</strong> der Muster-Börse –
+      jede Ausführung beginnt wieder mit dem Original. Danach pflegst und testest du deine eigene Börse.</p>
+  </section>
+
+  <!-- 1 · Überleg -->
+  <section class="card">
+    <h2><span class="step-no">1</span> Überleg: Was passiert? <span class="chip">4 Minuten</span></h2>
+    <div id="tabs1"></div>
+    <p>Bello hatte Geburtstag. Jemand tippt schnell:</p>
+    <pre class="sql" data-farbe>UPDATE tiere SET alter_jahre = 6</pre>
+    <div class="choices" id="pred1">
+      <button type="button" class="choice">Bello ist jetzt 6</button>
+      <button type="button" class="choice">Alle 24 Tiere sind jetzt 6 – auch die 41-jährige Schildkröte</button>
+      <button type="button" class="choice">Fehlermeldung – es fehlt ein WHERE</button>
+    </div>
+    <p class="fb" id="fb1"></p>
+    <div id="probe1" hidden>
+      <div id="l1"></div>
+      <p class="rule"><code>UPDATE</code> und <code>DELETE</code> <strong>immer mit WHERE</strong>.<br>Ohne <code>WHERE</code> trifft es alle Zeilen – und SQL fragt nicht nach.</p>
+    </div>
+  </section>
+
+  <!-- 2 · UPDATE -->
+  <section class="card">
+    <h2><span class="step-no">2</span> UPDATE: richtig ändern <span class="chip">6 Minuten</span></h2>
+    <pre class="sql" data-farbe>UPDATE tabelle SET spalte = neuer_wert WHERE bedingung</pre>
+    <p><strong>a)</strong> Bello (<code>id</code> 1) ist jetzt <strong>6</strong> Jahre alt. Am sichersten triffst du genau eine Zeile über ihre <code>id</code>.</p>
+    <div id="l2a"></div>
+    <p><strong>b)</strong> Minka hat sich verändert: Sie sucht jetzt <strong>Freundschaft</strong> und ihr Hobby ist <strong>Kartons</strong>. Mehrere Spalten trennst du mit Komma nach <code>SET</code>.</p>
+    <div id="l2b"></div>
+    <div id="hints2"></div>
+  </section>
+
+  <!-- 3 · DELETE -->
+  <section class="card">
+    <h2><span class="step-no">3</span> DELETE: eine Zeile löschen <span class="chip">4 Minuten</span></h2>
+    <pre class="sql" data-farbe>DELETE FROM tabelle WHERE bedingung</pre>
+    <p>Goldi hat einen Partner gefunden und verlässt die Börse. Lösche Goldi aus <code>tiere</code>.</p>
+    <div id="l3"></div>
+  </section>
+
+  <!-- 4 · Fehlerdetektiv -->
+  <section class="card">
+    <h2><span class="step-no">4</span> Fehlerdetektiv: Wo sind alle hin? <span class="chip">4 Minuten</span></h2>
+    <p>Jonas sollte nur den Goldfisch <strong>Blub</strong> löschen. Führ seinen Befehl aus (keine Sorge – es ist nur die Kopie).</p>
+    <ol class="howto">
+      <li>Wie viele Tiere sind danach noch da?</li>
+      <li>Was fehlt im Befehl?</li>
+      <li>Wie trifft man <strong>nur</strong> Blub?</li>
+    </ol>
+    <div id="l4"></div>
+    <div id="hints4"></div>
+    <p class="rule">Profi-Trick: Erst <code>SELECT * FROM tiere WHERE …</code> ausführen und schauen, welche Zeilen kommen.<br>
+      Stimmt es, dasselbe <code>WHERE</code> für <code>UPDATE</code> oder <code>DELETE</code> nehmen.</p>
+  </section>
+
+  <!-- 5 · Projekt testen -->
+  <section class="card">
+    <h2><span class="step-no">5</span> Deine Börse pflegen und testen <span class="chip">10 Minuten</span></h2>
+    <p>Öffne deine <code>.db</code>-Datei aus Lektion 13. Ändere zwei Steckbriefe, lösche ein Testtier – und teste, ob alles zusammenpasst.
+      Probier auch, ein Tier mit einer Besitzer-ID einzutragen, die es nicht gibt: Deine Datenbank sollte das ablehnen.</p>
+    <div id="projekt"></div>
+    <p class="note"><strong>Speichern nicht vergessen!</strong> Die <code>.db</code>-Datei ist deine Abgabe für Teil 4.</p>
+  </section>
+
+  <!-- Kurz-Check -->
+  <section class="card">
+    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
+    <div id="quiz"></div>
+  </section>
+
+  <section class="card merke">
+    <h2>Merke</h2>
+    <ul>
+      <li><code>UPDATE tabelle SET spalte = wert, spalte2 = wert2 WHERE …</code> ändert vorhandene Zeilen.</li>
+      <li><code>DELETE FROM tabelle WHERE …</code> löscht ganze Zeilen – unwiderruflich.</li>
+      <li>Ohne <code>WHERE</code> trifft es alle Zeilen. Am sichersten: <code>WHERE id = …</code></li>
+      <li>Erst mit <code>SELECT</code> und demselben <code>WHERE</code> prüfen, dann ändern oder löschen. Und vorher eine Sicherung speichern.</li>
+    </ul>
+  </section>
+
+  <!-- Training -->
+  <section class="card frei" id="training">
+    <h2><span class="step-no">🏋</span> Training</h2>
+    <p class="lead">Alles an einer Kopie der Muster-Börse – jede Ausführung beginnt wieder mit dem Original.</p>
+    <h3 class="sub"><span class="badge ueben">● Basis</span> Steckbriefe pflegen</h3>
+    <div id="tr1"></div>
+    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Aufräumen</h3>
+    <div id="tr2"></div>
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Viele auf einmal</h3>
+    <div id="tr3"></div>
+  </section>
+
+  <nav class="pager">
+    <a href="13-tabellen-anlegen.html">← Lektion 13: Tabellen anlegen und füllen</a>
+    <a href="../teil5/15-suchformular.html">Lektion 15: Suchformular →</a>
+  </nav>
+</main>
+
+<footer>
+  <div class="wrap t">Lernmaterial von <a href="https://herrseibert.de">herrseibert.de</a> · Lizenz <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">CC BY-SA 4.0</a> · ohne Tracking, ohne Cookies<br>Erstellt von der KI Claude von Anthropic.</div>
+  <div class="wrap t gh">Fehler gefunden oder eine Idee? → <a href="https://github.com/baumlaube/sql-course">Kurs auf GitHub</a></div>
+  <div class="wrap t gh">Das SQL-Labor nutzt SQLite (gemeinfrei) über sql.js (MIT-Lizenz) – alles läuft in deinem Browser.</div>
+  <div class="wrap legal"><a href="../impressum.html">Impressum</a> · <a href="../datenschutz.html">Datenschutz</a></div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { pick, quiz, hints } = window.Kurs;
+  const L = window.Labor;
+  const $ = (id) => document.getElementById(id);
+  const LEISTE = ["UPDATE", "SET", "DELETE FROM", "WHERE", "=", ",", "'…'", "AND", "OR", "IN", "(", ")", "<", ">", "+"];
+  const ZUSTAND_TIERE = "SELECT id, name, alter_jahre, hobby, sucht FROM tiere ORDER BY id";
+  const opt = (a) => Object.assign({ db: "pfoten", modus: "frei", tabellen: false, leiste: LEISTE, mitNamen: true, zustand: ZUSTAND_TIERE }, a);
+
+  quiz($("wdh"), [
+    { q: "Wie fügt man eine Zeile ein?", options: ["<code>INSERT INTO tabelle (spalten) VALUES (werte)</code>", "<code>ADD tabelle VALUES (werte)</code>"], right: 0,
+      miss: [null, "Das Wort heißt <code>INSERT INTO</code>."], why: "INSERT INTO … VALUES …" },
+    { q: "Was ist <code>WHERE id = 5</code>?", options: ["Eine Bedingung, die genau eine Zeile trifft", "Ein Befehl, der Zeile 5 löscht"], right: 0,
+      miss: [null, "<code>WHERE</code> wählt nur aus – was passiert, sagt der Befehl davor."], why: "Die id ist eindeutig – also genau eine Zeile." },
+  ]);
+
+  L.tabelle($("tabs1"), { db: "pfoten", tabelle: "tiere", offen: true });
+  pick($("pred1"), { right: 1, fb: $("fb1"),
+    miss: ["Woher soll SQL wissen, dass Bello gemeint ist? Der Name steht nirgends im Befehl.", null,
+      "Leider nicht. <code>WHERE</code> ist freiwillig – ohne trifft es einfach alle Zeilen."],
+    why: "Ohne <code>WHERE</code> gilt <code>SET</code> für jede Zeile. Probier es aus:",
+    onDone() { $("probe1").hidden = false; } });
+  L.create($("l1"), opt({ modus: "lesen", sql: "UPDATE tiere SET alter_jahre = 6" }));
+
+  L.create($("l2a"), opt({ loesung: "UPDATE tiere SET alter_jahre = 6 WHERE id = 1",
+    fallen: [{ muster: /SET\s+alter_jahre\s*=\s*'6'/i, text: "Das Alter ist eine Zahl – ohne Anführungszeichen." }],
+    ok: "✔ Richtig – genau 1 Zeile geändert. Bello ist 6." }));
+  L.create($("l2b"), opt({ loesung: "UPDATE tiere SET sucht = 'Freundschaft', hobby = 'Kartons' WHERE id = 2",
+    fallen: [{ muster: /SET[\s\S]*\bAND\b[\s\S]*WHERE/i, text: "Mehrere Spalten nach <code>SET</code> werden mit <strong>Komma</strong> getrennt, nicht mit <code>AND</code>." }],
+    ok: "✔ Richtig – beide Spalten in einem Befehl, genau eine Zeile." }));
+  hints($("hints2"), [
+    "Minka hat die <code>id</code> 2 (oder: <code>WHERE name = 'Minka'</code>).",
+    "Lösung: <code>UPDATE tiere SET sucht = 'Freundschaft', hobby = 'Kartons' WHERE id = 2</code>",
+  ]);
+
+  L.create($("l3"), opt({ zustand: "SELECT id, name FROM tiere ORDER BY id", loesung: "DELETE FROM tiere WHERE id = 5",
+    fallen: [{ muster: /DELETE\s+\*/i, text: "Bei <code>DELETE</code> gibt es kein <code>*</code> – es wird immer die ganze Zeile gelöscht: <code>DELETE FROM tiere WHERE …</code>." }],
+    ok: "✔ Goldi ist raus – 23 Tiere bleiben." }));
+
+  L.create($("l4"), opt({ zustand: "SELECT id, name FROM tiere ORDER BY id", erkunden: true, zeilen: 2,
+    sql: "DELETE FROM tiere", loesung: "DELETE FROM tiere WHERE name = 'Blub'",
+    ok: "✔ Fall gelöst! Mit <code>WHERE</code> ist nur Blub weg. In einer echten Datenbank wären ohne Sicherung alle Tiere verloren gewesen." }));
+  hints($("hints4"), [
+    "Danach ist die Tabelle leer – alle 24 Tiere sind gelöscht.",
+    "Es fehlt die Bedingung, die nur Blub trifft.",
+    "Lösung: <code>DELETE FROM tiere WHERE name = 'Blub'</code> (oder <code>WHERE id = 16</code>)",
+  ]);
+
+  const tabs = (db) => { const r = db.exec("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name <> 'formulare'")[0]; return r ? r.values.map((v) => v[0]) : []; };
+  L.projektlabor($("projekt"), {
+    sql: "-- Erst prüfen:\nSELECT * FROM tiere WHERE id = 1;\n",
+    aufgaben: [
+      { text: "Deine Datenbank ist geöffnet (mindestens drei Tabellen)", pruef: (db) => tabs(db).length >= 3 },
+      { text: "Jeder Fremdschlüssel zeigt auf eine vorhandene Zeile", pruef: (db) => { if (!tabs(db).length) return false; const r = db.exec("PRAGMA foreign_key_check")[0]; return !r || `${r.values.length} Verweise ins Nichts`; } },
+      { text: "Keine Zeile ohne Namen: Jede Tabelle mit einer Spalte <code>name</code> oder <code>vorname</code> hat dort überall etwas stehen", pruef: (db) => {
+        const leer = tabs(db).filter((t) => { const sp = (db.exec(`SELECT name FROM pragma_table_info('${t}') WHERE name IN ('name','vorname')`)[0] || { values: [] }).values.map((v) => v[0]);
+          return sp.some((c) => db.exec(`SELECT COUNT(*) FROM "${t}" WHERE "${c}" IS NULL OR "${c}" = ''`)[0].values[0][0] > 0); });
+        return tabs(db).length > 0 && !leer.length || (leer.length ? `Leere Namen in: ${leer.join(", ")}` : false); } },
+    ],
+  });
+
+  quiz($("quiz"), [
+    { q: "Was macht <code>DELETE FROM besitzer</code>?", options: ["Löscht die Tabelle besitzer", "Löscht alle Zeilen in besitzer – die leere Tabelle bleibt", "Fehler – WHERE fehlt"], right: 1,
+      miss: ["Die Tabelle selbst bleibt (dafür gäbe es <code>DROP TABLE</code>).", null, "Leider kein Fehler – <code>WHERE</code> ist freiwillig."], why: "Ohne <code>WHERE</code> sind alle Zeilen weg." },
+    { q: "Zwei Spalten in einem UPDATE ändern?", options: ["<code>SET a = 1 AND b = 2</code>", "<code>SET a = 1, b = 2</code>", "zwei UPDATE nötig"], right: 1,
+      miss: ["Mit <code>AND</code> wird es ein Vergleich – das Ergebnis ist Unsinn.", null, "Es geht in einem Befehl."], why: "Nach <code>SET</code> trennt ein Komma." },
+    { q: "Wie triffst du sicher genau eine Zeile?", options: ["<code>WHERE name = …</code>", "<code>WHERE id = …</code>", "<code>WHERE hobby = …</code>"], right: 1,
+      miss: ["Namen können doppelt sein.", null, "Viele Tiere können dasselbe Hobby haben."], why: "Die id ist eindeutig." },
+    { q: "Was solltest du vor einem großen <code>DELETE</code> tun?", options: ["Mit <code>SELECT</code> und demselben <code>WHERE</code> prüfen, was getroffen wird – und eine Sicherung speichern", "Nichts – man kann es ja rückgängig machen", "Die Tabelle neu anlegen"], right: 0,
+      miss: [null, "<code>DELETE</code> lässt sich nicht rückgängig machen.", "Das wäre unnötig."], why: "Erst schauen, dann löschen – und vorher sichern." },
+  ]);
+
+  L.training($("tr1"), { db: "pfoten", key: "l14-basis", tabelle: false, aufgaben: [
+    opt({ text: "Rex (<code>id</code> 13) hat ein neues Hobby: <strong>Frisbee</strong>.", loesung: "UPDATE tiere SET hobby = 'Frisbee' WHERE id = 13",
+      hints: ["Lösung: <code>UPDATE tiere SET hobby = 'Frisbee' WHERE id = 13</code>"] }),
+    opt({ text: "Coco sucht jetzt einen <strong>Kuschelpartner</strong>.", loesung: "UPDATE tiere SET sucht = 'Kuschelpartner' WHERE name = 'Coco'",
+      hints: ["Lösung: <code>UPDATE tiere SET sucht = 'Kuschelpartner' WHERE name = 'Coco'</code>"] }),
+    opt({ text: "Besitzer Omar (<code>id</code> 6) zieht nach <strong>Bamberg</strong>.", zustand: "SELECT * FROM besitzer ORDER BY id",
+      loesung: "UPDATE besitzer SET wohnort = 'Bamberg' WHERE id = 6", hints: ["Lösung: <code>UPDATE besitzer SET wohnort = 'Bamberg' WHERE id = 6</code>"] }),
+  ] });
+  L.training($("tr2"), { db: "pfoten", key: "l14-sicher", tabelle: false, aufgaben: [
+    opt({ text: "Paula (<code>id</code> 18) hat ihren Partner gefunden: Lösch sie.", zustand: "SELECT id, name FROM tiere ORDER BY id",
+      loesung: "DELETE FROM tiere WHERE id = 18", hints: ["Lösung: <code>DELETE FROM tiere WHERE id = 18</code>"] }),
+    opt({ text: "Alle Tiere, die einen <strong>Sportpartner</strong> suchen, haben einen gefunden. Lösch sie alle.", zustand: "SELECT id, name, sucht FROM tiere ORDER BY id",
+      loesung: "DELETE FROM tiere WHERE sucht = 'Sportpartner'", hints: ["Lösung: <code>DELETE FROM tiere WHERE sucht = 'Sportpartner'</code>"] }),
+    opt({ text: "Bruno und Rocky (<code>id</code> 19 und 7) sind jetzt beide <strong>Kuschelpartner</strong>-Suchende. Ein Befehl!",
+      loesung: "UPDATE tiere SET sucht = 'Kuschelpartner' WHERE id IN (7, 19)",
+      hints: ["Zwei IDs: <code>WHERE id IN (7, 19)</code> oder <code>WHERE id = 7 OR id = 19</code>.", "Lösung: <code>UPDATE tiere SET sucht = 'Kuschelpartner' WHERE id IN (7, 19)</code>"] }),
+  ] });
+  L.training($("tr3"), { db: "pfoten", key: "l14-profi", tabelle: false, aufgaben: [
+    opt({ text: "Neues Jahr: <strong>Alle</strong> Tiere werden ein Jahr älter. (Hier ist es richtig, kein <code>WHERE</code> zu nehmen!)",
+      loesung: "UPDATE tiere SET alter_jahre = alter_jahre + 1",
+      hints: ["Rechnen geht auch: <code>SET alter_jahre = alter_jahre + 1</code>.", "Lösung: <code>UPDATE tiere SET alter_jahre = alter_jahre + 1</code>"] }),
+    opt({ text: "Alle Tiere, die <strong>älter als 10</strong> sind, suchen ab jetzt <strong>Freundschaft</strong>.",
+      loesung: "UPDATE tiere SET sucht = 'Freundschaft' WHERE alter_jahre > 10", hints: ["Lösung: <code>UPDATE tiere SET sucht = 'Freundschaft' WHERE alter_jahre &gt; 10</code>"] }),
+  ] });
+});
+</script>
+</body>
+</html>

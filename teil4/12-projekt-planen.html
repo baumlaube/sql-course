@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projekt Pfotenglück: die Datenbank planen · SQL-Kurs</title>
+<meta name="description" content="Lektion 12 im SQL-Lernpfad: Projekt Pfotenglück, die Partnerbörse für Tiere. Die Muster-Börse erkunden, Planungsfehler erkennen und die eigene Datenbank planen – Tabellen, Spalten, Datentypen, Primär- und Fremdschlüssel, mit ER-Diagramm und fertigem CREATE TABLE.">
+<link rel="canonical" href="https://sql.herrseibert.de/teil4/12-projekt-planen.html">
+<!-- vorschau -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SQL-Kurs">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://sql.herrseibert.de/teil4/12-projekt-planen.html">
+<meta property="og:title" content="Projekt Pfotenglück: die Datenbank planen · SQL-Kurs">
+<meta property="og:description" content="Lektion 12 im SQL-Lernpfad: Projekt Pfotenglück, die Partnerbörse für Tiere. Die Muster-Börse erkunden, Planungsfehler erkennen und die eigene Datenbank planen – Tabellen, Spalten, Datentypen, Primär- und Fremdschlüssel, mit ER-Diagramm und fertigem CREATE TABLE.">
+<meta property="og:image" content="https://sql.herrseibert.de/vorschau.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SQL-Kurs – Datenbanken und SQL Schritt für Schritt, mit SQL-Labor im Browser">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /vorschau -->
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/kurs.css?v=2b9f3c7d0f">
+<link rel="stylesheet" href="../assets/labor.css?v=35dbf4b6b2">
+<script src="../assets/i18n.js?v=2890af4da9" data-page="teil4-12-projekt-planen" data-langs="de"></script>
+<script src="../assets/kurs.js?v=c26439e733"></script>
+<script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
+<script src="../assets/labor.js?v=52374669fc"></script>
+<script src="../assets/labor-extra.js?v=e94bd060f6"></script>
+<script src="../assets/projekt.js?v=b5f4ff4251"></script>
+<script src="../assets/daten/pfoten.js?v=7b482f3862"></script>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../index.html"><img class="logo" src="../favicon.svg" alt="" width="34" height="34"> SQL-Kurs <span>· Datenbanken verstehen</span></a>
+    <span class="spacer"></span>
+    <button class="theme-btn" type="button" aria-label="Hell oder dunkel umschalten">◐ Hell/Dunkel</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="path" aria-label="Lernpfad">
+    <strong class="t">Lernpfad:</strong>
+    <ol>
+      <li class="done"><a href="../teil1/01-datenbanken.html" title="1 · Datenbanken sind überall">1</a></li>
+      <li class="done"><a href="../teil1/02-ids.html" title="2 · IDs und Verknüpfung">2</a></li>
+      <li class="done"><a href="../teil2/03-select.html" title="3 · SELECT – Spalten auswählen">3</a></li>
+      <li class="done"><a href="../teil2/04-where.html" title="4 · WHERE – Zeilen filtern">4</a></li>
+      <li class="done"><a href="../teil2/05-and-or-not.html" title="5 · AND, OR, NOT">5</a></li>
+      <li class="done"><a href="../teil2/06-like-in-between.html" title="6 · LIKE, IN, BETWEEN">6</a></li>
+      <li class="done"><a href="../teil2/07-sortieren-rechnen.html" title="7 · Sortieren und rechnen">7</a></li>
+      <li class="done"><a href="../teil2/08-group-by.html" title="8 · GROUP BY – Gruppen bilden">8</a></li>
+      <li class="done"><a href="../teil3/09-join.html" title="9 · Zwei Tabellen: JOIN">9</a></li>
+      <li class="done"><a href="../teil3/10-join-mehr.html" title="10 · JOIN mit WHERE und GROUP BY">10</a></li>
+      <li class="done"><a href="../teil3/11-der-fall.html" title="11 · Der Fall">11</a></li>
+      <li class="now"><span title="12 · Projekt planen" aria-current="step">12</span></li>
+      <li class="done"><a href="13-tabellen-anlegen.html" title="13 · Tabellen anlegen und füllen">13</a></li>
+      <li class="done"><a href="14-aendern-loeschen.html" title="14 · Ändern und löschen">14</a></li>
+      <li class="done"><a href="../teil5/15-suchformular.html" title="15 · Suchformular">15</a></li>
+      <li class="done"><a href="../teil5/16-eingabeformular.html" title="16 · Eingabeformular">16</a></li>
+    </ol>
+  </nav>
+
+  <section class="hero">
+    <h1>Pfotenglück – du planst deine eigene Datenbank</h1>
+    <div class="meta">
+      <span class="chip">Teil 4 · Lektion 12</span>
+      <span class="chip">⏱ ca. 35 Minuten</span>
+    </div>
+    <p class="erklaerung">Bisher hast du Datenbanken befragt, die andere gebaut haben. Ab heute baust du selbst eine. Jedes Datenbank-Projekt beginnt mit
+      einem Plan: Welche Tabellen? Welche Spalten? Wie hängen sie zusammen? Ein Fehler im Plan kostet später viel Arbeit –
+      eine gute Planung spart sie.</p>
+  </section>
+
+  <section class="card wdh">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
+  <details class="card woerter">
+    <summary>📖 Wörter für diese Lektion</summary>
+    <p class="note">Die Fachwörter links bleiben deutsch – so heißen sie im Unterricht.</p>
+    <div class="tbl-scroll"><table class="plain">
+      <tr><th class="wort">planen <small>der Plan</small></th><td>Vorher überlegen, wie etwas aufgebaut wird.</td></tr>
+      <tr><th class="wort">das Datenmodell</th><td>Der Plan einer Datenbank: Tabellen, Spalten, Beziehungen.</td></tr>
+      <tr><th class="wort">das ER-Diagramm</th><td>Die Zeichnung des Datenmodells: Kästen und Linien.</td></tr>
+      <tr><th class="wort">die Partnerbörse <small>die Partnerbörsen</small></th><td>Eine Plattform, auf der man jemanden kennenlernen kann – hier: für Tiere.</td></tr>
+      <tr><th class="wort">das Muster <small>die Muster</small></th><td>Ein Beispiel, an dem man sich orientiert.</td></tr>
+    </table></div>
+  </details>
+
+  <section class="card szenario">
+    <h2><span class="step-no">🐾</span> Der Auftrag</h2>
+    <p>Die Firmenleitung von <strong>Pfotenglück</strong> beauftragt dich: Baue eine <strong>Partnerbörse für Tiere</strong>. Besitzer melden ihre Tiere an,
+      jedes Tier hat einen Steckbrief (Hobby, Lieblingsfutter, Macke, wen es sucht) – und man soll passende Partner finden können.</p>
+    <p>Dein Weg: <strong>heute planen</strong> (Lektion 12) · Tabellen anlegen und füllen (13) · ändern und testen (14) · Formulare bauen (15 und 16).
+      Arbeite allein oder zu zweit.</p>
+  </section>
+
+  <!-- 1 · Muster erkunden -->
+  <section class="card">
+    <h2><span class="step-no">1</span> Die Muster-Börse erkunden <span class="chip">7 Minuten</span></h2>
+    <p>So könnte es aussehen. Schau dir die drei Tabellen an:</p>
+    <div id="tabs1"></div>
+    <div id="er1"></div>
+    <p><strong>Probier:</strong> Welche Tiere suchen einen <strong>Gesangspartner</strong>? Zeig Tiername, Art und den Vornamen des Besitzers.</p>
+    <div id="l1"></div>
+    <div id="hints1"></div>
+  </section>
+
+  <!-- 2 · Planungsfehler -->
+  <section class="card">
+    <h2><span class="step-no">2</span> Überleg: Was ist schlecht an diesem Plan? <span class="chip">4 Minuten</span></h2>
+    <p>Kathi hat ihre Börse in <strong>einer</strong> Tabelle geplant:</p>
+    <pre class="sql">tiere (id, name, art, besitzer_name, besitzer_wohnort, besitzer_telefon, hobby)</pre>
+    <div id="q2"></div>
+  </section>
+
+  <!-- 3 · Regeln -->
+  <section class="card">
+    <h2><span class="step-no">3</span> Die Regeln für einen guten Plan <span class="chip">3 Minuten</span></h2>
+    <ul class="tasks">
+      <li><span class="badge basis">Tabellen</span><span>Jede Sache bekommt ihre eigene Tabelle (Tiere, Besitzer, Arten). Namen klein, ohne Leerzeichen und Umlaute: <code>tiere</code>, <code>besitzer</code>.</span></li>
+      <li><span class="badge basis">🔑 id</span><span>Jede Tabelle hat einen Primärschlüssel <code>id</code>.</span></li>
+      <li><span class="badge basis">→ _id</span><span>Fremdschlüssel stehen auf der n-Seite und heißen wie die Tabelle, auf die sie zeigen: <code>besitzer_id</code>.</span></li>
+      <li><span class="badge basis">Datentyp</span><span><code>TEXT</code> für Wörter, <code>INTEGER</code> für ganze Zahlen und IDs, <code>REAL</code> für Kommazahlen.</span></li>
+    </ul>
+  </section>
+
+  <!-- 4 · Planer -->
+  <section class="card">
+    <h2><span class="step-no">4</span> Jetzt du: Plane deine Börse <span class="chip">15 Minuten</span></h2>
+    <p>Plane mindestens <strong>drei Tabellen</strong>, die über Fremdschlüssel zusammenhängen. Gib den Tieren <strong>eigene, lustige Eigenschaften</strong> –
+      deine Börse soll anders sein als das Muster. Fang leer an oder lade den Vorschlag und bau ihn um.</p>
+    <p class="note">Der Plan bleibt in diesem Browser gespeichert. <strong>Am Ende der Stunde: „Plan als Datei speichern“</strong> – die Schul-PCs vergessen beim Neustart alles.
+      Lass dein ER-Diagramm von deiner Lehrkraft prüfen.</p>
+    <div id="planer"></div>
+  </section>
+
+  <!-- Kurz-Check -->
+  <section class="card">
+    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
+    <div id="quiz"></div>
+  </section>
+
+  <section class="card merke">
+    <h2>Merke</h2>
+    <ul>
+      <li>Erst planen, dann bauen: Tabellen, Spalten, Datentypen, Schlüssel – und das ER-Diagramm dazu.</li>
+      <li>Jede Sache in ihre eigene Tabelle, jede Information nur einmal.</li>
+      <li>Jede Tabelle hat einen Primärschlüssel; Fremdschlüssel (<code>…_id</code>) stehen auf der n-Seite.</li>
+      <li>Aus dem Plan wird SQL: <code>CREATE TABLE</code> – das lernst du in Lektion 13.</li>
+    </ul>
+  </section>
+
+  <!-- Training -->
+  <section class="card frei" id="training">
+    <h2><span class="step-no">🏋</span> Training</h2>
+    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Andere Datenbanken planen</h3>
+    <div id="tr2"></div>
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Das Match</h3>
+    <p>Die Firmenleitung will speichern, <strong>welches Tier welches mag</strong>. Ein Tier mag viele, und viele mögen es. Ein <strong>Match</strong> ist,
+      wenn zwei Tiere sich gegenseitig mögen. Ergänze deinen Plan um eine Tabelle <code>likes</code> mit zwei Fremdschlüsseln
+      (<code>von_tier_id</code> und <code>an_tier_id</code>), die beide auf <code>tiere</code> zeigen.</p>
+    <div id="tr3"></div>
+  </section>
+
+  <nav class="pager">
+    <a href="../teil3/11-der-fall.html">← Lektion 11: Der Fall</a>
+    <a href="13-tabellen-anlegen.html">Lektion 13: Tabellen anlegen und füllen →</a>
+  </nav>
+</main>
+
+<footer>
+  <div class="wrap t">Lernmaterial von <a href="https://herrseibert.de">herrseibert.de</a> · Lizenz <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">CC BY-SA 4.0</a> · ohne Tracking, ohne Cookies<br>Erstellt von der KI Claude von Anthropic.</div>
+  <div class="wrap t gh">Fehler gefunden oder eine Idee? → <a href="https://github.com/baumlaube/sql-course">Kurs auf GitHub</a></div>
+  <div class="wrap t gh">Das SQL-Labor nutzt SQLite (gemeinfrei) über sql.js (MIT-Lizenz) – alles läuft in deinem Browser.</div>
+  <div class="wrap legal"><a href="../impressum.html">Impressum</a> · <a href="../datenschutz.html">Datenschutz</a></div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { quiz, hints } = window.Kurs;
+  const L = window.Labor;
+  const $ = (id) => document.getElementById(id);
+
+  quiz($("wdh"), [
+    { q: "Ein Besitzer hat viele Tiere. Wo steht der Fremdschlüssel?", options: ["In <code>besitzer</code>: <code>tier_id</code>", "In <code>tiere</code>: <code>besitzer_id</code>"], right: 1,
+      miss: ["Ein Besitzer hat viele Tiere – das passt nicht in eine Spalte.", null], why: "Der Fremdschlüssel steht auf der n-Seite." },
+    { q: "Wie verbindest du Tiere mit ihren Besitzern?", options: ["<code>JOIN besitzer ON tiere.besitzer_id = besitzer.id</code>", "<code>JOIN besitzer ON tiere.id = besitzer.id</code>"], right: 0,
+      miss: [null, "id = id ist Zufall. Verbunden wird der Fremdschlüssel mit der id."], why: "Fremdschlüssel = id." },
+  ]);
+
+  L.tabelle($("tabs1"), { db: "pfoten" });
+  L.er($("er1"), {
+    tabellen: [
+      { name: "besitzer", x: 10, y: 10, spalten: [{ name: "id", pk: true }, { name: "vorname" }, { name: "wohnort" }] },
+      { name: "tiere", x: 340, y: 10, spalten: [{ name: "id", pk: true }, { name: "name" }, { name: "besitzer_id", fk: "besitzer" }, { name: "art_id", fk: "arten" }, { name: "alter_jahre" }, { name: "hobby" }, { name: "lieblingsfutter" }, { name: "macke" }, { name: "sucht" }] },
+      { name: "arten", x: 670, y: 10, spalten: [{ name: "id", pk: true }, { name: "name" }, { name: "fell" }, { name: "kann_fliegen" }, { name: "lebt_im_wasser" }] },
+    ],
+    beziehungen: [{ von: "besitzer", nach: "tiere", text: "hat", kard: ["1", "n"] }, { von: "arten", nach: "tiere", text: "gehört zu", kard: ["1", "n"] }],
+  });
+  L.create($("l1"), { db: "pfoten", modus: "frei", tabellen: false, extra: ["JOIN", "ON", "AND"],
+    loesung: "SELECT tiere.name, arten.name, besitzer.vorname FROM tiere JOIN arten ON tiere.art_id = arten.id JOIN besitzer ON tiere.besitzer_id = besitzer.id WHERE tiere.sucht = 'Gesangspartner'",
+    ok: "✔ Pieps, Coco, Kiwi und Polly – ein Chor ist möglich." });
+  hints($("hints1"), [
+    "Drei Tabellen: <code>tiere</code> mit <code>arten</code> und <code>besitzer</code> verbinden, dann <code>WHERE tiere.sucht = 'Gesangspartner'</code>.",
+    "Lösung: <code>SELECT tiere.name, arten.name, besitzer.vorname FROM tiere JOIN arten ON tiere.art_id = arten.id JOIN besitzer ON tiere.besitzer_id = besitzer.id WHERE tiere.sucht = 'Gesangspartner'</code>",
+  ]);
+
+  quiz($("q2"), [
+    { q: "Frau Yilmaz hat vier Tiere in der Börse. Was passiert, wenn sie eine neue Telefonnummer bekommt?",
+      options: ["Man ändert eine Zeile", "Man muss vier Zeilen ändern – vergisst man eine, stimmt die Nummer nicht mehr", "Nichts"], right: 1,
+      miss: ["Ihr Name, Wohnort und Telefon stehen bei jedem ihrer Tiere – vier Mal.", null, "Doch – die Nummer steht an vier Stellen."],
+      why: "Doppelte Daten: Die Besitzer gehören in eine eigene Tabelle, die Tiere verweisen mit <code>besitzer_id</code> darauf." },
+    { q: "In der Spalte <code>art</code> steht mal „Katze“, mal „katze“, mal „Kater“. Was hilft?",
+      options: ["Eine eigene Tabelle <code>arten</code> – jedes Tier verweist mit <code>art_id</code> auf eine Art", "Groß schreiben verbieten", "Nichts, das ist egal"], right: 0,
+      miss: [null, "Tippfehler und Varianten passieren trotzdem.", "Eine Suche nach „Katze“ fände dann nicht alle Katzen."],
+      why: "Jede Art steht einmal in <code>arten</code>. Die Tiere verweisen darauf – so gibt es keine Schreibvarianten." },
+  ]);
+
+  L.planer($("planer"));
+
+  quiz($("quiz"), [
+    { q: "Welcher Tabellenname ist gut?", options: ["<code>Meine Tiere</code>", "<code>tiere</code>", "<code>Tiere!</code>"], right: 1,
+      miss: ["Leerzeichen machen Probleme in SQL.", null, "Satzzeichen gehören nicht in Namen."], why: "Klein, ohne Leerzeichen, Umlaute und Satzzeichen." },
+    { q: "Welchen Datentyp bekommt ein Fremdschlüssel wie <code>besitzer_id</code>?", options: ["TEXT", "INTEGER", "REAL"], right: 1,
+      miss: ["Er zeigt auf eine id – und die ist eine ganze Zahl.", null, "IDs haben keine Nachkommastellen."], why: "Er muss zur <code>id</code> passen: INTEGER." },
+    { q: "Was muss jede Tabelle haben?", options: ["Einen Fremdschlüssel", "Einen Primärschlüssel", "Mindestens 10 Spalten"], right: 1,
+      miss: ["Nicht jede Tabelle verweist auf eine andere (z. B. <code>arten</code>).", null, "Die Anzahl der Spalten ist egal."], why: "Ohne Primärschlüssel ist keine Zeile eindeutig." },
+    { q: "Ein Tier soll mehrere Hobbys haben können – beliebig viele. Was passt am besten?",
+      options: ["Spalten <code>hobby1</code>, <code>hobby2</code>, <code>hobby3</code>", "Eine eigene Tabelle <code>hobbys</code> mit <code>tier_id</code>", "Alle Hobbys mit Komma in eine Spalte"], right: 1,
+      miss: ["Und das vierte Hobby? Feste Spalten begrenzen.", null, "Dann kann man nicht mehr sauber danach suchen."],
+      why: "Beliebig viele zu einem Tier: eigene Tabelle mit Fremdschlüssel." },
+  ]);
+
+  quiz($("tr2"), [
+    { q: "Eine Fahrschule: Schüler, Fahrlehrer, Fahrstunden (wer, mit wem, wann). Wie viele Tabellen?", options: ["eine", "zwei", "drei"], right: 2,
+      miss: ["Dann stehen Schüler- und Lehrerdaten in jeder Fahrstunde.", "Wo stehen dann die Fahrstunden?", null], why: "<code>schueler</code>, <code>fahrlehrer</code>, <code>fahrstunden</code> (mit <code>schueler_id</code> und <code>fahrlehrer_id</code>)." },
+    { q: "Ein Fußballverein: Mannschaften und Spieler. Jeder Spieler spielt in einer Mannschaft. Wo steht der Fremdschlüssel?", options: ["<code>spieler.mannschaft_id</code>", "<code>mannschaften.spieler_id</code>"], right: 0,
+      miss: [null, "Eine Mannschaft hat viele Spieler – das passt nicht in eine Spalte."], why: "n-Seite: Spieler." },
+    { q: "Ein Onlineshop: Kunden, Produkte, Bestellungen. Eine Bestellung hat mehrere Produkte, ein Produkt ist in vielen Bestellungen. Was braucht man noch?",
+      options: ["Nichts", "Eine Zwischentabelle, z. B. <code>bestellpositionen</code> mit <code>bestellung_id</code> und <code>produkt_id</code>", "Eine Spalte <code>produkte</code> in <code>bestellungen</code>"], right: 1,
+      miss: ["Viele zu viele lässt sich ohne Zwischentabelle nicht speichern.", null, "Mehrere Produkte passen nicht sauber in eine Spalte."], why: "n:m braucht eine Zwischentabelle – wie <code>ausleihen</code> in der Bücherei." },
+  ]);
+  quiz($("tr3"), [
+    { q: "Was ist die Beziehung zwischen <code>tiere</code> und <code>likes</code>?", options: ["1:1", "1:n – gleich zweimal (einmal über <code>von_tier_id</code>, einmal über <code>an_tier_id</code>)", "keine"], right: 1,
+      miss: ["Ein Tier kann viele Likes vergeben.", null, "Doch – beide Fremdschlüssel zeigen auf <code>tiere</code>."], why: "Zusammen ergibt das eine n:m-Beziehung der Tiere mit sich selbst." },
+    { q: "Wann ist es ein Match?", options: ["Wenn A B mag", "Wenn A B mag <strong>und</strong> B A mag – zwei Zeilen in <code>likes</code>", "Wenn beide dieselbe Art haben"], right: 1,
+      miss: ["Das ist nur ein Like.", null, "Die Art ist egal – es zählt, ob sie sich mögen."], why: "Gegenseitig: Es gibt eine Zeile (A, B) und eine Zeile (B, A)." },
+  ]);
+});
+</script>
+</body>
+</html>
