@@ -22,8 +22,8 @@
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="stylesheet" href="assets/kurs.css?v=bbdff984c7">
-<link rel="stylesheet" href="assets/labor.css?v=35dbf4b6b2">
+<link rel="stylesheet" href="assets/kurs.css?v=8f6cf5e194">
+<link rel="stylesheet" href="assets/labor.css?v=400f14b050">
 <script src="assets/i18n.js?v=370a818f9b" data-page="index" data-langs="de en"></script>
 <script src="assets/kurs.js?v=c26439e733"></script>
 <style>
@@ -49,6 +49,9 @@
   .lektionen a:hover, .lektionen a:focus-visible { border-color: var(--tf); transform: translateY(-2px); }
   .lektionen a { transition: transform .15s, border-color .15s; }
   .lektionen .bald { color: var(--muted); border-style: dashed; }
+  .lektionen li.fit { --tf: var(--muted); }
+  .lektionen li.fit a { background: var(--surface-2); border-style: dashed; }
+  .lektionen li.fit .bild { background: var(--surface); }
   .lektionen small { color: var(--muted); font-weight: 600; font-size: 13px; }
   .lektionen .bild { grid-row: 1 / span 3; }
   .bild { width: 60px; height: 60px; padding: 6px; border-radius: 12px; background: var(--surface-2); color: var(--tf);
@@ -103,6 +106,7 @@
       <li><a href="teil2/06-like-in-between.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><circle class="f" cx="27" cy="27" r="18"/><circle cx="27" cy="27" r="18"/><path d="M40 40l16 16" stroke-width="5"/><text x="27" y="34" text-anchor="middle">%</text></svg><small>Lektion 6</small><span class="t">LIKE, IN, BETWEEN</span></a></li>
       <li><a href="teil2/07-sortieren-rechnen.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><rect class="f" x="8" y="40" width="9" height="14"/><rect class="f" x="21" y="30" width="9" height="24"/><rect class="f" x="34" y="18" width="9" height="36"/><path d="M8 40h9v14H8zM21 30h9v24h-9zM34 18h9v36h-9z"/><path d="M52 10v14M45 17h14"/></svg><small>Lektion 7</small><span class="t">Sortieren und rechnen</span></a></li>
       <li><a href="teil2/08-group-by.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><rect class="f" x="4" y="24" width="16" height="32" rx="4"/><rect x="4" y="24" width="16" height="32" rx="4"/><rect class="f" x="24" y="36" width="16" height="20" rx="4"/><rect x="24" y="36" width="16" height="20" rx="4"/><rect class="f" x="44" y="12" width="16" height="44" rx="4"/><rect x="44" y="12" width="16" height="44" rx="4"/><circle class="v" cx="12" cy="32" r="3"/><circle class="v" cx="12" cy="40" r="3"/><circle class="v" cx="12" cy="48" r="3"/><circle class="v" cx="32" cy="42" r="3"/><circle class="v" cx="32" cy="50" r="3"/><circle class="v" cx="52" cy="20" r="3"/><circle class="v" cx="52" cy="28" r="3"/><circle class="v" cx="52" cy="36" r="3"/><circle class="v" cx="52" cy="44" r="3"/></svg><small>Lektion 8</small><span class="t">GROUP BY – Gruppen bilden</span></a></li>
+      <li class="fit"><a href="teil2/fit-teil2.html"><svg class="bild" viewBox="0 0 64 64" aria-hidden="true"><circle class="f" cx="32" cy="32" r="26"/><circle cx="32" cy="32" r="26"/><circle cx="32" cy="32" r="16"/><path d="M24 32l6 6 12-13" stroke-width="4"/></svg><small>Selbsttest</small><span class="t">Fit für die Probe</span></a></li>
     </ul>
   </section>
   <section class="card teil t3" aria-labelledby="teil3">

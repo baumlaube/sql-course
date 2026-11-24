@@ -83,6 +83,7 @@ kbd {
   border: 2px solid var(--line); color: var(--muted); text-decoration: none; font-weight: 700; background: var(--surface);
 }
 .path li.done a { border-color: var(--basis); color: var(--basis); }
+.path li.fit a, .path li.fit span { border-style: dashed; }
 .path li.now span { background: var(--basis); border-color: var(--basis); color: #fff; }
 
 /* Hero */

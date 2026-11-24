@@ -462,7 +462,15 @@
         melden(res, null);
         return;
       }
-      const urteil = beurteilen(sql, res);
+      let urteil = beurteilen(sql, res);
+      // Probe-Modus: keine Tipps – nur richtig/falsch und die Meldung der Datenbank wörtlich
+      // (Ausnahme: Das Ergebnis stimmt, aber der Weg ist ein SQLite-Sonderweg – dann bleibt die Erklärung stehen.)
+      if (o.probe && urteil !== true) {
+        const ref = res.ok && o.loesung ? ausfuehren(SQL, o.db, o.loesung) : null;
+        const stimmt = ref && ref.ok && vergleichen(res, ref, !!o.reihenfolge).gleich;
+        if (!stimmt) urteil = res.ok ? T("Noch nicht richtig. Vergleich dein Ergebnis mit der Aufgabe.")
+          : `${T("Die Datenbank meldet:")} <code>${esc(res.fehler)}</code>${woertlich(res.fehler)}`;
+      }
       if (urteil === true) {
         geloest = true;
         zeige(T(o.ok || "✔ Richtig!"), "ok");

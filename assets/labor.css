@@ -185,3 +185,30 @@ tr.faden-ziel td { background: var(--zl-ja); font-weight: 700; }
 .fb-feld input, .fb-feld select { font-weight: 400; padding: 8px 10px !important; }
 .planer-spalten td:nth-child(2), .planer-spalten td:nth-child(4) { min-width: 96px; }
 .planer-spalten td:nth-child(1) { width: 40%; }
+
+/* ---------- Fit für die Probe (probe.js) ---------- */
+.card.fit { border: 2px solid var(--muted); background: var(--surface); }
+.card.fit > h2 { color: var(--text); }
+.card.fit .step-no { background: var(--muted); }
+.tr-p.ab { border-color: var(--plus); color: var(--plus); }
+.probe-tab { margin: 6px 0; }
+.probe-summe { font-size: 18px; }
+.probe-tabelle { width: 100%; border-collapse: collapse; margin: 8px 0; }
+.probe-tabelle td { padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.probe-tabelle .probe-z { width: 1.6em; font-size: 20px; text-align: center; }
+.probe-tabelle .probe-w { white-space: nowrap; color: var(--muted); font-size: 14px; text-align: right; }
+.probe-tabelle tr.sitzt .probe-z { color: var(--basis); }
+.probe-tabelle tr.fast .probe-z { color: var(--plus); }
+.probe-tabelle tr.ueben .probe-z { color: #c62828; }
+.probe-links { display: block; font-size: 14px; margin-top: 2px; }
+.probe-druckkopf { display: none; }
+@media (max-width: 520px) { .probe-tabelle .probe-w { white-space: normal; } }
+@media print {
+  body.probe-druck-modus * { visibility: hidden; }
+  body.probe-druck-modus .probe-bericht, body.probe-druck-modus .probe-bericht * { visibility: visible; }
+  body.probe-druck-modus .probe-bericht { position: absolute; left: 0; top: 0; width: 100%; color: #000; }
+  body.probe-druck-modus .probe-druckkopf { display: block; font-weight: 700; margin-bottom: 12px; }
+  body.probe-druck-modus .probe-links { display: none; }
+}
+.probe .tr-p { display: inline-grid; place-items: center; box-sizing: border-box; cursor: default; }
+.probe [hidden] { display: none !important; }
