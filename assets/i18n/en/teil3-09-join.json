@@ -1,5 +1,4 @@
 {
- "← Lektion 8: GROUP BY – Gruppen bilden": "← Lesson 8: GROUP BY – forming groups",
  "Lektion 10: JOIN mit WHERE und GROUP BY →": "Lesson 10: JOIN with WHERE and GROUP BY →",
  "JOIN – zwei Tabellen verbinden · SQL-Kurs": "JOIN – connecting two tables · SQL course",
  "JOIN – zwei Tabellen, eine Liste": "JOIN – two tables, one list",
@@ -127,5 +126,6 @@
  "Zu jedem Tier: Name, was es sucht, und Wohnort des Besitzers.": "For each animal: the <strong>name, what it is looking for, and the owner's town</strong>.",
  "Lösung: SELECT tiere.name, tiere.sucht, besitzer.wohnort FROM tiere JOIN besitzer ON tiere.besitzer_id = besitzer.id": "Solution: <code>SELECT tiere.name, tiere.sucht, besitzer.wohnort FROM tiere JOIN besitzer ON tiere.besitzer_id = besitzer.id</code>",
  "Zu jedem Tier: Name und ob seine Art fliegen kann.": "For each animal: the <strong>name and whether its species can fly</strong>.",
- "Lösung: SELECT tiere.name, arten.kann_fliegen FROM tiere JOIN arten ON tiere.art_id = arten.id": "Solution: <code>SELECT tiere.name, arten.kann_fliegen FROM tiere JOIN arten ON tiere.art_id = arten.id</code>"
+ "Lösung: SELECT tiere.name, arten.kann_fliegen FROM tiere JOIN arten ON tiere.art_id = arten.id": "Solution: <code>SELECT tiere.name, arten.kann_fliegen FROM tiere JOIN arten ON tiere.art_id = arten.id</code>",
+ "← Fit für die Probe – Teil 2": "← Ready for the test – Part 2"
 }

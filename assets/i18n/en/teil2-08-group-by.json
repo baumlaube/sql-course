@@ -169,5 +169,5 @@
  "Gruppieren, zählen, sortieren, abschneiden.": "Group, count, sort, cut off.",
  "Lösung: SELECT lieblingsgenre, COUNT(*) AS anzahl FROM nutzer GROUP BY lieblingsgenre ORDER BY anzahl DESC LIMIT 1": "Solution: <code>SELECT lieblingsgenre, COUNT(*) AS anzahl FROM nutzer GROUP BY lieblingsgenre ORDER BY anzahl DESC LIMIT 1</code>",
  "SELECT jahr, COUNT(*) FROM songs GROUP BY jahr – was kommt heraus?": "<code>SELECT jahr, COUNT(*) FROM songs GROUP BY jahr</code> – what comes out?",
- "Lektion 9: Zwei Tabellen: JOIN →": "Lesson 9: Two tables: JOIN →"
+ "Fit für die Probe – Teil 2 →": "Ready for the test – Part 2 →"
 }

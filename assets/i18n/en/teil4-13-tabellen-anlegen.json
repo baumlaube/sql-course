@@ -2,7 +2,6 @@
  "← Lektion 12: Projekt planen": "← Lesson 12: Planning the project",
  "Lektion 14: Ändern und löschen →": "Lesson 14: Changing and deleting →",
  "Tabellen anlegen und füllen: CREATE TABLE und INSERT · SQL-Kurs": "Creating and filling tables: CREATE TABLE and INSERT · SQL course",
- "Tabellen anlegen und füllen": "Creating and filling tables",
  "Teil 4 · Lektion 13": "Part 4 · Lesson 13",
  "Ein Plan ist noch keine Datenbank. Mit CREATE TABLE legst du die Tabellen an, mit INSERT INTO füllst du sie. Genau so entsteht jede Datenbank – auch die von großen Apps. Wenn du dich bei einer App registrierst, läuft im Hintergrund ein INSERT.": "A plan is not a database yet. With <code>CREATE TABLE</code> you create the tables, with <code>INSERT INTO</code> you fill them. That is exactly how every database is made – including those of big apps. When you sign up for an app, an <code>INSERT</code> runs in the background.",
  "Etwas Neues erstellen, hier eine Tabelle.": "To make something new, here a table.",

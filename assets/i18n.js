@@ -142,7 +142,10 @@
       patterns = Object.keys(dict).filter((k) => k.includes("{")).map((k) => ({
         re: new RegExp("^" + k.split(/\{\d*\}/).map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("(.+?)") + "$"),
         value: dict[k],
-      }));
+        len: k.replace(/\{\d*\}/g, "").length,
+      }))
+        // Genauere Muster zuerst: „{} von {} Aufgaben richtig.“ vor „{} von {} richtig.“
+        .sort((a, b) => b.len - a.len);
       waiting.splice(0).forEach((fn) => { try { fn(new Event("DOMContentLoaded")); } catch (e) { console.error(e); } });
       setTimeout(() => {           // nach den Seitenskripten, damit auch Quiz & Co. schon da sind
         document.title = T(document.title);

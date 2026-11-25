@@ -30,18 +30,11 @@
  "JOIN mit WHERE und GROUP BY": "JOIN with WHERE and GROUP BY",
  "Der Fall": "The case",
  "Projekt planen": "Planning the project",
- "Tabellen anlegen und füllen": "Creating and filling tables",
  "Ändern und löschen": "Changing and deleting",
  "Suchformular": "Search form",
  "Eingabeformular": "Input form",
  "Lektion 1": "Lesson 1",
  "Lektion 2": "Lesson 2",
- "Lektion 3": "Lesson 3",
- "Lektion 4": "Lesson 4",
- "Lektion 5": "Lesson 5",
- "Lektion 6": "Lesson 6",
- "Lektion 7": "Lesson 7",
- "Lektion 8": "Lesson 8",
  "Lektion 9": "Lesson 9",
  "Lektion 10": "Lesson 10",
  "Lektion 11": "Lesson 11",
@@ -49,5 +42,7 @@
  "Lektion 13": "Lesson 13",
  "Lektion 14": "Lesson 14",
  "Lektion 15": "Lesson 15",
- "Lektion 16": "Lesson 16"
+ "Lektion 16": "Lesson 16",
+ "Selbsttest": "Self-test",
+ "Fit für die Probe": "Ready for the test"
 }
