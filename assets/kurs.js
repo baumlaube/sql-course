@@ -49,7 +49,7 @@
    * Quiz: questions = [{ q, options:[...], right: index, why, miss:[...] }]
    * miss (optional): pro Antwort ein Satz zum typischen Denkfehler dahinter (null bei der richtigen).
    */
-  function quiz(el, questions) {
+  function quiz(el, questions, opts = {}) {   // opts.onDone(richtig, alle): wenn alle Fragen beantwortet sind
     let answered = 0, correct = 0;
     const score = document.createElement("p");
     score.className = "quiz-score";
@@ -84,6 +84,7 @@
             score.innerHTML = correct === questions.length
               ? T(`🏆 ${correct} von ${questions.length} – stark!`)
               : T(`${correct} von ${questions.length} richtig. Lies dir die Erklärungen noch einmal durch.`);
+            if (opts.onDone) opts.onDone(correct, questions.length);
           }
         },
       });

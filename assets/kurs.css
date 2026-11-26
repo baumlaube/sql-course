@@ -332,3 +332,42 @@ details.woerter td { text-align: start; }
 .tipp-blase.zeigen { opacity: 1; transform: none; }
 .hero .erklaerung { font-size: 18.5px; margin: 4px 0 6px; max-width: 72ch; }
 .quiz-q code, .tr-text code, .fb code, .hints-list code { white-space: normal; overflow-wrap: anywhere; }
+
+/* Register: Lernschritte als Reiter (register.js) */
+.register { margin: 22px 0; }
+.reg-tabs { display: flex; gap: 4px; overflow-x: auto; padding: 0 2px; scrollbar-width: none; }
+.reg-tabs::-webkit-scrollbar { display: none; }
+.reg-tab { flex: 0 1 auto; min-width: 0; display: flex; align-items: center; gap: 6px; padding: 9px 10px 10px; font: inherit; font-weight: 700; font-size: 15px;
+  color: var(--navy); background: var(--surface-2, #eef1f5); border: 1px solid var(--line); border-bottom: none;
+  border-radius: 12px 12px 0 0; cursor: pointer; position: relative; top: 1px; }
+.reg-tab .reg-no { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 4px; border-radius: 8px;
+  background: var(--navy); color: var(--surface); font-size: 14px; }
+.reg-tab.passed .reg-no { background: var(--basis); }
+.reg-tab.active { background: var(--surface); z-index: 1; flex-shrink: 0; }
+/* Zu eng (viele Reiter, lange Übersetzung)? Dann kürzen sich die anderen Reiternamen mit „…“ – die Lektionsnummer rechts bleibt ganz sichtbar */
+.reg-tab .reg-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reg-tab .reg-no { flex: none; }
+.reg-tab.locked { color: var(--muted); opacity: .55; cursor: default; }
+.reg-tab.locked .reg-no { background: var(--muted); }
+.reg-tab:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+.register > .reg-panel { margin: 0; border-top-left-radius: 0; }
+.reg-panel > h2 .step-no { display: none; }
+.reg-next { display: flex; justify-content: flex-end; margin-top: 18px; }
+.reg-next .btn { font-size: 17px; padding: 12px 22px; }
+@media (max-width: 640px) {
+  .reg-tab:not(.active) .reg-label { display: none; }
+  .reg-tab { padding: 8px 10px 9px; }
+}
+
+/* Lektionsnummer rechts im Reiterbalken (nicht am Handy) */
+.reg-nr { margin-left: auto; align-self: center; flex: none; padding: 4px 10px; border-radius: 10px; background: var(--navy); color: var(--surface);
+  font-size: 22px; font-weight: 800; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+@media (max-width: 640px) { .reg-nr { display: none; } }
+/* Übungsblock unter dem Lernblock: immer offen, keine neuen Inhalte. Stufen farbig wie im Calc-Kurs */
+.ueben-block > h2 { font-size: 26px; }
+.stufe-box { margin: 18px 0 0; padding: 4px 14px 14px; border: 2px solid var(--line); border-left: 6px solid var(--st, var(--basis)); border-radius: 12px; }
+.stufe-box.st1 { --st: var(--basis); } .stufe-box.st2 { --st: var(--plus); } .stufe-box.st3 { --st: var(--expedition); }
+.stufe-box > h3.sub { color: var(--st); }
+.frei-box { margin-top: 26px; padding: 4px 14px 14px; border: 2px dashed var(--expedition); border-radius: 12px; }
+.frei-box .frei-titel { font-size: 18px; margin: 12px 0 6px; color: var(--expedition); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+[hidden] { display: none !important; }   /* sonst zeigt display von .btn u. a. versteckte Elemente (wie im Calc-Kurs) */

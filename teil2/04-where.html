@@ -22,10 +22,11 @@
 <link rel="icon" href="../favicon.ico" sizes="any">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="stylesheet" href="../assets/kurs.css?v=cf55b20b0b">
+<link rel="stylesheet" href="../assets/kurs.css?v=816a1e20aa">
 <link rel="stylesheet" href="../assets/labor.css?v=5eb6de2187">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil2-04-where" data-langs="de en"></script>
-<script src="../assets/kurs.js?v=c26439e733"></script>
+<script src="../assets/kurs.js?v=7507fa7b3e"></script>
+<script src="../assets/register.js?v=12f9a07d7d"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
 <script src="../assets/labor.js?v=ca2d940769"></script>
 <script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
@@ -78,11 +79,6 @@
       Genau das passiert jedes Mal, wenn du in einer App einen Filter antippst.</p>
   </section>
 
-  <section class="card wdh">
-    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
-    <div id="wdh"></div>
-  </section>
-
   <details class="card woerter">
     <summary>📖 Wörter für diese Lektion</summary>
     <p class="note">Die SQL-Befehle bleiben englisch – so heißen sie in jeder Datenbank der Welt.</p>
@@ -104,8 +100,15 @@
   </section>
 
 
+  <!-- ===== Lernblock: Reiter, immer nur ein Schritt offen (register.js) ===== -->
+  <div id="lernen">
+  <section class="card wdh" id="wdh-s" data-tab="Weißt du noch?" data-wait>
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
   <!-- 1 · Überleg -->
-  <section class="card">
+  <section class="card" id="s1" data-tab="Wie viele?" data-wait>
     <h2><span class="step-no">1</span> Überleg: Wie viele Zeilen kommen heraus? <span class="chip">4 Minuten</span></h2>
     <div id="tab-songs"></div>
     <p>Die Chefin will eine Rock-Playlist. Jemand hat schon diese Abfrage geschrieben:</p>
@@ -125,7 +128,7 @@
   </section>
 
   <!-- 2 · Zeitlupe -->
-  <section class="card">
+  <section class="card" id="s2" data-tab="Zeitlupe">
     <h2><span class="step-no">2</span> In Zeitlupe: Was macht WHERE? <span class="chip">5 Minuten</span></h2>
     <p>Neue Frage aus dem Team: <em>„Welche Songs sind ab 2024 erschienen?“</em> Schau zu, wie die Datenbank das löst.
       Tipp auf <strong>👣 Nächste Zeile</strong> – ein paar Mal. Dann auf <strong>⏩ Alle Zeilen</strong>.</p>
@@ -136,7 +139,7 @@
   </section>
 
   <!-- 3 · Puzzle -->
-  <section class="card">
+  <section class="card" id="s3" data-tab="Puzzle" data-wait>
     <h2><span class="step-no">3</span> Puzzle: Playlist „Neu 2025“ <span class="chip">5 Minuten</span></h2>
     <p>Das Marketing braucht <strong>die Titel aller Songs aus dem Jahr 2025</strong> aus der Tabelle <code>songs</code>.
       Tipp die Bausteine in der richtigen Reihenfolge an. Ein Baustein in deiner Zeile wandert beim Antippen zurück.
@@ -145,7 +148,7 @@
   </section>
 
   <!-- 4 · Lücken -->
-  <section class="card">
+  <section class="card" id="s4" data-tab="Vergleichen" data-wait>
     <h2><span class="step-no">4</span> Vergleichen: größer, kleiner, gleich <span class="chip">6 Minuten</span></h2>
     <p>So vergleicht SQL:</p>
     <div class="tbl-scroll"><table class="plain vergleich">
@@ -162,7 +165,7 @@
   </section>
 
   <!-- 5 · Fehlerdetektiv -->
-  <section class="card">
+  <section class="card" id="s5" data-tab="Detektiv" data-wait>
     <h2><span class="step-no">5</span> Fehlerdetektiv: Die Abfrage vom Kollegen <span class="chip">5 Minuten</span></h2>
     <p>Dein Kollege Jonas wollte <strong>alle Indie-Songs mit Titel und Künstler</strong>. Seine Abfrage meldet einen Fehler.
       Führ sie aus, lies die Meldung – und repariere die Abfrage.</p>
@@ -176,7 +179,7 @@
   </section>
 
   <!-- 6 · Selbst schreiben -->
-  <section class="card">
+  <section class="card" id="s6" data-tab="Jetzt du" data-wait>
     <h2><span class="step-no">6</span> Jetzt du: die Hits <span class="chip">5 Minuten</span></h2>
     <p>Die Chefin fragt: <em>„Welche Songs haben mehr als 50 000 Likes? Ich brauche Titel, Künstler und Likes.“</em>
       Schreib die Abfrage selbst. Die Bausteine unter dem Feld helfen dir.</p>
@@ -184,19 +187,48 @@
     <div id="hints6"></div>
   </section>
 
-  <!-- Plus -->
-  <section class="card">
-    <h2><span class="badge plus">Plus</span> Alles außer Pop <span class="chip">für Schnelle</span></h2>
-    <p>Ein DJ will <strong>alle Songs, die nicht Pop sind</strong> – mit Titel und Genre. Welcher Vergleich passt?</p>
-    <div id="lplus"></div>
-    <div id="hintsplus"></div>
-  </section>
-
   <!-- Kurz-Check -->
-  <section class="card">
+  <section class="card" id="check" data-tab="Kurz-Check" data-wait>
     <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
     <div id="quiz"></div>
   </section>
+
+  </div>
+
+  <!-- Training -->
+  <section class="card ueben-block" id="training">
+    <h2><span class="step-no">🏋</span> Üben</h2>
+    <p class="lead">Hier kommt nichts Neues – nur Übung. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.
+      Jede Aufgabe hat Tipps – und das Labor sagt dir, was noch nicht stimmt.</p>
+
+    <div class="stufe-box st1">
+    <h3 class="sub"><span class="badge basis">● Basis</span> Noch mehr Fragen bei Tonspur</h3>
+    <div id="tr1"></div>
+    </div>
+
+    <div class="stufe-box st2">
+    <h3 class="sub"><span class="badge plus">●● Sicher</span> Azubi-Börse</h3>
+    <p>Eine Webseite sammelt Ausbildungsstellen in Bayern. Hilf den Jugendlichen, die passende Stelle zu finden.
+      <code>verguetung</code> ist das Geld pro Monat im 1. Ausbildungsjahr in Euro.</p>
+    <div id="tr2"></div>
+    </div>
+
+    <div class="stufe-box st3">
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Konzertkalender</h3>
+    <p>Die Künstler aus Tonspur gehen auf Tour. <strong>Heute ist der 15. März 2026.</strong>
+      Achtung: Hier warten ein paar Fallen – genau wie in echten Datenbanken.</p>
+    <div id="tr3"></div>
+    </div>
+
+    <!-- Freiwillig: das frühere „Plus für Schnelle“ – ein kleines Stück Neues, darum ganz am Ende -->
+    <div class="frei-box" id="freiwillig">
+    <h3 class="frei-titel"><span class="badge expedition">★ Freiwillig</span> Alles außer Pop</h3>
+    <p>Ein DJ will <strong>alle Songs, die nicht Pop sind</strong> – mit Titel und Genre. Welcher Vergleich passt?</p>
+    <div id="lplus"></div>
+    <div id="hintsplus"></div>
+    </div>
+  </section>
+
 
   <section class="card merke">
     <h2>Merke</h2>
@@ -208,26 +240,6 @@
     </ul>
   </section>
 
-
-  <!-- Training -->
-  <section class="card frei" id="training">
-    <h2><span class="step-no">🏋</span> Training</h2>
-    <p class="lead">Je mehr Abfragen du schreibst, desto sicherer wirst du. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.
-      Jede Aufgabe hat Tipps – und das Labor sagt dir, was noch nicht stimmt.</p>
-
-    <h3 class="sub"><span class="badge ueben">● Basis</span> Noch mehr Fragen bei Tonspur</h3>
-    <div id="tr1"></div>
-
-    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Azubi-Börse</h3>
-    <p>Eine Webseite sammelt Ausbildungsstellen in Bayern. Hilf den Jugendlichen, die passende Stelle zu finden.
-      <code>verguetung</code> ist das Geld pro Monat im 1. Ausbildungsjahr in Euro.</p>
-    <div id="tr2"></div>
-
-    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Konzertkalender</h3>
-    <p>Die Künstler aus Tonspur gehen auf Tour. <strong>Heute ist der 15. März 2026.</strong>
-      Achtung: Hier warten ein paar Fallen – genau wie in echten Datenbanken.</p>
-    <div id="tr3"></div>
-  </section>
 
   <nav class="pager">
     <a href="03-select.html">← Lektion 3: SELECT – Spalten auswählen</a>
@@ -252,6 +264,7 @@ document.addEventListener("DOMContentLoaded", () => {
   L.tabelle($("tab-songs"), { db: "tonspur", offen: true });
 
   /* Weißt du noch? (Lektion 3) */
+  const fertig = (id) => window.Register && Register.done(id);
   quiz($("wdh"), [
     { q: "Was zeigt <code>SELECT titel, jahr FROM songs</code>?",
       options: ["Alle Spalten der Tabelle", "Nur die Spalten titel und jahr – für alle Songs", "Nur den ersten Song", "Nur Songs mit einem Jahr"], right: 1,
@@ -265,7 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "Beim Rechnen ja – direkt nach <code>SELECT</code> heißt <code>*</code> aber: alle Spalten.",
         "Eine „wichtigste Spalte“ kennt SQL nicht."],
       why: "<code>*</code> ist die Abkürzung für „alle Spalten“." },
-  ]);
+  ], { onDone: () => fertig("wdh-s") });
 
   /* 1 · Überleg */
   pick($("pred1"), { right: 2, fb: $("fb1"),
@@ -273,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "<code>WHERE</code> hört nicht beim ersten Treffer auf. Es prüft <strong>jede</strong> Zeile.", null,
       "Es gibt Rock-Songs in der Tabelle – zum Beispiel von Die Kaltfront."],
     why: "In der Spalte <code>genre</code> steht bei 5 Songs <code>Rock</code>. Genau diese 5 Zeilen kommen ins Ergebnis.",
-    onDone() { $("probe1").hidden = false; } });
+    onDone() { $("probe1").hidden = false; fertig("s1"); } });
   L.create($("l1"), { db: "tonspur", modus: "lesen", sql: "SELECT titel FROM songs WHERE genre = 'Rock'", tabellen: false });
 
   /* 2 · Zeitlupe */
@@ -294,9 +307,10 @@ document.addEventListener("DOMContentLoaded", () => {
       { sql: "SELECT titel FROM songs WHERE jahr > 2025", text: "<code>&gt; 2025</code> heißt: nach 2025. Gesucht sind Songs <strong>aus</strong> 2025." },
       { muster: /WHERE\s+genre/i, text: "Das Genre ist hier egal. Es geht um das Jahr." },
     ],
-    ok: "✔ Geschafft! 7 Songs aus 2025 – die Playlist steht." });
+    ok: "✔ Geschafft! 7 Songs aus 2025 – die Playlist steht.", onRun: (i) => i.geloest && fertig("s3") });
 
-  /* 4a · Lücken: Zahl */
+  /* 4a · Lücken: Zahl – Schritt 4 ist fertig, wenn a) und b) gelöst sind */
+  const geloest4 = new Set();
   L.create($("l4a"), { db: "tonspur", modus: "luecke", tabellen: false,
     sql: "SELECT titel, dauer_sek FROM songs WHERE dauer_sek [[=|<>|<|>|<=|>=]] [[5]]",
     loesung: "SELECT titel, dauer_sek FROM songs WHERE dauer_sek > 300",
@@ -306,19 +320,19 @@ document.addEventListener("DOMContentLoaded", () => {
       { muster: /=\s*300\s*$/, text: "Mit <code>=</code> suchst du Songs, die <strong>genau</strong> 300 Sekunden lang sind. Gesucht: länger als 300." },
       { muster: /dauer_sek\s*\S+\s*\d+[.,:]\d/, text: "Schreib nur eine ganze Zahl in Sekunden, ohne Punkt, Komma oder Doppelpunkt." },
     ],
-    ok: "✔ Richtig! 4 Songs sind länger als 300 Sekunden." });
+    ok: "✔ Richtig! 4 Songs sind länger als 300 Sekunden.", onRun: (i) => { if (i.geloest) { geloest4.add("a"); if (geloest4.size === 2) fertig("s4"); } } });
 
   /* 4b · Lücke: Text */
   L.create($("l4b"), { db: "tonspur", modus: "luecke", tabellen: false,
     sql: "SELECT titel, jahr FROM songs WHERE kuenstler = [[8]]",
     loesung: "SELECT titel, jahr FROM songs WHERE kuenstler = 'Juna'",
-    ok: "✔ Richtig! Text steht in Anführungszeichen – sonst hält SQL Juna für eine Spalte." });
+    ok: "✔ Richtig! Text steht in Anführungszeichen – sonst hält SQL Juna für eine Spalte.", onRun: (i) => { if (i.geloest) { geloest4.add("b"); if (geloest4.size === 2) fertig("s4"); } } });
 
   /* 5 · Fehlerdetektiv */
   L.create($("l5"), { db: "tonspur", modus: "frei", tabellen: false, zeilen: 2, erkunden: true,
     sql: "SELECT titel, kuenstler FROM songs WHERE genre = Indie",
     loesung: "SELECT titel, kuenstler FROM songs WHERE genre = 'Indie'",
-    ok: "✔ Fall gelöst! <code>Indie</code> ohne Anführungszeichen hielt SQL für eine Spalte. Mit <code>'Indie'</code> ist es ein Text." });
+    ok: "✔ Fall gelöst! <code>Indie</code> ohne Anführungszeichen hielt SQL für eine Spalte. Mit <code>'Indie'</code> ist es ein Text.", onRun: (i) => i.geloest && fertig("s5") });
   hints($("hints5"), [
     "Die Meldung sagt: SQL sucht eine <strong>Spalte</strong> namens Indie. Gibt es die?",
     "<code>Indie</code> ist keine Spalte, sondern ein <strong>Wert</strong> aus der Spalte <code>genre</code> – also Text.",
@@ -333,7 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
       { muster: /'\d+'/, text: "<code>likes</code> ist eine Zahl. Zahlen stehen <strong>ohne</strong> Anführungszeichen." },
       { sql: "SELECT titel, kuenstler, likes FROM songs WHERE likes < 50000", text: "Andersherum! <code>&lt;</code> findet Songs mit <strong>weniger</strong> Likes." },
     ],
-    ok: "✔ Stark – deine erste eigene WHERE-Abfrage! 7 Hits mit mehr als 50 000 Likes." });
+    ok: "✔ Stark – deine erste eigene WHERE-Abfrage! 7 Hits mit mehr als 50 000 Likes.", onRun: (i) => i.geloest && fertig("s6") });
   hints($("hints6"), [
     "Gefragt sind drei Spalten: <code>titel</code>, <code>kuenstler</code>, <code>likes</code>. Die kommen nach <code>SELECT</code>, mit Komma dazwischen.",
     "Die Bedingung: <code>likes</code> soll größer sein als 50000. Ohne Punkt in der Zahl!",
@@ -378,7 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "<code>WHERE</code> funktioniert mit Text genauso – Text muss nur genau stimmen.",
         "Der Strichpunkt am Ende darf fehlen. Daran liegt es nicht."],
       why: "Bei Text zählt jeder Buchstabe: <code>'pop'</code> ist nicht <code>'Pop'</code>." },
-  ]);
+  ], { onDone: () => fertig("check") });
 
 
   /* ---------- Training ---------- */
@@ -469,6 +483,11 @@ document.addEventListener("DOMContentLoaded", () => {
       loesung: "SELECT kuenstler, stadt, preis FROM konzerte WHERE preis > 50",
       hints: ["„Mehr als“: <code>&gt;</code>.", "Lösung: <code>SELECT kuenstler, stadt, preis FROM konzerte WHERE preis &gt; 50</code>"] },
   ]});
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  Register(document.getElementById("lernen"), { key: "l04", after: "training", nr: "4" });
 });
 </script>
 </body>
