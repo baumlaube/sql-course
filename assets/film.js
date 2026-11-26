@@ -18,6 +18,9 @@
        { text: "…", markiere: "bedingung", spalte: "genre" },  // Bedingung grün (Satzteil, SQL-Teil, Spalte)
        { text: "…", zeilen: "genre = 'Pop'" },          // Zeilen der Vorschau grün, die passen (SQL-Bedingung)
        { text: "…", blass: true },                      // die übrigen Zeilen werden blass
+       { text: "…", markiere: "bedingung", teil: 7, spalte: "jahr" },   // nur Satzteil Nr. 7 (ab 0 gezählt) markieren
+       { text: "…", pruefe: "jahr = 2024", spalte: "jahr" },            // Zellen der Spalte mit ✓, wo die Bedingung stimmt
+       { text: "…", tausche: [6, "oder", "OR"], ersetze: ["AND", "OR"] },  // Satzteil austauschen, im Labor ersetzen
        { text: "…", zeige: "labor", spalte: "titel", bausteine: ["SELECT", "titel"] },
        { text: "…", nach: "titel", bausteine: [",", "jahr"] },   // hinter „titel“ einsetzen
        { text: "…", tippe: "…" }, { text: "…", ausfuehren: true }, { text: "…", ergebnis: true },
@@ -25,6 +28,7 @@
      ],
      zeilen: 8,                                         // so viele Zeilen zeigt die Vorschau (sonst 4)
      spalten: "id, titel, genre",            // nur diese Spalten in der Vorschau (sonst alle) – passt aufs Handy
+     extra: ["AND", "OR"],                              // zusätzliche Bausteine im Labor (spätere Lektionen)
    })
    Markierungen bleiben bis zum Ende stehen (der Pfeil wandert zum Neuen). Steuerung: ◀ ⏸/▶ ▶▶ ↺.
    Zurück = alles bis dahin sofort nachspielen. Einblendungen laufen über T() und damit über die Sprachhilfe.
@@ -79,8 +83,8 @@
       const db = oeffnen(SQL, o.db);
       const r = db.exec(`SELECT ${o.spalten || "*"} FROM "${o.vorschau}" LIMIT ${o.zeilen || 4}`)[0];
       const n = db.exec(`SELECT COUNT(*) FROM "${o.vorschau}"`)[0].values[0][0];
-      o.schritte.filter((x) => x.zeilen).forEach((x) => {
-        treffer[x.zeilen] = db.exec(`SELECT (${x.zeilen}) FROM "${o.vorschau}" LIMIT ${o.zeilen || 4}`)[0].values.map((v) => !!v[0]);
+      o.schritte.flatMap((x) => [x.zeilen, x.pruefe]).filter(Boolean).forEach((b) => {
+        treffer[b] = db.exec(`SELECT (${b}) FROM "${o.vorschau}" LIMIT ${o.zeilen || 4}`)[0].values.map((v) => !!v[0]);
       });
       db.close();
       $(".film-poster").innerHTML = ergebnisHTML({ spalten: r.columns, zeilen: r.values });
@@ -97,25 +101,34 @@
       tab.querySelectorAll("tr").forEach((tr) => { const c = tr.children[i]; if (c) c.classList.add(klasse); });
       if (pfeil) tab.querySelectorAll("th")[i].classList.add("film-pfeil");
     }
-    function markiere(art, spalte, pfeil = true) {
+    function markiere(art, spalte, pfeil = true, teil = null) {
       el.querySelectorAll(".film-pfeil").forEach((x) => x.classList.remove("film-pfeil"));
-      el.querySelectorAll(`.film-satz .art-${art}`).forEach((x) => x.classList.add("an"));
+      const wo = teil == null ? ".film-satz" : `.film-satz .film-paar[data-i="${teil}"]`;
+      el.querySelectorAll(`${wo} .art-${art}`).forEach((x) => x.classList.add("an"));
       if (art === "spalte") spalteMarkieren(spalte, pfeil);
       if (art === "bedingung") spalteMarkieren(spalte, pfeil, "film-bd");
       if (art === "tabelle") { const t = $(".film-tab .tabname"); if (t) t.classList.add("an"); if (t && pfeil) t.classList.add("film-pfeil"); }
     }
     function zeilenMarkieren(bed) {
       const tr = [...el.querySelectorAll(".film-vorschau tbody tr")], ja = treffer[bed] || [];
-      tr.forEach((z, k) => z.classList.toggle("film-treffer", !!ja[k]));
+      tr.forEach((z, k) => { z.classList.toggle("film-treffer", !!ja[k]); z.classList.remove("film-raus"); });
+    }
+    /* Zellen einer Spalte prüfen: ✓ dort, wo die Bedingung stimmt */
+    function zellenPruefen(bed, name) {
+      const tab = $(".film-vorschau table");
+      if (!tab) return;
+      const i = [...tab.querySelectorAll("th")].findIndex((th) => th.textContent.trim() === name), ja = treffer[bed] || [];
+      if (i < 0) return;
+      tab.querySelectorAll("tbody tr").forEach((z, k) => { if (ja[k] && z.children[i]) z.children[i].classList.add("film-ok"); });
     }
     function teileZeigen(bis) {
       el.querySelectorAll(".film-ueb .film-paar[data-i]").forEach((x) => { x.hidden = bis != null && +x.dataset.i >= bis; });
     }
     function buehneLeeren() {
       lab && lab.zuruecksetzen();
-      $(".film-satz").hidden = true; $(".film-ueb").classList.remove("mit-sql"); $(".film-labor").hidden = true;
-      el.querySelectorAll(".an, .film-sp, .film-bd, .film-pfeil, .film-puls, .film-erg, .film-treffer, .film-raus").forEach((x) =>
-        x.classList.remove("an", "film-sp", "film-bd", "film-pfeil", "film-puls", "film-erg", "film-treffer", "film-raus"));
+      $(".film-satz").hidden = true; $(".film-satz").innerHTML = uebersetzung(o.paare || []);   // auch Getauschtes zurück $(".film-labor").hidden = true;
+      el.querySelectorAll(".an, .film-sp, .film-bd, .film-ok, .film-pfeil, .film-puls, .film-erg, .film-treffer, .film-raus").forEach((x) =>
+        x.classList.remove("an", "film-sp", "film-bd", "film-ok", "film-pfeil", "film-puls", "film-erg", "film-treffer", "film-raus"));
       teileZeigen(null);
       fertigBis = -1;
     }
@@ -141,8 +154,17 @@
       if (s.markiere) {
         await p(500); if (ab()) return;
         const arten = [].concat(s.markiere);
-        arten.forEach((a, k) => markiere(a, a === "tabelle" ? null : s.spalte, k === arten.length - 1));
+        arten.forEach((a, k) => markiere(a, a === "tabelle" ? null : s.spalte, k === arten.length - 1, s.teil));
       }
+      if (s.tausche) {
+        const [i, de, sq] = s.tausche, paar = $(`.film-paar[data-i="${i}"]`);
+        if (paar) {
+          paar.children[0].innerHTML = T(de); paar.children[1].innerHTML = `<code>${esc(sq)}</code>`;
+          paar.querySelectorAll(".film-teil").forEach((x) => x.classList.add("an", "film-neu-teil"));
+        }
+      }
+      if (s.ersetze && lab) lab.feld.value = lab.feld.value.replace(s.ersetze[0], s.ersetze[1]);
+      if (s.pruefe) { await p(600); if (ab()) return; zellenPruefen(s.pruefe, s.spalte); }
       else if (s.spalte) spalteMarkieren(s.spalte, !sofort);
       if (s.zeilen) { await p(600); if (ab()) return; zeilenMarkieren(s.zeilen); }
       if (s.blass) el.querySelectorAll(".film-vorschau tbody tr:not(.film-treffer)").forEach((z) => z.classList.add("film-raus"));
@@ -213,7 +235,7 @@
     $(".film-los").addEventListener("click", () => {
       $(".film-start").hidden = true;
       $(".film-buehne").hidden = false;
-      if (!lab) lab = Labor.create($(".film-labor"), { db: o.db, modus: "frei", tabellen: false, spicker: false, zeilen: 2 });
+      if (!lab) lab = Labor.create($(".film-labor"), { db: o.db, modus: "frei", tabellen: false, spicker: false, zeilen: 2, extra: o.extra });
       laeuft = true;
       const anfangen = () => (lab.feld ? gehe(0) : setTimeout(anfangen, 50));   // warten, bis das Labor gebaut ist
       anfangen();

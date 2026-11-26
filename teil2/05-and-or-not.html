@@ -23,12 +23,13 @@
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="stylesheet" href="../assets/kurs.css?v=816a1e20aa">
-<link rel="stylesheet" href="../assets/labor.css?v=635d1b0594">
+<link rel="stylesheet" href="../assets/labor.css?v=1616bca415">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil2-05-and-or-not" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
 <script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
 <script src="../assets/labor.js?v=81a83fb334"></script>
+<script src="../assets/film.js?v=d323f59ed0"></script>
 <script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
 <script src="../assets/daten/azubi.js?v=5b1356cc35"></script>
 <script src="../assets/daten/konzerte.js?v=51212600cc"></script>
@@ -106,6 +107,7 @@
   <!-- 1 · Überleg -->
   <section class="card" id="s1" data-tab="Überleg">
     <h2><span class="step-no">1</span> Überleg: zwei Bedingungen <span class="chip">4 Minuten</span></h2>
+    <div id="film1"></div>
     <div id="tab-songs"></div>
     <p>Die Playlist „Pop 2025“ wird mit dieser Abfrage gebaut:</p>
     <pre class="sql" data-farbe>SELECT titel FROM songs WHERE genre = 'Pop' AND jahr = 2025</pre>
@@ -266,6 +268,35 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+  /* Erklärfilm: AND – zwei Bedingungen, jede Zeile braucht zwei Haken. Rock 2024 statt Pop 2025, damit die Überleg-Frage offen bleibt. */
+  Labor.film(document.getElementById("film1"), {
+    titel: "So funktioniert AND", db: "tonspur", vorschau: "songs", zeilen: 8, spalten: "titel, genre, jahr", extra: ["AND", "OR"],
+    paare: [["Zeig mir", "SELECT"], ["die Titel", "titel", "spalte"], ["aus der Tabelle", "FROM"], ["songs,", "songs", "tabelle"],
+            ["aber nur, wenn", "WHERE"], ["das Genre Rock ist", "genre = 'Rock'", "bedingung"], ["und", "AND", "und"], ["das Jahr 2024.", "jahr = 2024", "bedingung"]],
+    schritte: [
+      // Phase 1: verstehen – noch keine Knöpfe
+      { text: "Das ist wieder die Tabelle <code>songs</code>. Hier siehst du die ersten 8 Songs." },
+      { text: "Aus Lektion 4 kennst du diesen Satz:", zeige: "satz", bis: 6, markiere: ["spalte", "tabelle"], spalte: "titel" },
+      { text: "Die Bedingung: Das Genre ist Rock. Zwei Zeilen bekommen einen Haken.", markiere: "bedingung", teil: 5, spalte: "genre", pruefe: "genre = 'Rock'" },
+      { text: "Du willst aber nur Rock-Songs <strong>aus 2024</strong>. Das ist eine zweite Bedingung." },
+      { text: "Du hängst an: … <strong>und</strong> das Jahr 2024.", bis: 8, markiere: "und", teil: 6 },
+      { text: "Die zweite Bedingung schaut in die Spalte <code>jahr</code>.", markiere: "bedingung", teil: 7, spalte: "jahr", pruefe: "jahr = 2024" },
+      { text: "Jetzt prüft die Datenbank jede Zeile: Hat sie <strong>zwei</strong> Haken?", zeilen: "genre = 'Rock' AND jahr = 2024" },
+      { text: "Nur eine Zeile hat beide Haken. Nur sie bleibt.", blass: true },
+      { text: "In SQL heißt der Satz so:", zeige: "sql" },
+      { text: "„und“ heißt in SQL <code>AND</code>. <strong>Beide</strong> Bedingungen müssen stimmen." },
+      // Phase 2: dasselbe im Labor
+      { text: "Jetzt im Labor. Den Anfang kennst du schon.", zeige: "labor", bausteine: ["SELECT", "titel", "FROM", "songs"] },
+      { text: "Dann <code>WHERE</code> und die erste Bedingung.", bausteine: ["WHERE", "genre", "=", "'…'"], tippe: "Rock" },
+      { text: "Dann <code>AND</code> und die zweite Bedingung.", bausteine: ["AND", "jahr", "="], tippe: "2024" },
+      { text: "Jetzt auf <strong>Ausführen</strong>.", ausfuehren: true },
+      { text: "Das Ergebnis: ein einziger Song.", ergebnis: true },
+      // Zum Vergleich: OR
+      { text: "Und mit <strong>oder</strong>? Dann reicht <strong>ein</strong> Haken.", tausche: [6, "oder", "OR"], ersetze: ["AND", "OR"], zeilen: "genre = 'Rock' OR jahr = 2024", blass: true },
+      { text: "Ausführen – jetzt kommen viel mehr Songs.", ausfuehren: true, ergebnis: true },
+      { text: "Jetzt du! Probier es selbst – zum Beispiel: Hip-Hop aus dem Jahr 2022.", leeren: true },
+    ],
+  });
   const { pick, quiz, hints } = window.Kurs;
   const L = window.Labor;
   const $ = (id) => document.getElementById(id);
