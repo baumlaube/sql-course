@@ -447,5 +447,6 @@
  "die letzten {} von {} Zeilen": "the last {} of {} rows",
  "neu – noch leer": "new – still empty",
  "noch keine Spalten": "no columns yet",
- "noch keine Zeile": "no row yet"
+ "noch keine Zeile": "no row yet",
+ "Du sagst der Datenbank:": "You tell the database:"
 }
