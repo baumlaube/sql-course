@@ -23,12 +23,12 @@
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="stylesheet" href="../assets/kurs.css?v=8f6cf5e194">
-<link rel="stylesheet" href="../assets/labor.css?v=400f14b050">
+<link rel="stylesheet" href="../assets/labor.css?v=64e52898e7">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil2-fit-teil2" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=c26439e733"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
-<script src="../assets/labor.js?v=8d98462984"></script>
-<script src="../assets/probe.js?v=8798e602c8"></script>
+<script src="../assets/labor.js?v=8ab421f562"></script>
+<script src="../assets/probe.js?v=08794d3ac0"></script>
 <script src="../assets/daten/fit-teil2.js?v=064a635a1f"></script>
 </head>
 <body>
@@ -69,10 +69,10 @@
     <h1>Fit für die Probe – Teil 2</h1>
     <div class="meta">
       <span class="chip">Teil 2 · Selbsttest</span>
-      <span class="chip">⏱ ca. 20 Minuten</span>
+      <span class="chip">⏱ ca. 25 Minuten</span>
     </div>
-    <p class="erklaerung">Kannst du alles aus Teil 2 – auch durcheinander? Hier kommen Aufgaben aus allen sechs Lektionen gemischt,
-      ohne Tipps, wie in der Probe. Am Ende siehst du, was sitzt und was du noch üben solltest.</p>
+    <p class="erklaerung">Kannst du alles aus Teil 2? Erst wärmst du dich mit Hilfe auf. Dann kommen Aufgaben aus allen
+      sechs Lektionen, von leicht nach schwer, ohne Tipps – wie in der Probe. Am Ende siehst du, was sitzt und was du noch üben solltest.</p>
   </section>
 
   <section class="card szenario">
@@ -114,44 +114,73 @@ document.addEventListener("DOMContentLoaded", () => {
       { key: "sort", satz: "Ich kann sortieren, die Größten mit <code>ORDER BY … LIMIT</code> finden und mit <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code> rechnen.", lektion: "Lektion 7", href: "07-sortieren-rechnen.html" },
       { key: "gruppen", satz: "Ich kann mit <code>GROUP BY</code> für jede Gruppe zählen und rechnen.", lektion: "Lektion 8", href: "08-group-by.html" },
     ],
+    aufwaermen: [
+      // Schritt 1: Puzzle – nur SELECT … FROM
+      { schritt: 1, db: K, modus: "puzzle", text: "Zeig mir die <strong>Titel</strong> aller Filme. Leg die Bausteine in die richtige Reihenfolge.",
+        bausteine: ["SELECT", "titel", "FROM", "filme", "genre"], loesung: "SELECT titel FROM filme",
+        hints: ["Lies es als Satz: „Zeig mir den Titel aus der Tabelle filme.“", "Lösung: <code>SELECT titel FROM filme</code> – <code>genre</code> brauchst du nicht."] },
+      { schritt: 1, db: S, modus: "puzzle", text: "Zeig mir die <strong>Namen</strong> aller Artikel. Leg die Bausteine in die richtige Reihenfolge.",
+        bausteine: ["SELECT", "name", "FROM", "artikel", "preis"], loesung: "SELECT name FROM artikel",
+        hints: ["Lies es als Satz: „Zeig mir den Namen aus der Tabelle artikel.“", "Lösung: <code>SELECT name FROM artikel</code> – <code>preis</code> brauchst du nicht."] },
+      // Schritt 2: Lücke – WHERE
+      { schritt: 2, db: K, modus: "luecke", text: "Welcher Film kommt aus <strong>Japan</strong>? Füll die Lücken.",
+        sql: "SELECT titel FROM [[8]] WHERE land = [[10]]", loesung: "SELECT titel FROM filme WHERE land = 'Japan'",
+        hints: ["Die erste Lücke ist der Name der Tabelle.", "Text steht in einfachen Anführungszeichen: <code>'Japan'</code>"] },
+      { schritt: 2, db: S, modus: "luecke", text: "Welche Artikel sind <strong>gelb</strong>? Füll die Lücken.",
+        sql: "SELECT name FROM artikel WHERE [[8]] = [[10]]", loesung: "SELECT name FROM artikel WHERE farbe = 'gelb'",
+        hints: ["Welche Spalte sagt, welche Farbe ein Artikel hat?", "Lösung: <code>farbe = 'gelb'</code> – mit einfachen Anführungszeichen."] },
+      // Schritt 3: selbst schreiben, mit Satzbau
+      { schritt: 3, db: K, text: "Schreib jetzt selbst: Zeig mir <strong>Titel und Jahr</strong> aller Filme.", loesung: "SELECT titel, jahr FROM filme", spickerOffen: true,
+        hints: ["„Zeig mir Titel und Jahr aus der Tabelle filme.“ – zwischen zwei Spalten steht ein Komma.", "Lösung: <code>SELECT titel, jahr FROM filme</code>"] },
+      { schritt: 3, db: S, text: "Schreib jetzt selbst: Zeig mir <strong>Name und Preis</strong> aller Artikel.", loesung: "SELECT name, preis FROM artikel", spickerOffen: true,
+        hints: ["„Zeig mir Name und Preis aus der Tabelle artikel.“ – zwischen zwei Spalten steht ein Komma.", "Lösung: <code>SELECT name, preis FROM artikel</code>"] },
+    ],
     vorrat: [
       // SELECT, DISTINCT
-      { thema: "select", db: K, text: "Zeige von allen Filmen den <strong>Titel</strong> und das <strong>Jahr</strong>.", loesung: "SELECT titel, jahr FROM filme" },
-      { thema: "select", db: K, text: "Welche <strong>Genres</strong> gibt es im Kino? Jedes Genre nur einmal.", loesung: "SELECT DISTINCT genre FROM filme" },
+      { thema: "select", db: K, text: "Welche <strong>Genres</strong> gibt es im Kino? Jedes Genre soll nur einmal vorkommen.", loesung: "SELECT DISTINCT genre FROM filme" },
       { thema: "select", db: K, text: "Aus welchen <strong>Ländern</strong> kommen die Filme? Jedes Land nur einmal.", loesung: "SELECT DISTINCT land FROM filme" },
-      { thema: "select", db: S, text: "Zeige von allen Artikeln den <strong>Namen</strong>, die <strong>Marke</strong> und den <strong>Preis</strong>.", loesung: "SELECT name, marke, preis FROM artikel" },
+      { thema: "select", db: K, text: "Wie heißen alle Filme, und wie lange dauern sie? Zeig <strong>nur</strong> diese beiden Spalten.", loesung: "SELECT titel, dauer_min FROM filme", streng: true },
       { thema: "select", db: S, text: "Von welchen <strong>Marken</strong> hat der Laden Artikel? Jede Marke nur einmal.", loesung: "SELECT DISTINCT marke FROM artikel" },
+      { thema: "select", db: S, text: "In welchen <strong>Kategorien</strong> gibt es Artikel? Jede Kategorie nur einmal.", loesung: "SELECT DISTINCT kategorie FROM artikel" },
       // WHERE
-      { thema: "where", db: K, text: "Zeige die <strong>Titel</strong> aller Filme aus <strong>Deutschland</strong>.", loesung: "SELECT titel FROM filme WHERE land = 'Deutschland'" },
-      { thema: "where", db: K, text: "Zeige <strong>Titel</strong> und <strong>Dauer</strong> aller Filme, die <strong>länger als 130 Minuten</strong> dauern.", loesung: "SELECT titel, dauer_min FROM filme WHERE dauer_min > 130" },
-      { thema: "where", db: K, text: "Zeige <strong>Titel</strong> und <strong>Land</strong> aller Filme, die <strong>nicht</strong> aus den USA kommen.", loesung: "SELECT titel, land FROM filme WHERE land <> 'USA'" },
-      { thema: "where", db: S, text: "Welche Artikel sind <strong>ausverkauft</strong> (Bestand 0)? Zeige den <strong>Namen</strong>.", loesung: "SELECT name FROM artikel WHERE bestand = 0" },
-      { thema: "where", db: S, text: "Zeige <strong>Name</strong> und <strong>Preis</strong> aller Artikel, die <strong>100 Euro oder mehr</strong> kosten.", loesung: "SELECT name, preis FROM artikel WHERE preis >= 100" },
+      { thema: "where", db: K, text: "Welche Filme kommen aus <strong>Deutschland</strong>?", loesung: "SELECT titel FROM filme WHERE land = 'Deutschland'" },
+      { thema: "where", db: K, text: "Welche Filme dauern <strong>länger als 130 Minuten</strong>?", loesung: "SELECT titel FROM filme WHERE dauer_min > 130" },
+      { thema: "where", db: K, text: "Welche Filme sind <strong>ab 18</strong> (FSK 18)?", loesung: "SELECT titel FROM filme WHERE fsk = 18" },
+      { thema: "where", db: S, text: "Welche Artikel sind <strong>ausverkauft</strong> (Bestand 0)?", loesung: "SELECT name FROM artikel WHERE bestand = 0" },
+      { thema: "where", db: S, text: "Welche Artikel kosten <strong>100 Euro oder mehr</strong>?", loesung: "SELECT name FROM artikel WHERE preis >= 100" },
       // AND, OR, NOT
-      { thema: "logik", db: K, text: "Zeige die <strong>Titel</strong> aller <strong>Komödien aus Deutschland</strong>.", loesung: "SELECT titel FROM filme WHERE genre = 'Komödie' AND land = 'Deutschland'" },
-      { thema: "logik", db: K, text: "Zeige <strong>Titel</strong> und <strong>Genre</strong> aller Filme, die ein <strong>Krimi oder ein Thriller</strong> sind.", loesung: "SELECT titel, genre FROM filme WHERE genre = 'Krimi' OR genre = 'Thriller'" },
-      { thema: "logik", db: K, text: "Zeige die <strong>Titel</strong> aller <strong>Animationsfilme</strong>, die <strong>nicht</strong> ab 0 Jahren sind (FSK nicht 0).", loesung: "SELECT titel FROM filme WHERE genre = 'Animation' AND NOT fsk = 0" },
-      { thema: "logik", db: S, text: "Zeige <strong>Name</strong> und <strong>Preis</strong> aller <strong>Schuhe</strong> der Marke <strong>Velox</strong>.", loesung: "SELECT name, preis FROM artikel WHERE kategorie = 'Schuhe' AND marke = 'Velox'" },
-      { thema: "logik", db: S, text: "Zeige die <strong>Namen</strong> aller Artikel, die <strong>schwarz oder weiß</strong> sind und <strong>weniger als 20 Euro</strong> kosten.", loesung: "SELECT name FROM artikel WHERE (farbe = 'schwarz' OR farbe = 'weiß') AND preis < 20" },
+      { thema: "logik", db: K, text: "Welche <strong>Komödien</strong> kommen aus <strong>Deutschland</strong>?", loesung: "SELECT titel FROM filme WHERE genre = 'Komödie' AND land = 'Deutschland'" },
+      { thema: "logik", db: K, text: "Welche Filme sind ein <strong>Krimi oder ein Thriller</strong>?", loesung: "SELECT titel FROM filme WHERE genre = 'Krimi' OR genre = 'Thriller'" },
+      { thema: "logik", db: K, text: "Welche <strong>Animationsfilme</strong> sind <strong>nicht</strong> ab 0 Jahren (FSK nicht 0)?", loesung: "SELECT titel FROM filme WHERE genre = 'Animation' AND NOT fsk = 0" },
+      { thema: "logik", db: S, text: "Welche <strong>Schuhe</strong> gibt es von der Marke <strong>Velox</strong>?", loesung: "SELECT name FROM artikel WHERE kategorie = 'Schuhe' AND marke = 'Velox'" },
+      { thema: "logik", db: S, text: "Welche Artikel sind <strong>schwarz oder weiß</strong> und kosten <strong>weniger als 20 Euro</strong>?", loesung: "SELECT name FROM artikel WHERE (farbe = 'schwarz' OR farbe = 'weiß') AND preis < 20" },
       // LIKE, IN, BETWEEN
-      { thema: "muster", db: K, text: "Zeige die <strong>Titel</strong> aller Filme, deren Titel mit <strong>„Die “</strong> beginnt.", loesung: "SELECT titel FROM filme WHERE titel LIKE 'Die %'" },
-      { thema: "muster", db: K, text: "Zeige <strong>Titel</strong> und <strong>Land</strong> aller Filme aus <strong>Frankreich, Italien oder Spanien</strong>.", loesung: "SELECT titel, land FROM filme WHERE land IN ('Frankreich', 'Italien', 'Spanien')" },
-      { thema: "muster", db: K, text: "Zeige <strong>Titel</strong> und <strong>Bewertung</strong> aller Filme mit einer Bewertung <strong>von 4.0 bis 4.5</strong>.", loesung: "SELECT titel, bewertung FROM filme WHERE bewertung BETWEEN 4.0 AND 4.5" },
-      { thema: "muster", db: S, text: "Zeige <strong>Name</strong> und <strong>Preis</strong> aller Artikel, in deren Namen <strong>„ball“</strong> vorkommt.", loesung: "SELECT name, preis FROM artikel WHERE name LIKE '%ball%'" },
-      { thema: "muster", db: S, text: "Zeige <strong>Name</strong> und <strong>Preis</strong> aller Artikel <strong>von 20 bis 40 Euro</strong> (beide Grenzen gehören dazu).", loesung: "SELECT name, preis FROM artikel WHERE preis BETWEEN 20 AND 40" },
+      { thema: "muster", db: K, text: "Welche Filme beginnen mit dem Wort <strong>„Die“</strong>?", loesung: "SELECT titel FROM filme WHERE titel LIKE 'Die %'" },
+      { thema: "muster", db: K, text: "Welche Filme kommen aus <strong>Frankreich, Italien oder Spanien</strong>?", loesung: "SELECT titel FROM filme WHERE land IN ('Frankreich', 'Italien', 'Spanien')" },
+      { thema: "muster", db: K, text: "Welche Filme haben eine Bewertung <strong>von 4.0 bis 4.5</strong>?", loesung: "SELECT titel FROM filme WHERE bewertung BETWEEN 4.0 AND 4.5" },
+      { thema: "muster", db: S, text: "In welchen Artikelnamen kommt <strong>„ball“</strong> vor?", loesung: "SELECT name FROM artikel WHERE name LIKE '%ball%'" },
+      { thema: "muster", db: S, text: "Welche Artikel kosten <strong>von 20 bis 40 Euro</strong> (beide Grenzen gehören dazu)?", loesung: "SELECT name FROM artikel WHERE preis BETWEEN 20 AND 40" },
       // Sortieren und rechnen
-      { thema: "sort", db: K, text: "Zeige <strong>Titel</strong> und <strong>Besucher</strong> der <strong>drei</strong> Filme mit den <strong>meisten Besuchern</strong>, den besten zuerst.", reihenfolge: true, loesung: "SELECT titel, besucher FROM filme ORDER BY besucher DESC LIMIT 3" },
-      { thema: "sort", db: K, text: "Welcher Film ist der <strong>kürzeste</strong>? Zeige <strong>Titel</strong> und <strong>Dauer</strong> – nur diese eine Zeile.", loesung: "SELECT titel, dauer_min FROM filme ORDER BY dauer_min LIMIT 1" },
       { thema: "sort", db: K, text: "<strong>Wie viele</strong> Filme zeigt das Kino?", loesung: "SELECT COUNT(*) FROM filme" },
-      { thema: "sort", db: S, text: "Zeige <strong>Name</strong> und <strong>Preis</strong> aller <strong>Schuhe</strong>, vom <strong>billigsten</strong> zum teuersten.", reihenfolge: true, loesung: "SELECT name, preis FROM artikel WHERE kategorie = 'Schuhe' ORDER BY preis" },
-      { thema: "sort", db: S, text: "Wie viele Artikel liegen <strong>insgesamt</strong> im Lager? Addiere den Bestand aller Artikel.", loesung: "SELECT SUM(bestand) FROM artikel" },
+      { thema: "sort", db: K, text: "<strong>Wie viele</strong> Filme kommen aus den <strong>USA</strong>?", loesung: "SELECT COUNT(*) FROM filme WHERE land = 'USA'" },
+      { thema: "sort", db: K, text: "Welche <strong>drei</strong> Filme hatten die <strong>meisten Besucher</strong>? Der beste zuerst.", reihenfolge: true, loesung: "SELECT titel FROM filme ORDER BY besucher DESC LIMIT 3" },
+      { thema: "sort", db: K, text: "Welcher Film ist der <strong>kürzeste</strong>? Zeig nur diese eine Zeile.", loesung: "SELECT titel FROM filme ORDER BY dauer_min LIMIT 1" },
+      { thema: "sort", db: S, text: "Wie viele Artikel liegen <strong>insgesamt</strong> im Lager? Zähl den Bestand aller Artikel zusammen.", loesung: "SELECT SUM(bestand) FROM artikel" },
       { thema: "sort", db: S, text: "Was kostet ein Artikel <strong>im Durchschnitt</strong>? Runde auf <strong>2 Stellen</strong>.", loesung: "SELECT ROUND(AVG(preis), 2) FROM artikel" },
       // GROUP BY
-      { thema: "gruppen", db: K, text: "Wie viele Filme gibt es <strong>je Genre</strong>? Zeige Genre und Anzahl.", loesung: "SELECT genre, COUNT(*) FROM filme GROUP BY genre" },
-      { thema: "gruppen", db: K, text: "Wie viele Besucher hatte <strong>jedes Genre zusammen</strong>? Zeige Genre und Summe, die meisten zuerst.", reihenfolge: true, loesung: "SELECT genre, SUM(besucher) FROM filme GROUP BY genre ORDER BY SUM(besucher) DESC" },
-      { thema: "gruppen", db: K, text: "Wie viele Filme <strong>aus Deutschland</strong> gibt es <strong>je Genre</strong>? Zeige Genre und Anzahl.", loesung: "SELECT genre, COUNT(*) FROM filme WHERE land = 'Deutschland' GROUP BY genre" },
-      { thema: "gruppen", db: S, text: "Wie viele Artikel hat <strong>jede Marke</strong>? Zeige Marke und Anzahl.", loesung: "SELECT marke, COUNT(*) FROM artikel GROUP BY marke" },
-      { thema: "gruppen", db: S, text: "Wie teuer ist der <strong>teuerste Artikel jeder Kategorie</strong>? Zeige Kategorie und Höchstpreis.", loesung: "SELECT kategorie, MAX(preis) FROM artikel GROUP BY kategorie" },
+      { thema: "gruppen", db: K, text: "Wie viele Filme gibt es <strong>je Genre</strong>? Zeig Genre und Anzahl.", loesung: "SELECT genre, COUNT(*) FROM filme GROUP BY genre" },
+      { thema: "gruppen", db: K, text: "Wie viele Besucher hatte <strong>jedes Genre zusammen</strong>? Zeig Genre und Summe, die meisten zuerst.", reihenfolge: true, loesung: "SELECT genre, SUM(besucher) FROM filme GROUP BY genre ORDER BY SUM(besucher) DESC" },
+      { thema: "gruppen", db: K, text: "Wie viele Filme <strong>aus Deutschland</strong> gibt es <strong>je Genre</strong>? Zeig Genre und Anzahl.", loesung: "SELECT genre, COUNT(*) FROM filme WHERE land = 'Deutschland' GROUP BY genre" },
+      { thema: "gruppen", db: S, text: "Wie viele Artikel hat <strong>jede Marke</strong>? Zeig Marke und Anzahl.", loesung: "SELECT marke, COUNT(*) FROM artikel GROUP BY marke" },
+      { thema: "gruppen", db: S, text: "Wie teuer ist der <strong>teuerste Artikel jeder Kategorie</strong>? Zeig Kategorie und Höchstpreis.", loesung: "SELECT kategorie, MAX(preis) FROM artikel GROUP BY kategorie" },
+    ],
+    profi: [
+      { db: K, text: "Gesucht sind Filme, deren <strong>Titel mit D beginnt</strong>, aus <strong>Ländern, die mit D beginnen</strong>. Zähl sie <strong>je Land</strong>. Zeig Land und Anzahl.",
+        loesung: "SELECT land, COUNT(*) FROM filme WHERE titel LIKE 'D%' AND land LIKE 'D%' GROUP BY land" },
+      { db: S, text: "Gesucht sind Artikel, deren <strong>Name mit S beginnt</strong>, in <strong>Kategorien, die mit B oder Z beginnen</strong>. Zähl sie <strong>je Kategorie</strong>. Zeig Kategorie und Anzahl.",
+        loesung: "SELECT kategorie, COUNT(*) FROM artikel WHERE name LIKE 'S%' AND (kategorie LIKE 'B%' OR kategorie LIKE 'Z%') GROUP BY kategorie" },
+      { db: K, text: "Welches <strong>Genre</strong> hatte bei den Filmen <strong>ab 2024</strong> die <strong>meisten Besucher</strong> zusammen? Zeig nur diese eine Zeile: Genre und Summe.",
+        loesung: "SELECT genre, SUM(besucher) FROM filme WHERE jahr >= 2024 GROUP BY genre ORDER BY SUM(besucher) DESC LIMIT 1" },
     ],
   });
 });

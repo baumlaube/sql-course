@@ -306,6 +306,37 @@
     }).catch((e) => { el.textContent = T("Das SQL-Labor konnte nicht starten:") + " " + e.message; });
   }
 
+  /* ---------- Satzbau-Spicker: SQL wie einen deutschen Satz lesen ---------- */
+  // Welche Zeilen der Bauplan zeigt, hängt davon ab, wie weit der Kurs ist (aus data-page der Seite).
+  const SEITE = (document.querySelector("script[data-page]") || { dataset: {} }).dataset.page || "";
+  function kursStand() {
+    const fit = SEITE.match(/fit-teil(\d)/);
+    if (fit) return { 2: 8, 3: 11 }[fit[1]] || 99;
+    const n = SEITE.match(/teil\d-(\d+)/);
+    return n ? +n[1] : 99;
+  }
+  const BAUPLAN = [
+    { ab: 1, kw: "SELECT", was: "spalten", frage: "Was willst du sehen?", satz: "Zeig mir …" },
+    { ab: 1, kw: "FROM", was: "tabelle", frage: "Woher?", satz: "… aus der Tabelle …" },
+    { ab: 9, kw: "JOIN", was: "tabelle2 ON …_id = ….id", frage: "Noch eine Tabelle dazu?", satz: "… verbunden mit …" },
+    { ab: 4, kw: "WHERE", was: "bedingung", frage: "Welche Zeilen?", satz: "… aber nur, wenn …" },
+    { ab: 8, kw: "GROUP BY", was: "spalte", frage: "Für jede Gruppe?", satz: "… je …" },
+    { ab: 7, kw: "ORDER BY", was: "spalte DESC", frage: "Sortiert wie?", satz: "… sortiert nach …" },
+    { ab: 7, kw: "LIMIT", was: "zahl", frage: "Wie viele?", satz: "… nur die ersten …" },
+  ];
+  function spickerHTML() {
+    const st = kursStand();
+    const zeilen = BAUPLAN.filter((z) => z.ab <= st).map((z) =>
+      `<li><code><span class="kw">${z.kw}</span> ${T(z.was)}</code> <span>${T(z.frage)} <em class="muted">${T(z.satz)}</em></span></li>`).join("");
+    const bsp = st >= 4
+      ? [`SELECT titel FROM songs WHERE jahr = 2024`, "„Zeig mir den Titel aus der Tabelle songs – aber nur, wenn das Jahr 2024 ist.“"]
+      : [`SELECT titel, jahr FROM songs`, "„Zeig mir Titel und Jahr aus der Tabelle songs.“"];
+    return `<p class="spicker-t">${T("🧩 So ist jede Abfrage gebaut – immer in dieser Reihenfolge:")}</p>
+      <ol class="spicker-liste">${zeilen}</ol>
+      <p>${T("Beispiel:")} <code>${sqlHTML(bsp[0])}</code><br>${T(bsp[1])}</p>
+      <p class="muted">${T("Text steht in einfachen Anführungszeichen: <code>'Pop'</code>. Zahlen ohne.")}</p>`;
+  }
+
   /* ---------- Die Aufgabe ---------- */
   const STANDARD_LEISTE = ["SELECT", "DISTINCT", "*", ",", "FROM", "WHERE", "=", "<>", "<", ">", "<=", ">=", "'…'"];
 
@@ -314,14 +345,18 @@
     const modus = o.modus || "frei";
     const api = { el, sql: () => holeSQL(), setzeSQL: (s) => setzeSQL(s), loesen: false };
     let SQL = null, m = null, geloest = false;
+    // Satzbau-Spicker: in allen Abfrage-Laboren, nicht beim reinen Lesen und nicht im Probe-Teil (außer ausdrücklich)
+    const mitSpicker = o.spicker !== undefined ? !!o.spicker : modus !== "lesen" && !o.probe && !o.zustand;
 
     el.innerHTML = `
       <div class="labor-tabs"></div>
       <div class="labor-code"></div>
       <div class="labor-ctrl">
         <button type="button" class="btn labor-run" data-tipp="${modus === "lesen" ? T("Schickt die Abfrage an die Datenbank. Das Ergebnis erscheint darunter.") : T("Schickt deine Abfrage an die Datenbank und prüft sie. Kaputt machen kannst du nichts.")}${modus === "frei" ? " " + T("(Strg + Enter)") : ""}">▶ ${T("Ausführen")}</button>
+        ${mitSpicker ? `<button type="button" class="btn secondary labor-spicker" aria-expanded="false" data-tipp="${T("Zeigt, wie eine Abfrage gebaut ist – wie ein deutscher Satz.")}">🧩 ${T("Satzbau")}</button>` : ""}
         ${modus === "puzzle" ? `<button type="button" class="btn secondary labor-reset" data-tipp="${T("Alle Bausteine zurücklegen und neu anfangen.")}">↺ ${T("Neu")}</button>` : ""}
       </div>
+      ${mitSpicker ? `<div class="labor-spickbox" hidden></div>` : ""}
       <div class="fb labor-fb" aria-live="polite"></div>
       <div class="labor-erg" hidden></div>`;
     const $ = (s) => el.querySelector(s);
@@ -575,6 +610,15 @@
     function melden(res, ok) { if (o.onRun) o.onRun({ res, ok, geloest }, ok, api); }
 
     el.querySelector(".labor-run").addEventListener("click", los);
+    if (mitSpicker) {
+      const knopf = el.querySelector(".labor-spicker"), box = el.querySelector(".labor-spickbox");
+      if (o.spickerOffen) { box.innerHTML = spickerHTML(); box.hidden = false; knopf.setAttribute("aria-expanded", "true"); }
+      knopf.addEventListener("click", () => {
+        if (!box.innerHTML) box.innerHTML = spickerHTML();
+        box.hidden = !box.hidden;
+        knopf.setAttribute("aria-expanded", String(!box.hidden));
+      });
+    }
 
     bereit().then((S) => {
       SQL = S;
@@ -797,7 +841,7 @@
     });
   }
 
-  window.Labor = { daten, bereit, create, tabelle, zeitlupe, gruppen, training, abfrage, beurteile, sqlHTML, glaetten,
+  window.Labor = { daten, bereit, create, spickerHTML, tabelle, zeitlupe, gruppen, training, abfrage, beurteile, sqlHTML, glaetten,
     /* für Erweiterungen (labor-extra.js, projekt.js) */
     _intern: { oeffnen, ausfuehren, ergebnisHTML, esc, T, DATEN, fehlerText, meta, metaLesen, glaetten, sqlHTML } };
 

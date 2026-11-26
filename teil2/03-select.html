@@ -23,11 +23,11 @@
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="stylesheet" href="../assets/kurs.css?v=8f6cf5e194">
-<link rel="stylesheet" href="../assets/labor.css?v=400f14b050">
+<link rel="stylesheet" href="../assets/labor.css?v=64e52898e7">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil2-03-select" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=c26439e733"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
-<script src="../assets/labor.js?v=8d98462984"></script>
+<script src="../assets/labor.js?v=8ab421f562"></script>
 <script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
 <script src="../assets/daten/nutzer.js?v=533561c012"></script>
 <script src="../assets/daten/azubi.js?v=5b1356cc35"></script>
@@ -107,6 +107,11 @@
     <div id="tab-songs"></div>
     <p>Das ist deine erste Abfrage:</p>
     <pre class="sql" data-farbe>SELECT titel, kuenstler FROM songs</pre>
+    <p>Lies SQL wie einen Satz:</p>
+    <div class="tbl-scroll"><table class="plain satz">
+      <tr><td><code>SELECT titel, kuenstler</code></td><td>„<strong>Zeig mir</strong> Titel und Künstler …</td></tr>
+      <tr><td><code>FROM songs</code></td><td>… <strong>aus der Tabelle</strong> songs.“</td></tr>
+    </table></div>
     <p><strong>Überleg:</strong> Was steht im Ergebnis? Führ noch nichts aus!</p>
     <div class="choices" id="pred1">
       <button type="button" class="choice">alle 7 Spalten der Tabelle</button>
