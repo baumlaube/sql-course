@@ -28,9 +28,9 @@
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
 <script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
-<script src="../assets/labor.js?v=153ec0279e"></script>
+<script src="../assets/labor.js?v=909d1a04e0"></script>
 <script src="../assets/labor-extra.js?v=e94bd060f6"></script>
-<script src="../assets/film.js?v=1735dbed7e"></script>
+<script src="../assets/film.js?v=b3e4a746a9"></script>
 <script src="../assets/daten/musik.js?v=c1bfd9240c"></script>
 <script src="../assets/daten/buecherei.js?v=c99f5e2d8a"></script>
 <script src="../assets/daten/pfoten.js?v=7b482f3862"></script>
@@ -240,7 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const EXTRA = ["JOIN", "ON", "AND", "ORDER BY", "DESC", "AS"];
   /* Erklärfilm: JOIN – zwei Tabellen, gleiche Nummer = gleiche Farbe. Steht im Reiter „Zeitlupe“, nach der Überleg-Frage. */
   Labor.film(document.getElementById("film1"), {
-    titel: "So funktioniert JOIN", db: "musik", extra: EXTRA,
+    titel: "So funktioniert JOIN", db: "musik", extra: EXTRA, nurTabellen: ["songs", "kuenstler"],
     vorschau: [{ tabelle: "songs", spalten: "titel, kuenstler_id", zeilen: 6 }, { tabelle: "kuenstler", spalten: "id, name", zeilen: 5 }],
     paare: [["Zeig mir", "SELECT"], ["den Titel", "songs.titel,", "spalte"], ["und den Namen", "kuenstler.name", "spalte"], ["aus der Tabelle", "FROM"], ["songs,", "songs", "tabelle"],
             ["verbunden mit", "JOIN"], ["der Tabelle kuenstler,", "kuenstler", "tabelle"], ["wo die Nummern passen.", "ON songs.kuenstler_id = kuenstler.id", "bedingung"]],
@@ -306,7 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fallen: [{ muster: /WHERE/i, text: "<code>WHERE</code> brauchst du nicht – die Verbindung kommt nach <code>ON</code>." }, ...IMMER],
     ok: "✔ Geschafft! Jetzt weiß die App bei jedem Song, woher der Künstler kommt." });
 
-  L.create($("l5"), { db: "musik", modus: "frei", tabellen: false, zeilen: 2, erkunden: true, extra: EXTRA,
+  L.create($("l5"), { db: "musik", nurTabellen: ["songs", "kuenstler"], modus: "frei", tabellen: false, zeilen: 2, erkunden: true, extra: EXTRA,
     sql: "SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler",
     loesung: "SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id",
     fallen: IMMER,
@@ -317,7 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "Lösung: <code>… JOIN kuenstler ON songs.kuenstler_id = kuenstler.id</code>",
   ]);
 
-  L.create($("l6"), { db: "musik", modus: "frei", tabellen: true, extra: EXTRA,
+  L.create($("l6"), { db: "musik", nurTabellen: ["kuenstler", "labels"], modus: "frei", tabellen: true, extra: EXTRA,
     loesung: "SELECT kuenstler.name, labels.name FROM kuenstler JOIN labels ON kuenstler.label_id = labels.id",
     fallen: [{ muster: /SELECT\s+name\s*,\s*name/i, text: "Beide Tabellen haben eine Spalte <code>name</code>. Schreib den Tabellennamen davor: <code>kuenstler.name</code>, <code>labels.name</code>." }, ...IMMER],
     ok: "✔ Richtig! 12 Künstler mit ihrem Label." });
@@ -344,14 +344,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const mit = (arr) => arr.map((a) => Object.assign({ extra: EXTRA }, a, { fallen: [...(a.fallen || []), ...IMMER] }));
 
-  L.training($("tr1"), { db: "musik", key: "l09-basis", aufgaben: mit([
+  L.training($("tr1"), { db: "musik", key: "l09-basis", nurTabellen: ["songs", "kuenstler"], aufgaben: mit([
     { text: "Zu jedem Song <strong>Titel und Künstlername</strong>.",
       loesung: "SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id",
       hints: ["Lösung: <code>SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id</code>"] },
     { text: "Zu jedem Song <strong>Titel, Genre und Künstlername</strong>.",
       loesung: "SELECT songs.titel, songs.genre, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id",
       hints: ["Lösung: <code>SELECT songs.titel, songs.genre, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id</code>"] },
-    { text: "Zu jedem Künstler <strong>Name und Stadt seines Labels</strong>.",
+    { text: "Zu jedem Künstler <strong>Name und Stadt seines Labels</strong>.", nurTabellen: ["kuenstler", "labels"],
       loesung: "SELECT kuenstler.name, labels.stadt FROM kuenstler JOIN labels ON kuenstler.label_id = labels.id",
       hints: ["Lösung: <code>SELECT kuenstler.name, labels.stadt FROM kuenstler JOIN labels ON kuenstler.label_id = labels.id</code>"] },
     { text: "Zu jedem Song <strong>Titel, Likes und Herkunft</strong> des Künstlers.",

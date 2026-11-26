@@ -38,6 +38,7 @@
      zeilen: 8,                                         // so viele Zeilen zeigt die Vorschau (sonst 4)
      spalten: "id, titel, genre",            // nur diese Spalten in der Vorschau (sonst alle) – passt aufs Handy
      extra: ["AND", "OR"],                              // zusätzliche Bausteine im Labor (spätere Lektionen)
+     nurTabellen: ["songs", "kuenstler"],               // nur diese Tabellen in der Bausteinleiste (Reduktion)
    })
    Markierungen bleiben bis zum Ende stehen (der Pfeil wandert zum Neuen). Steuerung: ◀ ⏸/▶ ▶▶ ↺.
    Zurück = alles bis dahin sofort nachspielen. Einblendungen laufen über T() und damit über die Sprachhilfe.
@@ -359,7 +360,7 @@
     $(".film-los").addEventListener("click", () => {
       $(".film-start").hidden = true;
       $(".film-buehne").hidden = false;
-      if (!lab) lab = Labor.create($(".film-labor"), { db: o.db, modus: "frei", tabellen: false, spicker: false, zeilen: 2, extra: o.extra });
+      if (!lab) lab = Labor.create($(".film-labor"), { db: o.db, modus: "frei", tabellen: false, spicker: false, zeilen: 2, extra: o.extra, nurTabellen: o.nurTabellen });
       laeuft = true;
       const anfangen = () => (lab.feld ? gehe(0) : setTimeout(anfangen, 50));   // warten, bis das Labor gebaut ist
       anfangen();

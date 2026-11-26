@@ -293,7 +293,8 @@
     bereit().then((SQL) => {
       const db = oeffnen(SQL, opts.db);
       const m = DATEN[opts.db].meta;
-      (opts.tabelle ? [opts.tabelle] : Object.keys(m.tabellen)).forEach((t) => {
+      // nur: Liste der Tabellen, die gezeigt werden (Reduktion, z. B. in der JOIN-Einführung nur zwei)
+      (opts.tabelle ? [opts.tabelle] : Object.keys(m.tabellen).filter((t) => !opts.nur || opts.nur.includes(t))).forEach((t) => {
         const res = db.exec(`SELECT * FROM "${t}"`)[0] || { columns: m.tabellen[t].map((c) => c.name), values: [] };
         const d = document.createElement("details");
         d.className = "labor-tabelle";
@@ -364,7 +365,7 @@
       <div class="labor-erg" hidden></div>`;
     const $ = (s) => el.querySelector(s);
     const codeBox = $(".labor-code"), fb = $(".labor-fb"), erg = $(".labor-erg");
-    if (o.tabellen !== false) tabelle($(".labor-tabs"), { db: o.db, tabelle: o.tabellen && o.tabellen[0], offen: o.tabelleOffen });
+    if (o.tabellen !== false) tabelle($(".labor-tabs"), { db: o.db, tabelle: o.tabellen && o.tabellen[0], offen: o.tabelleOffen, nur: o.nurTabellen });
     else $(".labor-tabs").remove();
 
     let holeSQL = () => "", setzeSQL = () => {};
@@ -404,7 +405,8 @@
       befehle.forEach((t) => leiste.appendChild(knopf(t, m.tabellen[t] ? "tab" : "")));
       // 2. Je Tabelle eine eigene Zeile: 📋 Tabelle (eigene Farbe) und danach ihre Spalten
       if (mitNamen) {
-        const tabs = Object.keys(m.tabellen), mehrere = tabs.length > 1;
+        // nurTabellen: nur diese Tabellen in der Leiste (Reduktion) – die Datenbank selbst bleibt vollständig
+        const tabs = Object.keys(m.tabellen).filter((t) => !o.nurTabellen || o.nurTabellen.includes(t)), mehrere = tabs.length > 1;
         tabs.forEach((t) => {
           const zeile = document.createElement("div");
           zeile.className = "labor-namen";
@@ -807,10 +809,14 @@
       <div class="tr-hints"></div>
       <div class="btn-row"><button type="button" class="btn tr-weiter" hidden>${T("Nächste Aufgabe →")}</button></div>`;
     const $ = (s) => el.querySelector(s);
-    if (o.tabelle !== false) {
-      const t = document.createElement("div");
-      el.insertBefore(t, $(".tr-aufgabe"));
-      tabelle(t, { db: o.db });
+    // Tabellen über der Aufgabe – je Aufgabe neu, falls eine Aufgabe nur bestimmte Tabellen zeigt (nurTabellen)
+    let tabBox = null, tabNur = "-";
+    if (o.tabelle !== false) { tabBox = document.createElement("div"); el.insertBefore(tabBox, $(".tr-aufgabe")); }
+    function tabellenZeigen(nur) {
+      if (!tabBox || String(nur) === tabNur) return;
+      tabNur = String(nur); tabBox.innerHTML = "";
+      const d = document.createElement("div"); tabBox.appendChild(d);   // eigener Kasten: eine ältere, noch ladende Anzeige schreibt ins Leere
+      tabelle(d, { db: o.db, nur });
     }
 
     function punkte() {
@@ -823,13 +829,14 @@
 
     function zeige(i) {
       akt = i;
+      tabellenZeigen(o.aufgaben[i].nurTabellen || o.nurTabellen);
       const a = o.aufgaben[i];
       $(".tr-aufgabe").innerHTML = `<p class="tr-nr">${T(`Aufgabe ${i + 1} von ${o.aufgaben.length}`)}</p><p class="tr-text">${T(a.text)}</p>`;
       $(".tr-weiter").hidden = true;
       $(".tr-hints").innerHTML = "";
       if (a.hints && window.Kurs) window.Kurs.hints($(".tr-hints"), a.hints);
       $(".tr-labor").innerHTML = "";
-      create($(".tr-labor"), Object.assign({ db: o.db, modus: "frei", tabellen: false }, a, {
+      create($(".tr-labor"), Object.assign({ db: o.db, modus: "frei", tabellen: false, nurTabellen: o.nurTabellen }, a, {
         ok: a.ok || "✔ Richtig!",
         onRun(info, ok) {
           if (!ok) return;
