@@ -406,5 +406,14 @@
  "★ Profi-Aufgabe noch nicht geschafft.": "★ Pro task not solved yet.",
  "Tabellen heißen meist in der Mehrzahl (songs, filme), Spalten in der Einzahl (titel, preis). Sicher erkennst du die Tabelle an der Farbe: 📋": "Tables usually have a <strong>plural</strong> name (<code>songs</code>, <code>filme</code>), columns a <strong>singular</strong> one (<code>titel</code>, <code>preis</code>). You can always spot the table by its colour: <span class='baustein tab mini'>📋</span>",
  "Das ist der Name der Tabelle. Er steht nach FROM (oder JOIN).": "This is the name of the table. It comes after FROM (or JOIN).",
- "Spalten": "Columns"
+ "Spalten": "Columns",
+ "Film ansehen": "Watch the film",
+ "{} Schritte, ca. 1 Minute": "{} steps, about 1 minute",
+ "Schritt zurück": "Step back",
+ "Pause": "Pause",
+ "Schritt vor": "Step forward",
+ "Den Film von vorn abspielen": "Play the film from the start",
+ "Von vorn": "From the start",
+ "die ersten {} von {} Zeilen": "the first {} of {} rows",
+ "Weiter": "Continue"
 }

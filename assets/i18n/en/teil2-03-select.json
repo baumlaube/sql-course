@@ -194,5 +194,15 @@
  "Lies SQL wie einen Satz:": "Read SQL like a sentence:",
  "„Zeig mir Titel und Künstler …": "“<strong>Show me</strong> title and artist …",
  "… aus der Tabelle songs.“": "… <strong>from the table</strong> songs.”",
- "Tabellen heißen meist in der Mehrzahl (songs), Spalten in der Einzahl (titel). In der Bausteinleiste ist die Tabelle gelb.": "Tables usually have a plural name (<code>songs</code>), columns a singular one (<code>titel</code>). In the block bar the table is yellow."
+ "Tabellen heißen meist in der Mehrzahl (songs), Spalten in der Einzahl (titel). In der Bausteinleiste ist die Tabelle gelb.": "Tables usually have a plural name (<code>songs</code>), columns a singular one (<code>titel</code>). In the block bar the table is yellow.",
+ "Die Tabelle songs hat viele Spalten. Du willst nur die Titel sehen.": "The table <code>songs</code> has many columns. You only want to see the <strong>titles</strong>.",
+ "① Was willst du sehen? → SELECT und die Spalte titel": "① What do you want to see? → <code>SELECT</code> and the column <code>titel</code>",
+ "② Woher? → FROM und der Name der Tabelle. Die Tabelle ist gelb.": "② From where? → <code>FROM</code> and the name of the table. The table is <strong>yellow</strong>.",
+ "Lies es wie einen Satz: „Zeig mir den Titel aus der Tabelle songs.“": "Read it like a sentence: “Show me the title from the table songs.”",
+ "③ Ausführen!": "③ Run it!",
+ "Das Ergebnis: nur die Spalte titel – für alle Songs.": "The result: only the column <code>titel</code> – for <strong>all</strong> songs.",
+ "Noch eine Spalte? Ein Komma, dann der Name: titel, jahr": "Another column? A <strong>comma</strong>, then the name: <code>titel, jahr</code>",
+ "Ausführen – jetzt kommen zwei Spalten.": "Run it – now you get two columns.",
+ "Jetzt du! Probier es hier selbst – zum Beispiel mit kuenstler.": "Your turn! Try it yourself here – for example with <code>kuenstler</code>.",
+ "So funktioniert SELECT": "How SELECT works"
 }
