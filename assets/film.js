@@ -25,7 +25,11 @@
        { text: "…", markiere: "ordnen", spalte: "dauer_sek", ordnen: "dauer_sek DESC" },  // Spalte türkis, Zeilen gleiten an ihren Platz
        { text: "…", markiere: "limit", abschneiden: 3 },
        { text: "…", markiere: "gruppe", gruppen: "genre" },  // gleiche Werte rücken zusammen, jede Gruppe eine Farbe
-       { text: "…", zaehle: "genre" },                  // unter der Vorschau: je Gruppe eine Zeile mit der Anzahl  // ab Zeile 4: Schnittlinie, Rest blass (spalte darf auch eine Liste sein)    // LIKE-Muster in der Spalte zeigen: feste Buchstaben grün, das % gestrichelt
+       { text: "…", zaehle: "genre" },
+       // JOIN: vorschau: [{ tabelle: "songs", spalten: "titel, kuenstler_id", zeilen: 6 }, { tabelle: "kuenstler", … }]
+       //       spalte: "kuenstler.name" (Tabelle davor), markiere: "tabelle", tabelle: "kuenstler", teil: -1 = nur in der Tabelle
+       { text: "…", verbinde: "songs.kuenstler_id = kuenstler.id" },   // gleiche Nummer = gleiche Farbe in beiden Tabellen
+       { text: "…", verbund: "SELECT s.titel, k.name, k.id FROM … LIMIT 6" },   // verbundenes Ergebnis; letzte Spalte färbt                  // unter der Vorschau: je Gruppe eine Zeile mit der Anzahl  // ab Zeile 4: Schnittlinie, Rest blass (spalte darf auch eine Liste sein)    // LIKE-Muster in der Spalte zeigen: feste Buchstaben grün, das % gestrichelt
        { text: "…", zeige: "labor", spalte: "titel", bausteine: ["SELECT", "titel"] },
        { text: "…", nach: "titel", bausteine: [",", "jahr"] },   // hinter „titel“ einsetzen
        { text: "…", tippe: "…" }, { text: "…", ausfuehren: true }, { text: "…", ergebnis: true },
@@ -84,27 +88,39 @@
     let lab = null, akt = -1, fertigBis = -1, laeuft = false, lauf = 0;
     const treffer = {};          // SQL-Bedingung → [true/false je Vorschauzeile]
 
-    // Vorschau: die ersten Zeilen der Tabelle
+    // Vorschau: die ersten Zeilen der Tabelle – oder mehrerer Tabellen nebeneinander (JOIN)
+    const vors = Array.isArray(o.vorschau) ? o.vorschau : [{ tabelle: o.vorschau, spalten: o.spalten, zeilen: o.zeilen }];
+    const verbund = {};          // Schritt-SQL → Ergebnis (für „so sieht das zusammen aus“)
     Labor.bereit().then((SQL) => {
-      const db = oeffnen(SQL, o.db);
-      const r = db.exec(`SELECT ${o.spalten || "*"} FROM "${o.vorschau}" LIMIT ${o.zeilen || 4}`)[0];
-      const n = db.exec(`SELECT COUNT(*) FROM "${o.vorschau}"`)[0].values[0][0];
+      const db = oeffnen(SQL, o.db), v0 = vors[0];
       o.schritte.flatMap((x) => [x.zeilen, x.pruefe]).filter(Boolean).forEach((b) => {
-        treffer[b] = db.exec(`SELECT (${b}) FROM "${o.vorschau}" LIMIT ${o.zeilen || 4}`)[0].values.map((v) => !!v[0]);
+        treffer[b] = db.exec(`SELECT (${b}) FROM "${v0.tabelle}" LIMIT ${v0.zeilen || 4}`)[0].values.map((v) => !!v[0]);
       });
+      o.schritte.filter((x) => x.verbund).forEach((x) => { verbund[x.verbund] = db.exec(x.verbund)[0]; });
+      vorschauHTML = vors.map((v, k) => {
+        const r = db.exec(`SELECT ${v.spalten || "*"} FROM "${v.tabelle}" LIMIT ${v.zeilen || 4}`)[0];
+        const n = db.exec(`SELECT COUNT(*) FROM "${v.tabelle}"`)[0].values[0][0];
+        if (k === 0) $(".film-poster").innerHTML = ergebnisHTML({ spalten: r.columns, zeilen: r.values });
+        return `<div class="film-vt" data-t="${esc(v.tabelle)}"><p class="film-tab"><span class="tabname">📋 ${esc(v.tabelle)}</span> <span class="muted">${T(`die ersten ${r.values.length} von ${n} Zeilen`)}</span></p>`
+          + ergebnisHTML({ spalten: r.columns, zeilen: r.values }) + "</div>";
+      }).join("");
       db.close();
-      $(".film-poster").innerHTML = ergebnisHTML({ spalten: r.columns, zeilen: r.values });
-      vorschauHTML = `<p class="film-tab"><span class="tabname">📋 ${esc(o.vorschau)}</span> <span class="muted">${T(`die ersten ${r.values.length} von ${n} Zeilen`)}</span></p>`
-        + ergebnisHTML({ spalten: r.columns, zeilen: r.values });
       $(".film-vorschau").innerHTML = vorschauHTML;
+      $(".film-vorschau").classList.toggle("film-mehrere", vors.length > 1);
     });
+    /* „tabelle.spalte“ → [Tabelle im Film, Spaltennummer]; ohne Punkt: die erste Tabelle */
+    function finde(name) {
+      const [t, c] = name.includes(".") ? name.split(".") : [null, name];
+      const tab = t ? $(`.film-vt[data-t="${t}"] table`) : $(".film-vorschau table");
+      if (!tab) return [null, -1];
+      return [tab, [...tab.querySelectorAll("th")].findIndex((th) => th.textContent.trim() === c)];
+    }
 
     /* ---- Markierungen ---- */
     function spalteMarkieren(name, pfeil, klasse = "film-sp") {
       if (Array.isArray(name)) { name.forEach((n) => spalteMarkieren(n, pfeil, klasse)); return; }
-      const tab = $(".film-vorschau table");
-      if (!tab || !name) return;
-      const i = [...tab.querySelectorAll("th")].findIndex((th) => th.textContent.trim() === name);
+      if (!name) return;
+      const [tab, i] = finde(name);
       if (i < 0) return;
       tab.querySelectorAll("tr").forEach((tr) => { const c = tr.children[i]; if (c) c.classList.add(klasse); });
       if (pfeil) tab.querySelectorAll("th")[i].classList.add("film-pfeil");
@@ -117,7 +133,9 @@
       if (art === "bedingung") spalteMarkieren(spalte, pfeil, "film-bd");
       if (art === "ordnen") spalteMarkieren(spalte, pfeil, "film-so");
       if (art === "gruppe") spalteMarkieren(spalte, pfeil, "film-gr");
-      if (art === "tabelle") { const t = $(".film-tab .tabname"); if (t) t.classList.add("an"); if (t && pfeil) t.classList.add("film-pfeil"); }
+      if (art === "tabelle") {
+        const t = spalte ? [...el.querySelectorAll(".film-tab .tabname")].find((x) => x.textContent.includes(spalte)) : $(".film-tab .tabname");
+        if (t) t.classList.add("an"); if (t && pfeil) t.classList.add("film-pfeil"); }
     }
     function zeilenMarkieren(bed) {
       const tr = [...el.querySelectorAll(".film-vorschau tbody tr")], ja = treffer[bed] || [];
@@ -191,6 +209,28 @@
         ${[...zahl].map(([w, n], k) => `<tr class="film-g${k % 6}"><td>${esc(w)}</td><td class="zahl">${n}</td></tr>`).join("")}</tbody></table>`;
       $(".film-vorschau").appendChild(box);
     }
+    /* JOIN sichtbar machen: gleiche Nummer = gleiche Farbe, in beiden Tabellen. verbinde = "songs.kuenstler_id = kuenstler.id" */
+    let farbe = new Map();
+    function verbinden(bed) {
+      const [links, rechts] = bed.split("=").map((x) => finde(x.trim()));
+      const wert = ([tab, i]) => [...tab.querySelectorAll("tbody tr")].map((z) => z.children[i]);
+      const l = wert(links), r = wert(rechts), rWerte = new Set(r.map((c) => c.textContent.trim()));
+      farbe = new Map();
+      l.forEach((c) => { const w = c.textContent.trim(); if (rWerte.has(w) && !farbe.has(w)) farbe.set(w, farbe.size % 6); });
+      [...l, ...r].forEach((c) => { const w = c.textContent.trim(); if (farbe.has(w)) c.classList.add("film-gz", "film-g" + farbe.get(w)); });
+    }
+    /* Das verbundene Ergebnis zeigen: letzte Spalte der Abfrage = Nummer (nur für die Farbe, wird nicht gezeigt) */
+    function verbundZeigen(sql) {
+      const r = verbund[sql];
+      if (!r) return;
+      const box = document.createElement("div");
+      box.className = "film-gruppen film-verbund";
+      box.innerHTML = `<p class="film-tab"><span class="muted">${T("Ergebnis für diese Zeilen")}</span></p>
+        <table class="labor-tab"><thead><tr>${r.columns.slice(0, -1).map((c) => `<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>
+        ${r.values.map((z) => { const f = farbe.get(String(z[z.length - 1]));
+          return `<tr${f != null ? ` class="film-g${f}"` : ""}>${z.slice(0, -1).map((v) => `<td>${esc(String(v))}</td>`).join("")}</tr>`; }).join("")}</tbody></table>`;
+      $(".film-vorschau").appendChild(box);
+    }
     function abschneiden(n) {
       el.querySelectorAll(".film-vorschau tbody tr").forEach((z, k) => {
         z.classList.toggle("film-raus", k >= n); z.classList.toggle("film-schnitt", k === n);
@@ -228,7 +268,7 @@
       if (s.markiere) {
         await p(500); if (ab()) return;
         const arten = [].concat(s.markiere);
-        arten.forEach((a, k) => markiere(a, a === "tabelle" ? null : s.spalte, k === arten.length - 1, s.teil));
+        arten.forEach((a, k) => markiere(a, a === "tabelle" ? s.tabelle : s.spalte, k === arten.length - 1, s.teil));
       }
       if (s.tausche) {
         const [i, de, sq] = s.tausche, paar = $(`.film-paar[data-i="${i}"]`);
@@ -240,6 +280,8 @@
       if (s.ersetze && lab) lab.feld.value = lab.feld.value.replace(s.ersetze[0], s.ersetze[1]);
       if (s.ordnen) { await p(700); if (ab()) return; zeilenOrdnen(s.ordnen, sofort); await p(1800); if (ab()) return; }
       if (s.gruppen) { await p(700); if (ab()) return; gruppieren(s.gruppen, sofort); await p(1800); if (ab()) return; }
+      if (s.verbinde) { await p(600); if (ab()) return; verbinden(s.verbinde); }
+      if (s.verbund) { await p(600); if (ab()) return; verbundZeigen(s.verbund); }
       if (s.zaehle) { await p(600); if (ab()) return; zaehlen(s.zaehle); }
       if (s.abschneiden) { await p(600); if (ab()) return; abschneiden(s.abschneiden); }
       if (s.muster) { await p(600); if (ab()) return; musterZeigen(s.muster, s.spalte); }

@@ -316,6 +316,9 @@ th.film-gr.film-pfeil::before { color: var(--gr-rand); }
 .film-vorschau tr[class*="film-g"] td:first-child { border-left: 6px solid var(--g); }
 .film-vorschau tr[class*="film-g"] td { background: color-mix(in srgb, var(--g) 22%, transparent) !important; }
 .film-g0 { --g: #f97316; } .film-g1 { --g: #ec4899; } .film-g2 { --g: #8b5cf6; } .film-g3 { --g: #14b8a6; } .film-g4 { --g: #eab308; } .film-g5 { --g: #64748b; }
+.film-vorschau.film-mehrere { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: flex-start; }
+.film-vorschau.film-mehrere > .film-gruppen { flex-basis: 100%; }
+.film-vorschau td.film-gz { background: color-mix(in srgb, var(--g) 35%, transparent) !important; box-shadow: inset 4px 0 0 var(--g); font-weight: 800; }
 .film-gruppen { margin-top: 10px; max-width: 320px; animation: film-ein .5s ease-out; }
 .film-vorschau tbody tr { transition: opacity .6s; }
 .film-vorschau tr.film-treffer td { box-shadow: inset 0 2px 0 var(--bd-rand), inset 0 -2px 0 var(--bd-rand); }

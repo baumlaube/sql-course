@@ -23,13 +23,14 @@
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="stylesheet" href="../assets/kurs.css?v=816a1e20aa">
-<link rel="stylesheet" href="../assets/labor.css?v=d118768c45">
+<link rel="stylesheet" href="../assets/labor.css?v=e1e08dd591">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil3-09-join" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
 <script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
 <script src="../assets/labor.js?v=153ec0279e"></script>
 <script src="../assets/labor-extra.js?v=e94bd060f6"></script>
+<script src="../assets/film.js?v=559d539300"></script>
 <script src="../assets/daten/musik.js?v=c1bfd9240c"></script>
 <script src="../assets/daten/buecherei.js?v=c99f5e2d8a"></script>
 <script src="../assets/daten/pfoten.js?v=7b482f3862"></script>
@@ -121,6 +122,7 @@
   <!-- 2 · Zeitlupe -->
   <section class="card" id="s2" data-tab="Zeitlupe">
     <h2><span class="step-no">2</span> JOIN in Zeitlupe <span class="chip">5 Minuten</span></h2>
+    <div id="film1"></div>
     <p>Tipp auf <strong>👣 Nächste Zeile</strong>: Jede Zeile aus <code>songs</code> sucht ihren Partner in <code>kuenstler</code> – genau wie beim ID-Faden.</p>
     <div id="jl"></div>
     <p class="rule"><code>FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id</code><br>
@@ -236,6 +238,37 @@ document.addEventListener("DOMContentLoaded", () => {
   const L = window.Labor;
   const $ = (id) => document.getElementById(id);
   const EXTRA = ["JOIN", "ON", "AND", "ORDER BY", "DESC", "AS"];
+  /* Erklärfilm: JOIN – zwei Tabellen, gleiche Nummer = gleiche Farbe. Steht im Reiter „Zeitlupe“, nach der Überleg-Frage. */
+  Labor.film(document.getElementById("film1"), {
+    titel: "So funktioniert JOIN", db: "musik", extra: EXTRA,
+    vorschau: [{ tabelle: "songs", spalten: "titel, kuenstler_id", zeilen: 6 }, { tabelle: "kuenstler", spalten: "id, name", zeilen: 5 }],
+    paare: [["Zeig mir", "SELECT"], ["den Titel", "songs.titel,", "spalte"], ["und den Namen", "kuenstler.name", "spalte"], ["aus der Tabelle", "FROM"], ["songs,", "songs", "tabelle"],
+            ["verbunden mit", "JOIN"], ["der Tabelle kuenstler,", "kuenstler", "tabelle"], ["wo die Nummern passen.", "ON songs.kuenstler_id = kuenstler.id", "bedingung"]],
+    schritte: [
+      // Phase 1: verstehen – noch keine Knöpfe
+      { text: "Hier gibt es <strong>zwei</strong> Tabellen: <code>songs</code> und <code>kuenstler</code>." },
+      { text: "In <code>songs</code> steht beim Künstler nur eine <strong>Nummer</strong>: die <code>kuenstler_id</code>.", markiere: "bedingung", teil: -1, spalte: "songs.kuenstler_id" },
+      { text: "Die Namen stehen in der Tabelle <code>kuenstler</code>. Jeder Künstler hat dort seine <code>id</code>.", markiere: "bedingung", teil: -1, spalte: "kuenstler.id" },
+      { text: "Du willst zu jedem Song den <strong>Namen</strong> des Künstlers sehen." },
+      { text: "Du fragst:", zeige: "satz", bis: 5, markiere: ["spalte", "tabelle"], teil: null, spalte: ["songs.titel", "kuenstler.name"], tabelle: "songs" },
+      { text: "Die Namen stehen aber in der anderen Tabelle. Also: … <strong>verbunden mit</strong> der Tabelle <code>kuenstler</code>.", bis: 7, markiere: "tabelle", teil: 6, tabelle: "kuenstler" },
+      { text: "Welche Zeilen gehören zusammen? Die, bei denen die <strong>Nummern passen</strong>.", bis: 8, markiere: "bedingung", teil: 7 },
+      { text: "Gleiche Nummer – gleiche Farbe.", verbinde: "songs.kuenstler_id = kuenstler.id" },
+      { text: "Song 1 und Song 6 haben beide die 1. Beide gehören zu <strong>Juna</strong>." },
+      { text: "So legt die Datenbank die Zeilen zusammen:",
+        verbund: "SELECT songs.titel, kuenstler.name, kuenstler.id FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id WHERE songs.id <= 6" },
+      { text: "In SQL heißt der Satz so:", zeige: "sql" },
+      { text: "<code>JOIN</code> heißt „verbunden mit“. Nach <code>ON</code> steht, welche Nummern passen müssen." },
+      { text: "Vor jeder Spalte steht ihre Tabelle und ein Punkt: <code>songs.titel</code>, <code>kuenstler.name</code>." },
+      // Phase 2: dasselbe im Labor
+      { text: "Jetzt im Labor. Zuerst die zwei Spalten – mit Tabelle und Punkt.", zeige: "labor", bausteine: ["SELECT", "songs.titel", ",", "kuenstler.name"] },
+      { text: "Dann <code>FROM songs</code>, <code>JOIN</code> und die zweite Tabelle.", bausteine: ["FROM", "songs", "JOIN", "kuenstler"] },
+      { text: "Zum Schluss <code>ON</code>: Die <code>kuenstler_id</code> muss zur <code>id</code> passen.", bausteine: ["ON", "songs.kuenstler_id", "=", "kuenstler.id"] },
+      { text: "Jetzt auf <strong>Ausführen</strong>.", ausfuehren: true },
+      { text: "Das Ergebnis: jeder Song mit dem Namen seines Künstlers.", ergebnis: true },
+      { text: "Jetzt du! Probier es selbst – zum Beispiel mit <code>kuenstler.herkunft</code> statt dem Namen.", leeren: true },
+    ],
+  });
   const ON_VERDREHT = { muster: /ON\s+\w+\.id\s*=\s*\w+\.id\b/i, text: "Du verbindest <code>id</code> mit <code>id</code>. Verbunden wird der Fremdschlüssel (z. B. <code>songs.kuenstler_id</code>) mit der <code>id</code> der anderen Tabelle." };
   const IMMER = [ON_VERDREHT];
 
