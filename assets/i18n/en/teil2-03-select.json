@@ -216,5 +216,6 @@
  "Lücken": "Gaps",
  "Alles oder nötig?": "All or needed?",
  "DISTINCT": "DISTINCT",
- "★ Freiwillig Die Reihenfolge der Spalten": "<span class=\"badge expedition\">★ Optional</span> The order of the columns"
+ "★ Freiwillig Die Reihenfolge der Spalten": "<span class=\"badge expedition\">★ Optional</span> The order of the columns",
+ "songs.": "songs."
 }
