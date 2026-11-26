@@ -6,7 +6,6 @@
  "läuft im Browser, auch am Handy": "runs in the browser, also on your phone",
  "Hinter fast jeder App steckt eine Datenbank: Musik, Onlineshop, Bücherei, Zeugnis. In diesem Kurs lernst du, wie sie aufgebaut ist, wie man sie mit SQL befragt – und am Ende baust du deine eigene.": "There is a database behind almost every app: music, online shop, library, school report. In this course you learn how a database is built, how to ask it questions with <strong>SQL</strong> – and at the end you build your own.",
  "Geübt wird im SQL-Labor: echtes SQLite direkt auf dieser Seite. Nichts installieren, kein Konto, und zu jedem Fehler sagt dir das Labor, was nicht stimmt.": "You practise in the <strong>SQL lab</strong>: real SQLite right on this page. Nothing to install, no account – and for every mistake the lab tells you what is wrong.",
- "Mit Lektion 1 starten →": "<a class=\"los\" href=\"teil1/01-datenbanken.html\">Start with lesson 1 →</a>",
  "Was ist eine Datenbank?": "What is a database?",
  "Wie eine Datenbank aufgebaut ist – und warum jede Zeile eine Nummer hat.": "How a database is built – and why every row has a number.",
  "Abfragen in einer Tabelle": "Queries on one table",
