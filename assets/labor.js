@@ -334,7 +334,8 @@
     return `<p class="spicker-t">${T("🧩 So ist jede Abfrage gebaut – immer in dieser Reihenfolge:")}</p>
       <ol class="spicker-liste">${zeilen}</ol>
       <p>${T("Beispiel:")} <code>${sqlHTML(bsp[0])}</code><br>${T(bsp[1])}</p>
-      <p class="muted">${T("Text steht in einfachen Anführungszeichen: <code>'Pop'</code>. Zahlen ohne.")}</p>`;
+      <p class="muted">${T("Tabellen heißen meist in der <strong>Mehrzahl</strong> (<code>songs</code>, <code>filme</code>), Spalten in der <strong>Einzahl</strong> (<code>titel</code>, <code>preis</code>). Sicher erkennst du die Tabelle an der Farbe: <span class='baustein tab mini'>📋</span>")}<br>
+      ${T("Text steht in einfachen Anführungszeichen: <code>'Pop'</code>. Zahlen ohne.")}</p>`;
   }
 
   /* ---------- Die Aufgabe ---------- */
@@ -379,24 +380,41 @@
       ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); los(); } });
       if (o.leiste === false) { codeBox.querySelector(".labor-bausteine").remove(); return; }
       const leiste = codeBox.querySelector(".labor-bausteine");
-      const teile = [...(o.leiste || STANDARD_LEISTE), ...(o.extra || [])];   // extra: Befehle späterer Lektionen (AND, OR, …)
-      if (o.leiste === undefined || o.mitNamen) {
-        const mehrere = Object.keys(m.tabellen).length > 1;
-        Object.keys(m.tabellen).forEach((t) => { teile.push(t); m.tabellen[t].forEach((c) => teile.push(c.name)); });
-        // Bei mehreren Tabellen: auch tabelle.spalte zum Antippen (für JOIN)
-        if (mehrere && o.punkt !== false) Object.keys(m.tabellen).forEach((t) => m.tabellen[t].forEach((c) => teile.push(`${t}.${c.name}`)));
-      }
-      [...new Set(teile)].forEach((t) => {
+      const knopf = (t, extraKlasse) => {
         const b = document.createElement("button");
         b.type = "button";
-        b.className = "baustein" + (/^[A-Z][A-Z (*)]*$/.test(t) && t.length > 1 ? " kw" : /^[a-z_]+$/.test(t) ? " name" : " op");
+        b.className = "baustein" + (extraKlasse ? " " + extraKlasse
+          : /^[A-Z][A-Z (*)]*$/.test(t) && t.length > 1 ? " kw" : /^[a-z_.]+$/.test(t) ? " name" : " op");
         b.textContent = t;
         b.dataset.tipp = T("Antippen fügt den Baustein dort ein, wo der Cursor steht.");
         b.dataset.tippEinmal = "leiste";
         b.addEventListener("mousedown", (e) => e.preventDefault());   // Cursor im Textfeld behalten
         b.addEventListener("click", () => einfuegen(ta, t));
-        leiste.appendChild(b);
-      });
+        return b;
+      };
+      // 1. Befehle und Zeichen
+      const mitNamen = o.leiste === undefined || o.mitNamen;
+      const namen = new Set(mitNamen ? Object.keys(m.tabellen).flatMap((t) => [t, ...m.tabellen[t].map((c) => c.name)]) : []);
+      const befehle = [...new Set([...(o.leiste || STANDARD_LEISTE), ...(o.extra || [])])].filter((t) => !namen.has(t));   // extra: Befehle späterer Lektionen (AND, OR, …)
+      befehle.forEach((t) => leiste.appendChild(knopf(t, m.tabellen[t] ? "tab" : "")));
+      // 2. Je Tabelle eine eigene Zeile: 📋 Tabelle (eigene Farbe) und danach ihre Spalten
+      if (mitNamen) {
+        const tabs = Object.keys(m.tabellen), mehrere = tabs.length > 1;
+        tabs.forEach((t) => {
+          const zeile = document.createElement("div");
+          zeile.className = "labor-namen";
+          zeile.innerHTML = `<span class="namen-l">📋 ${T("Tabelle")}</span>`;
+          const tb = knopf(t, "tab");
+          tb.dataset.tipp = T("Das ist der Name der Tabelle. Er steht nach FROM (oder JOIN).");
+          tb.dataset.tippEinmal = "tabelle-knopf";
+          zeile.appendChild(tb);
+          zeile.insertAdjacentHTML("beforeend", `<span class="namen-l">${T("Spalten")}</span>`);
+          m.tabellen[t].forEach((c) => zeile.appendChild(knopf(c.name, "name")));
+          // Bei mehreren Tabellen: auch tabelle.spalte zum Antippen (für JOIN)
+          if (mehrere && o.punkt !== false) m.tabellen[t].forEach((c) => zeile.appendChild(knopf(`${t}.${c.name}`, "name punkt")));
+          leiste.appendChild(zeile);
+        });
+      }
     }
 
     function einfuegen(ta, t) {
@@ -423,7 +441,7 @@
         mischen(o.bausteine).forEach((t) => {
           const b = document.createElement("button");
           b.type = "button";
-          b.className = "baustein" + (/^[A-Z][A-Z (*)]*$/.test(t) && t.length > 1 ? " kw" : /^[a-z_]+$/.test(t) ? " name" : " op");
+          b.className = "baustein" + (m.tabellen[t] ? " tab" : /^[A-Z][A-Z (*)]*$/.test(t) && t.length > 1 ? " kw" : /^[a-z_]+$/.test(t) ? " name" : " op");
           b.textContent = t;
           b.dataset.tipp = T("Antippen legt den Baustein in die Abfrage. Nochmal antippen legt ihn zurück.");
           b.dataset.tippEinmal = "puzzle";

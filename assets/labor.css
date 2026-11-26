@@ -1,3 +1,6 @@
+:root { --tab-bg: #fff3d6; --tab-rand: #e0a526; --tab-fg: #7a4b00; }
+:root[data-theme="dark"] { --tab-bg: #3a2e12; --tab-rand: #b8861b; --tab-fg: #ffd58a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --tab-bg: #3a2e12; --tab-rand: #b8861b; --tab-fg: #ffd58a; } }
 /* SQL-Kurs · SQL-Labor. Lizenz: CC BY-SA 4.0 · herrseibert.de · Erstellt von der KI Claude von Anthropic. */
 :root {
   --sql-kw: #0b5cad; --sql-s: #a3410f; --sql-n: #6a1b9a;
@@ -40,6 +43,12 @@ pre.sql .n, code.sql .n { color: var(--sql-n); }
 .baustein.name { font-weight: 600; }
 .baustein.op { color: var(--sql-n); }
 .baustein:hover { border-color: var(--accent); }
+/* Tabellen- und Spaltennamen: je Tabelle eine eigene Zeile, die Tabelle farbig wie 📋 über der Tabelle */
+.labor-namen { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 4px; padding-top: 6px; border-top: 1px dashed var(--line); }
+.namen-l { font-size: 13px; font-weight: 700; color: var(--muted); }
+.namen-l:not(:first-child) { margin-left: 6px; }
+.baustein.tab { background: var(--tab-bg); border-color: var(--tab-rand); color: var(--tab-fg); }
+.baustein.punkt { font-size: 14px; }
 
 /* Puzzle */
 .labor-zeile {
@@ -64,7 +73,8 @@ select.luecke { padding: 1px 4px; }
 .labor-tabellenbox { margin: 0 0 10px; }
 details.labor-tabelle { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); margin: 8px 0; direction: ltr; text-align: left; }
 details.labor-tabelle > summary { cursor: pointer; padding: 8px 12px; font-weight: 700; }
-details.labor-tabelle > summary .tabname { font-family: ui-monospace, "DejaVu Sans Mono", Consolas, monospace; }
+details.labor-tabelle > summary .tabname { font-family: ui-monospace, "DejaVu Sans Mono", Consolas, monospace;
+  background: var(--tab-bg); color: var(--tab-fg); border: 1px solid var(--tab-rand); border-radius: 6px; padding: 0 6px; }
 details.labor-tabelle[open] > summary { border-bottom: 1px solid var(--line); }
 details.labor-tabelle .labor-scroll { max-height: 320px; }
 details.labor-tabelle .labor-anzahl { display: none; }
@@ -231,3 +241,4 @@ tr.faden-ziel td { background: var(--zl-ja); font-weight: 700; }
 .tr-p.warm:not(.ok):not(.ab) { border-style: dashed; }
 .tr-p.profi:not(.ok):not(.ab) { border-color: var(--plus); color: var(--plus); }
 .probe-neben { color: var(--muted); }
+.baustein.mini { min-width: 0; min-height: 0; padding: 0 6px; font-size: 12px; cursor: default; }
