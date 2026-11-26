@@ -317,6 +317,11 @@ th.film-gr.film-pfeil::before { color: var(--gr-rand); }
 .film-vorschau tr[class*="film-g"] td { background: color-mix(in srgb, var(--g) 22%, transparent) !important; }
 .film-g0 { --g: #f97316; } .film-g1 { --g: #ec4899; } .film-g2 { --g: #8b5cf6; } .film-g3 { --g: #14b8a6; } .film-g4 { --g: #eab308; } .film-g5 { --g: #64748b; }
 .film-vorschau.film-mehrere { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: flex-start; }
+.film-neutab th.film-typ { white-space: normal; font-size: 11px; font-weight: 700; color: var(--muted); background: var(--surface-2); text-transform: none; }
+.film-neutab td.film-leer { color: var(--muted); font-style: italic; text-align: center; min-width: 160px; }
+.film-vorschau tr.film-neuzeile td { background: var(--bd-bg) !important; color: var(--bd-fg); font-weight: 700; animation: film-ein .6s ease-out; box-shadow: inset 0 2px 0 var(--bd-rand), inset 0 -2px 0 var(--bd-rand); }
+.film-vorschau td.film-auto { outline: 2px dashed var(--bd-rand); outline-offset: -4px; }
+.film-teil.art-wert.an { background: var(--gr-bg); color: var(--gr-fg); box-shadow: 0 0 0 2px var(--gr-rand); }
 .film-vorschau.film-mehrere > .film-gruppen { flex-basis: 100%; }
 .film-vorschau td.film-gz { background: color-mix(in srgb, var(--g) 35%, transparent) !important; box-shadow: inset 4px 0 0 var(--g); font-weight: 800; }
 .film-gruppen { margin-top: 10px; max-width: 320px; animation: film-ein .5s ease-out; }

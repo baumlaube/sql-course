@@ -29,7 +29,10 @@
        // JOIN: vorschau: [{ tabelle: "songs", spalten: "titel, kuenstler_id", zeilen: 6 }, { tabelle: "kuenstler", … }]
        //       spalte: "kuenstler.name" (Tabelle davor), markiere: "tabelle", tabelle: "kuenstler", teil: -1 = nur in der Tabelle
        { text: "…", verbinde: "songs.kuenstler_id = kuenstler.id" },   // gleiche Nummer = gleiche Farbe in beiden Tabellen
-       { text: "…", verbund: "SELECT s.titel, k.name, k.id FROM … LIMIT 6" },   // verbundenes Ergebnis; letzte Spalte färbt                  // unter der Vorschau: je Gruppe eine Zeile mit der Anzahl  // ab Zeile 4: Schnittlinie, Rest blass (spalte darf auch eine Liste sein)    // LIKE-Muster in der Spalte zeigen: feste Buchstaben grün, das % gestrichelt
+       { text: "…", verbund: "SELECT s.titel, k.name, k.id FROM … LIMIT 6" },   // verbundenes Ergebnis; letzte Spalte färbt
+       // CREATE: Option neu: "besitzer" (leere Tabelle ohne Vorschau) – Schritt spalteNeu: ["vorname", "TEXT"]
+       // INSERT: Option ende: true (die letzten Zeilen) – Schritt neueZeile: { vorname: "Tom" } (id kommt von selbst)
+       // bausteine: ["CREATE TABLE", "✎besitzer ", "("] – mit ✎ wird getippt statt angetippt; labor: { … } = weitere Labor-Optionen                  // unter der Vorschau: je Gruppe eine Zeile mit der Anzahl  // ab Zeile 4: Schnittlinie, Rest blass (spalte darf auch eine Liste sein)    // LIKE-Muster in der Spalte zeigen: feste Buchstaben grün, das % gestrichelt
        { text: "…", zeige: "labor", spalte: "titel", bausteine: ["SELECT", "titel"] },
        { text: "…", nach: "titel", bausteine: [",", "jahr"] },   // hinter „titel“ einsetzen
        { text: "…", tippe: "…" }, { text: "…", ausfuehren: true }, { text: "…", ergebnis: true },
@@ -90,21 +93,29 @@
     const treffer = {};          // SQL-Bedingung → [true/false je Vorschauzeile]
 
     // Vorschau: die ersten Zeilen der Tabelle – oder mehrerer Tabellen nebeneinander (JOIN)
-    const vors = Array.isArray(o.vorschau) ? o.vorschau : [{ tabelle: o.vorschau, spalten: o.spalten, zeilen: o.zeilen }];
+    const vors = o.neu ? [] : Array.isArray(o.vorschau) ? o.vorschau : [{ tabelle: o.vorschau, spalten: o.spalten, zeilen: o.zeilen, ende: o.ende }];
+    const naechsteId = {};       // Tabelle → nächste id (für neueZeile)
     const verbund = {};          // Schritt-SQL → Ergebnis (für „so sieht das zusammen aus“)
     Labor.bereit().then((SQL) => {
-      const db = oeffnen(SQL, o.db), v0 = vors[0];
-      o.schritte.flatMap((x) => [x.zeilen, x.pruefe]).filter(Boolean).forEach((b) => {
+      const db = oeffnen(SQL, o.db), v0 = vors[0] || {};
+      if (v0.tabelle) o.schritte.flatMap((x) => [x.zeilen, x.pruefe]).filter(Boolean).forEach((b) => {
         treffer[b] = db.exec(`SELECT (${b}) FROM "${v0.tabelle}" LIMIT ${v0.zeilen || 4}`)[0].values.map((v) => !!v[0]);
       });
       o.schritte.filter((x) => x.verbund).forEach((x) => { verbund[x.verbund] = db.exec(x.verbund)[0]; });
       vorschauHTML = vors.map((v, k) => {
-        const r = db.exec(`SELECT ${v.spalten || "*"} FROM "${v.tabelle}" LIMIT ${v.zeilen || 4}`)[0];
+        // ende: die letzten Zeilen statt der ersten (z. B. bei INSERT: Dort kommt die neue Zeile dazu)
+        const r = db.exec(v.ende
+          ? `SELECT ${v.spalten || "*"} FROM "${v.tabelle}" WHERE rowid IN (SELECT rowid FROM "${v.tabelle}" ORDER BY rowid DESC LIMIT ${v.zeilen || 4}) ORDER BY rowid`
+          : `SELECT ${v.spalten || "*"} FROM "${v.tabelle}" LIMIT ${v.zeilen || 4}`)[0];
         const n = db.exec(`SELECT COUNT(*) FROM "${v.tabelle}"`)[0].values[0][0];
+        naechsteId[v.tabelle] = db.exec(`SELECT COALESCE(MAX(rowid), 0) + 1 FROM "${v.tabelle}"`)[0].values[0][0];
+        const wie = v.ende ? T(`die letzten ${r.values.length} von ${n} Zeilen`) : T(`die ersten ${r.values.length} von ${n} Zeilen`);
         if (k === 0) $(".film-poster").innerHTML = ergebnisHTML({ spalten: r.columns, zeilen: r.values });
-        return `<div class="film-vt" data-t="${esc(v.tabelle)}"><p class="film-tab"><span class="tabname">📋 ${esc(v.tabelle)}</span> <span class="muted">${T(`die ersten ${r.values.length} von ${n} Zeilen`)}</span></p>`
+        return `<div class="film-vt" data-t="${esc(v.tabelle)}"><p class="film-tab"><span class="tabname">📋 ${esc(v.tabelle)}</span> <span class="muted">${wie}</span></p>`
           + ergebnisHTML({ spalten: r.columns, zeilen: r.values }) + "</div>";
-      }).join("");
+      }).join("") + (o.neu ? `<div class="film-vt" data-t="${esc(o.neu)}"><p class="film-tab"><span class="tabname">📋 ${esc(o.neu)}</span> <span class="muted">${T("neu – noch leer")}</span></p>
+        <div class="labor-scroll"><table class="labor-tab film-neutab"><thead><tr class="film-namen"></tr><tr class="film-typen"></tr></thead>
+        <tbody><tr><td class="film-leer">${T("noch keine Spalten")}</td></tr></tbody></table></div></div>` : "");
       db.close();
       $(".film-vorschau").innerHTML = vorschauHTML;
       $(".film-vorschau").classList.toggle("film-mehrere", vors.length > 1);
@@ -235,6 +246,23 @@
           return `<tr${f != null ? ` class="film-g${f}"` : ""}>${z.slice(0, -1).map((v) => `<td>${esc(String(v))}</td>`).join("")}</tr>`; }).join("")}</tbody></table>`;
       $(".film-vorschau").appendChild(box);
     }
+    /* CREATE TABLE sichtbar machen: Spalte für Spalte kommt dazu – Name (blau) und darunter der Datentyp */
+    function spalteNeu([name, typ]) {
+      const tab = $(".film-neutab");
+      if (!tab) return;
+      tab.querySelector(".film-namen").insertAdjacentHTML("beforeend", `<th class="film-sp film-neu-teil">${esc(name)}</th>`);
+      tab.querySelector(".film-typen").insertAdjacentHTML("beforeend", `<th class="film-typ film-neu-teil">${esc(typ)}</th>`);
+      const n = tab.querySelectorAll(".film-namen th").length, leer = tab.querySelector(".film-leer");
+      leer.colSpan = n; leer.textContent = T("noch keine Zeile");
+    }
+    /* INSERT sichtbar machen: unten kommt eine neue Zeile dazu. Nicht angegebene id = die nächste Nummer (vergibt die Datenbank) */
+    function neueZeile(werte) {
+      const tab = $(".film-vorschau table");
+      if (!tab) return;
+      const namen = [...tab.querySelectorAll("th")].map((th) => th.textContent.trim()), t = $(".film-vt") && $(".film-vt").dataset.t;
+      tab.querySelector("tbody").insertAdjacentHTML("beforeend", `<tr class="film-neuzeile">${namen.map((c) =>
+        c in werte ? `<td>${esc(String(werte[c]))}</td>` : c === "id" ? `<td class="film-auto zahl">${naechsteId[t] ?? ""}</td>` : "<td></td>").join("")}</tr>`);
+    }
     function abschneiden(n) {
       el.querySelectorAll(".film-vorschau tbody tr").forEach((z, k) => {
         z.classList.toggle("film-raus", k >= n); z.classList.toggle("film-schnitt", k === n);
@@ -284,6 +312,8 @@
       if (s.ersetze && lab) lab.feld.value = lab.feld.value.replace(s.ersetze[0], s.ersetze[1]);
       if (s.ordnen) { await p(700); if (ab()) return; zeilenOrdnen(s.ordnen, sofort); await p(1800); if (ab()) return; }
       if (s.gruppen) { await p(700); if (ab()) return; gruppieren(s.gruppen, sofort); await p(1800); if (ab()) return; }
+      if (s.spalteNeu) { await p(600); if (ab()) return; spalteNeu(s.spalteNeu); }
+      if (s.neueZeile) { await p(600); if (ab()) return; neueZeile(s.neueZeile); }
       if (s.verbinde) { await p(600); if (ab()) return; verbinden(s.verbinde); }
       if (s.verbund) { await p(600); if (ab()) return; verbundZeigen(s.verbund); }
       if (s.zaehle) { await p(600); if (ab()) return; zaehlen(s.zaehle); }
@@ -296,7 +326,16 @@
       if (s.leeren) { lab.zuruecksetzen(); el.querySelectorAll(".film-erg").forEach((x) => x.classList.remove("film-erg")); }
       let pos = null;
       if (s.nach) { const v = lab.feld.value, k = v.indexOf(s.nach); pos = k < 0 ? null : k + s.nach.length; }
+      const tippen = async (txt) => {
+        for (const ch of txt) {
+          if (!sofort) { await p(TIPPEN); if (ab()) return false; }
+          const f = lab.feld, a = f.selectionStart ?? f.value.length;
+          f.value = f.value.slice(0, a) + ch + f.value.slice(a); f.setSelectionRange(a + 1, a + 1);
+        }
+        return true;
+      };
       for (const b of s.bausteine || []) {
+        if (b.startsWith("✎")) { if (!(await tippen(b.slice(1)))) return; continue; }   // „✎besitzer “ = tippen statt Baustein
         await p(BAUSTEIN_PAUSE); if (ab()) return;
         const k = knopf(b);
         if (k && !sofort) {
@@ -309,11 +348,7 @@
         if (pos != null) pos = lab.feld.selectionStart;
       }
       // Tippen an der Schreibmarke (z. B. zwischen die Hochkommas von '…')
-      if (s.tippe) for (const ch of s.tippe) {
-        if (!sofort) { await p(TIPPEN); if (ab()) return; }
-        const f = lab.feld, a = f.selectionStart ?? f.value.length;
-        f.value = f.value.slice(0, a) + ch + f.value.slice(a); f.setSelectionRange(a + 1, a + 1);
-      }
+      if (s.tippe && !(await tippen(s.tippe))) return;
       if (s.ausfuehren) {
         await p(900); if (ab()) return;
         const run = el.querySelector(".film-labor .labor-run");
@@ -360,7 +395,7 @@
     $(".film-los").addEventListener("click", () => {
       $(".film-start").hidden = true;
       $(".film-buehne").hidden = false;
-      if (!lab) lab = Labor.create($(".film-labor"), { db: o.db, modus: "frei", tabellen: false, spicker: false, zeilen: 2, extra: o.extra, nurTabellen: o.nurTabellen });
+      if (!lab) lab = Labor.create($(".film-labor"), { db: o.db, modus: "frei", tabellen: false, spicker: false, zeilen: 2, extra: o.extra, nurTabellen: o.nurTabellen, ...(o.labor || {}) });
       laeuft = true;
       const anfangen = () => (lab.feld ? gehe(0) : setTimeout(anfangen, 50));   // warten, bis das Labor gebaut ist
       anfangen();

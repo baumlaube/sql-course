@@ -426,11 +426,12 @@
 
     function einfuegen(ta, t, ohneFokus) {
       const a = ta.selectionStart ?? ta.value.length, z = ta.selectionEnd ?? a;
-      const vor = t === "," ? ta.value.slice(0, a).replace(/ $/, "") : ta.value.slice(0, a), nach = ta.value.slice(z);   // Komma klebt am Wort davor
+      // Komma und „)“ kleben am Wort davor; nach „(“ kein Leerzeichen: (id INTEGER, name TEXT)
+      const vor = t === "," || t === ")" ? ta.value.slice(0, a).replace(/ $/, "") : ta.value.slice(0, a), nach = ta.value.slice(z);
       let txt = t === "'…'" ? "''" : t;
       const klebt = t === "%" || t === "_";          // Platzhalter stehen im Text, ohne Leerzeichen
-      const davor = !klebt && vor && !/\s$/.test(vor) && t !== "," ? " " : "";
-      const danach = t === "'…'" || klebt ? "" : " ";
+      const davor = !klebt && vor && !/[\s(]$/.test(vor) && t !== "," && t !== ")" ? " " : "";
+      const danach = t === "'…'" || klebt || /\($/.test(t) ? "" : " ";
       ta.value = vor + davor + txt + danach + (klebt ? nach : nach.replace(/^ /, ""));
       const pos = (vor + davor).length + (t === "'…'" ? 1 : txt.length + danach.length);
       if (!ohneFokus) ta.focus();        // Erklärfilm: kein Fokus, sonst springt am Handy die Tastatur auf
