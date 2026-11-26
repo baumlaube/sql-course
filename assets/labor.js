@@ -315,25 +315,26 @@
     const n = SEITE.match(/teil\d-(\d+)/);
     return n ? +n[1] : 99;
   }
-  const BAUPLAN = [
-    { ab: 1, kw: "SELECT", was: "spalten", frage: "Was willst du sehen?", satz: "Zeig mir …" },
-    { ab: 1, kw: "FROM", was: "tabelle", frage: "Woher?", satz: "… aus der Tabelle …" },
-    { ab: 9, kw: "JOIN", was: "tabelle2 ON …_id = ….id", frage: "Noch eine Tabelle dazu?", satz: "… verbunden mit …" },
-    { ab: 4, kw: "WHERE", was: "bedingung", frage: "Welche Zeilen?", satz: "… aber nur, wenn …" },
-    { ab: 8, kw: "GROUP BY", was: "spalte", frage: "Für jede Gruppe?", satz: "… je …" },
-    { ab: 7, kw: "ORDER BY", was: "spalte DESC", frage: "Sortiert wie?", satz: "… sortiert nach …" },
-    { ab: 7, kw: "LIMIT", was: "zahl", frage: "Wie viele?", satz: "… nur die ersten …" },
+  // Als Funktion, damit T() erst greift, wenn die Sprachdatei geladen ist.
+  const BAUPLAN = () => [
+    { ab: 1, kw: "SELECT", was: T("spalten"), frage: T("Was willst du sehen?"), satz: T("Zeig mir …") },
+    { ab: 1, kw: "FROM", was: T("tabelle"), frage: T("Woher?"), satz: T("… aus der Tabelle …") },
+    { ab: 9, kw: "JOIN", was: T("tabelle2 ON …_id = ….id"), frage: T("Noch eine Tabelle dazu?"), satz: T("… verbunden mit …") },
+    { ab: 4, kw: "WHERE", was: T("bedingung"), frage: T("Welche Zeilen?"), satz: T("… aber nur, wenn …") },
+    { ab: 8, kw: "GROUP BY", was: T("spalte"), frage: T("Für jede Gruppe?"), satz: T("… je …") },
+    { ab: 7, kw: "ORDER BY", was: T("spalte DESC"), frage: T("Sortiert wie?"), satz: T("… sortiert nach …") },
+    { ab: 7, kw: "LIMIT", was: T("zahl"), frage: T("Wie viele?"), satz: T("… nur die ersten …") },
   ];
   function spickerHTML() {
     const st = kursStand();
-    const zeilen = BAUPLAN.filter((z) => z.ab <= st).map((z) =>
-      `<li><code><span class="kw">${z.kw}</span> ${T(z.was)}</code> <span>${T(z.frage)} <em class="muted">${T(z.satz)}</em></span></li>`).join("");
+    const zeilen = BAUPLAN().filter((z) => z.ab <= st).map((z) =>
+      `<li><code><span class="kw">${z.kw}</span> ${z.was}</code> <span>${z.frage} <em class="muted">${z.satz}</em></span></li>`).join("");
     const bsp = st >= 4
-      ? [`SELECT titel FROM songs WHERE jahr = 2024`, "„Zeig mir den Titel aus der Tabelle songs – aber nur, wenn das Jahr 2024 ist.“"]
-      : [`SELECT titel, jahr FROM songs`, "„Zeig mir Titel und Jahr aus der Tabelle songs.“"];
+      ? [`SELECT titel FROM songs WHERE jahr = 2024`, T("„Zeig mir den Titel aus der Tabelle songs – aber nur, wenn das Jahr 2024 ist.“")]
+      : [`SELECT titel, jahr FROM songs`, T("„Zeig mir Titel und Jahr aus der Tabelle songs.“")];
     return `<p class="spicker-t">${T("🧩 So ist jede Abfrage gebaut – immer in dieser Reihenfolge:")}</p>
       <ol class="spicker-liste">${zeilen}</ol>
-      <p>${T("Beispiel:")} <code>${sqlHTML(bsp[0])}</code><br>${T(bsp[1])}</p>
+      <p>${T("Beispiel:")} <code>${sqlHTML(bsp[0])}</code><br>${bsp[1]}</p>
       <p class="muted">${T("Tabellen heißen meist in der <strong>Mehrzahl</strong> (<code>songs</code>, <code>filme</code>), Spalten in der <strong>Einzahl</strong> (<code>titel</code>, <code>preis</code>). Sicher erkennst du die Tabelle an der Farbe: <span class='baustein tab mini'>📋</span>")}<br>
       ${T("Text steht in einfachen Anführungszeichen: <code>'Pop'</code>. Zahlen ohne.")}</p>`;
   }

@@ -190,5 +190,9 @@
  "SELECT wählt die Spalten titel und kuenstler. Zeilen kommen alle – 36 Songs.": "<code>SELECT</code> chooses the columns <code>titel</code> and <code>kuenstler</code>. You get all rows – 36 songs.",
  "SELECT Spalten mit Komma, dann FROM Tabelle.": "<code>SELECT</code> columns with commas, then <code>FROM</code> table.",
  "SELECT DISTINCT ort FROM nutzer – was kommt heraus?": "<code>SELECT DISTINCT ort FROM nutzer</code> – what comes out?",
- "← Lektion 2: IDs und Verknüpfung": "← Lesson 2: IDs and links"
+ "← Lektion 2: IDs und Verknüpfung": "← Lesson 2: IDs and links",
+ "Lies SQL wie einen Satz:": "Read SQL like a sentence:",
+ "„Zeig mir Titel und Künstler …": "“<strong>Show me</strong> title and artist …",
+ "… aus der Tabelle songs.“": "… <strong>from the table</strong> songs.”",
+ "Tabellen heißen meist in der Mehrzahl (songs), Spalten in der Einzahl (titel). In der Bausteinleiste ist die Tabelle gelb.": "Tables usually have a plural name (<code>songs</code>), columns a singular one (<code>titel</code>). In the block bar the table is yellow."
 }

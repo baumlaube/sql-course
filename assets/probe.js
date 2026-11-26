@@ -84,14 +84,14 @@
         `<li><span class="tr-p ${r.art}${r.status === "ok" ? " ok" : r.status === "ab" ? " ab" : ""}${i === akt ? " akt" : ""}">${r.status === "ok" ? "✔" : r.status === "ab" ? "✘" : r.art === "profi" ? "★" : i + 1}</span></li>`).join("")}</ol>`;
     }
 
-    const STUFE = { warm: "Aufwärmen – mit Hilfe", probe: "Probe-Niveau – ohne Tipps", profi: "★ Profi-Aufgabe" };
+    const STUFE = () => ({ warm: T("Aufwärmen – mit Hilfe"), probe: T("Probe-Niveau – ohne Tipps"), profi: T("★ Profi-Aufgabe") });
 
     function aufgabe() {
       const r = runde[akt], a = r.a;
       const neueStufe = akt === 0 || runde[akt - 1].art !== r.art;
       el.innerHTML = `<div class="tr-kopf">${punkte()}</div>
         ${neueStufe && r.art === "probe" ? `<p class="fb show info">${T("Gut aufgewärmt! Jetzt wird es ernst: ab hier keine Tipps mehr – wie in der Probe.")}</p>` : ""}
-        <p class="tr-nr"><span class="probe-stufe ${r.art}">${T(STUFE[r.art])}</span> · ${T(`Aufgabe ${akt + 1} von ${runde.length}`)}</p>
+        <p class="tr-nr"><span class="probe-stufe ${r.art}">${STUFE()[r.art]}</span> · ${T(`Aufgabe ${akt + 1} von ${runde.length}`)}</p>
         <p class="tr-text">${T(a.text)}</p>
         <div class="probe-tab"></div>
         <div class="probe-labor"></div>
