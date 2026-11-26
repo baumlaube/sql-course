@@ -13,12 +13,18 @@
        { text: "…" },                                   // nur Einblendung
        { text: "…", zeige: "satz" },                    // Satz erscheint (zeige: "sql" | "labor" ebenso)
        { text: "…", markiere: "spalte", spalte: "titel" },   // Spalte blau + Pfeil (Satzteil, SQL-Teil, Tabellenspalte)
-       { text: "…", markiere: "tabelle" },              // Tabelle gelb + Pfeil
+       { text: "…", markiere: "tabelle" },              // Tabelle gelb + Pfeil (auch als Liste: ["spalte", "tabelle"])
+       { text: "…", zeige: "satz", bis: 4 },            // nur die ersten 4 Teile des Satzes – später { bis: 6 } hängt an
+       { text: "…", markiere: "bedingung", spalte: "genre" },  // Bedingung grün (Satzteil, SQL-Teil, Spalte)
+       { text: "…", zeilen: "genre = 'Pop'" },          // Zeilen der Vorschau grün, die passen (SQL-Bedingung)
+       { text: "…", blass: true },                      // die übrigen Zeilen werden blass
        { text: "…", zeige: "labor", spalte: "titel", bausteine: ["SELECT", "titel"] },
        { text: "…", nach: "titel", bausteine: [",", "jahr"] },   // hinter „titel“ einsetzen
        { text: "…", tippe: "…" }, { text: "…", ausfuehren: true }, { text: "…", ergebnis: true },
        { text: "Jetzt du!", leeren: true },
      ],
+     zeilen: 8,                                         // so viele Zeilen zeigt die Vorschau (sonst 4)
+     spalten: "id, titel, genre",            // nur diese Spalten in der Vorschau (sonst alle) – passt aufs Handy
    })
    Markierungen bleiben bis zum Ende stehen (der Pfeil wandert zum Neuen). Steuerung: ◀ ⏸/▶ ▶▶ ↺.
    Zurück = alles bis dahin sofort nachspielen. Einblendungen laufen über T() und damit über die Sprachhilfe.
@@ -30,11 +36,13 @@
   const ruhig = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   const LESEN_GRUND = 3500, LESEN_JE_ZEICHEN = 70, BAUSTEIN_PAUSE = 1300, PULS = 1000, TIPPEN = 90;
 
-  /* Satz und SQL als Übersetzungstabelle: Jeder deutsche Teil steht genau über seinem SQL-Teil. */
-  const uebersetzung = (paare) => `<table class="film-ueb">
-      <tr class="film-de"><th>${T("Deutsch")}</th>${paare.map(([de, , art]) => `<td class="film-teil${art ? " art-" + art : ""}">${T(de)}</td>`).join("")}</tr>
-      <tr class="film-sql" hidden><th>SQL</th>${paare.map(([, sq, art]) => `<td class="film-teil${art ? " art-" + art : ""}"><code>${esc(sq)}</code></td>`).join("")}</tr>
-    </table>`;
+  /* Satz und SQL als Übersetzung: Jeder deutsche Teil steht genau über seinem SQL-Teil.
+     Jedes Paar ist ein eigenes Kästchen (Deutsch oben, SQL unten) – so bricht ein langer Satz am Handy um. */
+  const uebersetzung = (paare) => `<div class="film-ueb">
+      <span class="film-paar film-kopf"><span>${T("Deutsch")}</span><span class="film-sql">SQL</span></span>
+      ${paare.map(([de, sq, art], i) => { const k = `film-teil${art ? " art-" + art : ""}`;
+        return `<span class="film-paar" data-i="${i}"><span class="${k}">${T(de)}</span><span class="${k} film-sql"><code>${esc(sq)}</code></span></span>`; }).join("")}
+    </div>`;
 
   function film(el, o) {
     el.classList.add("film");
@@ -64,12 +72,16 @@
     const $ = (s) => el.querySelector(s);
     const text = $(".film-text");
     let lab = null, akt = -1, fertigBis = -1, laeuft = false, lauf = 0;
+    const treffer = {};          // SQL-Bedingung → [true/false je Vorschauzeile]
 
     // Vorschau: die ersten Zeilen der Tabelle
     Labor.bereit().then((SQL) => {
       const db = oeffnen(SQL, o.db);
-      const r = db.exec(`SELECT * FROM "${o.vorschau}" LIMIT ${o.zeilen || 4}`)[0];
+      const r = db.exec(`SELECT ${o.spalten || "*"} FROM "${o.vorschau}" LIMIT ${o.zeilen || 4}`)[0];
       const n = db.exec(`SELECT COUNT(*) FROM "${o.vorschau}"`)[0].values[0][0];
+      o.schritte.filter((x) => x.zeilen).forEach((x) => {
+        treffer[x.zeilen] = db.exec(`SELECT (${x.zeilen}) FROM "${o.vorschau}" LIMIT ${o.zeilen || 4}`)[0].values.map((v) => !!v[0]);
+      });
       db.close();
       $(".film-poster").innerHTML = ergebnisHTML({ spalten: r.columns, zeilen: r.values });
       $(".film-vorschau").innerHTML = `<p class="film-tab"><span class="tabname">📋 ${esc(o.vorschau)}</span> <span class="muted">${T(`die ersten ${r.values.length} von ${n} Zeilen`)}</span></p>`
@@ -77,24 +89,34 @@
     });
 
     /* ---- Markierungen ---- */
-    function spalteMarkieren(name, pfeil) {
+    function spalteMarkieren(name, pfeil, klasse = "film-sp") {
       const tab = $(".film-vorschau table");
       if (!tab || !name) return;
       const i = [...tab.querySelectorAll("th")].findIndex((th) => th.textContent.trim() === name);
       if (i < 0) return;
-      tab.querySelectorAll("tr").forEach((tr) => { const c = tr.children[i]; if (c) c.classList.add("film-sp"); });
+      tab.querySelectorAll("tr").forEach((tr) => { const c = tr.children[i]; if (c) c.classList.add(klasse); });
       if (pfeil) tab.querySelectorAll("th")[i].classList.add("film-pfeil");
     }
-    function markiere(art, spalte) {
+    function markiere(art, spalte, pfeil = true) {
       el.querySelectorAll(".film-pfeil").forEach((x) => x.classList.remove("film-pfeil"));
       el.querySelectorAll(`.film-satz .art-${art}`).forEach((x) => x.classList.add("an"));
-      if (art === "spalte") spalteMarkieren(spalte, true);
-      if (art === "tabelle") { const t = $(".film-tab .tabname"); if (t) t.classList.add("film-pfeil", "an"); }
+      if (art === "spalte") spalteMarkieren(spalte, pfeil);
+      if (art === "bedingung") spalteMarkieren(spalte, pfeil, "film-bd");
+      if (art === "tabelle") { const t = $(".film-tab .tabname"); if (t) t.classList.add("an"); if (t && pfeil) t.classList.add("film-pfeil"); }
+    }
+    function zeilenMarkieren(bed) {
+      const tr = [...el.querySelectorAll(".film-vorschau tbody tr")], ja = treffer[bed] || [];
+      tr.forEach((z, k) => z.classList.toggle("film-treffer", !!ja[k]));
+    }
+    function teileZeigen(bis) {
+      el.querySelectorAll(".film-ueb .film-paar[data-i]").forEach((x) => { x.hidden = bis != null && +x.dataset.i >= bis; });
     }
     function buehneLeeren() {
       lab && lab.zuruecksetzen();
-      $(".film-satz").hidden = true; $(".film-sql").hidden = true; $(".film-labor").hidden = true;
-      el.querySelectorAll(".an, .film-sp, .film-pfeil, .film-puls, .film-erg").forEach((x) => x.classList.remove("an", "film-sp", "film-pfeil", "film-puls", "film-erg"));
+      $(".film-satz").hidden = true; $(".film-ueb").classList.remove("mit-sql"); $(".film-labor").hidden = true;
+      el.querySelectorAll(".an, .film-sp, .film-bd, .film-pfeil, .film-puls, .film-erg, .film-treffer, .film-raus").forEach((x) =>
+        x.classList.remove("an", "film-sp", "film-bd", "film-pfeil", "film-puls", "film-erg", "film-treffer", "film-raus"));
+      teileZeigen(null);
       fertigBis = -1;
     }
     const knopf = (t) => [...el.querySelectorAll(".film-labor .baustein")].find((b) => b.textContent === t);
@@ -113,10 +135,17 @@
         el.querySelectorAll(".film-puls").forEach((x) => x.classList.remove("film-puls"));
       }
       if (s.zeige === "satz") $(".film-satz").hidden = false;
-      if (s.zeige === "sql") { $(".film-satz").hidden = false; $(".film-sql").hidden = false; }
+      if (s.zeige === "sql") { $(".film-satz").hidden = false; $(".film-ueb").classList.add("mit-sql"); }
       if (s.zeige === "labor") { $(".film-labor").hidden = false; }
-      if (s.markiere) { await p(500); if (ab()) return; markiere(s.markiere, s.spalte); }
+      if (s.bis != null) teileZeigen(s.bis);
+      if (s.markiere) {
+        await p(500); if (ab()) return;
+        const arten = [].concat(s.markiere);
+        arten.forEach((a, k) => markiere(a, a === "tabelle" ? null : s.spalte, k === arten.length - 1));
+      }
       else if (s.spalte) spalteMarkieren(s.spalte, !sofort);
+      if (s.zeilen) { await p(600); if (ab()) return; zeilenMarkieren(s.zeilen); }
+      if (s.blass) el.querySelectorAll(".film-vorschau tbody tr:not(.film-treffer)").forEach((z) => z.classList.add("film-raus"));
       if (s.leeren) { lab.zuruecksetzen(); el.querySelectorAll(".film-erg").forEach((x) => x.classList.remove("film-erg")); }
       let pos = null;
       if (s.nach) { const v = lab.feld.value, k = v.indexOf(s.nach); pos = k < 0 ? null : k + s.nach.length; }
@@ -132,7 +161,12 @@
         lab.einsetzen(b, pos);
         if (pos != null) pos = lab.feld.selectionStart;
       }
-      if (s.tippe) for (const ch of s.tippe) { if (!sofort) { await p(TIPPEN); if (ab()) return; } lab.feld.value += ch; }
+      // Tippen an der Schreibmarke (z. B. zwischen die Hochkommas von '…')
+      if (s.tippe) for (const ch of s.tippe) {
+        if (!sofort) { await p(TIPPEN); if (ab()) return; }
+        const f = lab.feld, a = f.selectionStart ?? f.value.length;
+        f.value = f.value.slice(0, a) + ch + f.value.slice(a); f.setSelectionRange(a + 1, a + 1);
+      }
       if (s.ausfuehren) {
         await p(900); if (ab()) return;
         const run = el.querySelector(".film-labor .labor-run");

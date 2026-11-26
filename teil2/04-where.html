@@ -23,12 +23,13 @@
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="stylesheet" href="../assets/kurs.css?v=816a1e20aa">
-<link rel="stylesheet" href="../assets/labor.css?v=5eb6de2187">
+<link rel="stylesheet" href="../assets/labor.css?v=635d1b0594">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil2-04-where" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
 <script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
 <script src="../assets/labor.js?v=81a83fb334"></script>
+<script src="../assets/film.js?v=ce411ceb2f"></script>
 <script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
 <script src="../assets/daten/azubi.js?v=5b1356cc35"></script>
 <script src="../assets/daten/konzerte.js?v=51212600cc"></script>
@@ -110,6 +111,7 @@
   <!-- 1 · Überleg -->
   <section class="card" id="s1" data-tab="Wie viele?" data-wait>
     <h2><span class="step-no">1</span> Überleg: Wie viele Zeilen kommen heraus? <span class="chip">4 Minuten</span></h2>
+    <div id="film1"></div>
     <div id="tab-songs"></div>
     <p>Die Chefin will eine Rock-Playlist. Jemand hat schon diese Abfrage geschrieben:</p>
     <pre class="sql" data-farbe>SELECT titel FROM songs WHERE genre = 'Rock'</pre>
@@ -256,6 +258,33 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+  /* Erklärfilm: WHERE – der Satz aus Lektion 3 bekommt „aber nur, wenn …“. Pop statt Rock, damit die Überleg-Frage offen bleibt. */
+  Labor.film(document.getElementById("film1"), {
+    titel: "So funktioniert WHERE", db: "tonspur", vorschau: "songs", zeilen: 8, spalten: "id, titel, genre",
+    paare: [["Zeig mir", "SELECT"], ["die Titel", "titel", "spalte"], ["aus der Tabelle", "FROM"], ["songs,", "songs", "tabelle"],
+            ["aber nur, wenn", "WHERE"], ["das Genre Pop ist.", "genre = 'Pop'", "bedingung"]],
+    schritte: [
+      // Phase 1: verstehen – noch keine Knöpfe
+      { text: "Das ist wieder die Tabelle <code>songs</code>. Hier siehst du die ersten 8 Songs." },
+      { text: "Aus Lektion 3 kennst du diesen Satz:", zeige: "satz", bis: 4 },
+      { text: "Die Titel aus der Tabelle <code>songs</code>.", markiere: ["spalte", "tabelle"], spalte: "titel" },
+      { text: "Damit bekommst du <strong>alle</strong> Songs. Du willst aber nur die <strong>Pop</strong>-Songs." },
+      { text: "Dann hängst du an: … <strong>aber nur, wenn</strong> das Genre Pop ist.", bis: 6 },
+      { text: "Das ist die <strong>Bedingung</strong>. Sie schaut in die Spalte <code>genre</code>.", markiere: "bedingung", spalte: "genre" },
+      { text: "Die Datenbank prüft <strong>jede Zeile</strong>: Ist das Genre Pop?", zeilen: "genre = 'Pop'" },
+      { text: "Passt es, bleibt die Zeile. Sonst fliegt sie raus.", blass: true },
+      { text: "In SQL heißt der Satz so:", zeige: "sql" },
+      { text: "<code>WHERE</code> heißt „aber nur, wenn“. Danach kommt die Bedingung." },
+      { text: "Der Text <code>'Pop'</code> steht in Hochkommas." },
+      // Phase 2: dasselbe im Labor
+      { text: "Jetzt im Labor. Den Anfang kennst du schon.", zeige: "labor", bausteine: ["SELECT", "titel", "FROM", "songs"] },
+      { text: "Dann <code>WHERE</code>, die Spalte <code>genre</code> und das Gleichheitszeichen.", bausteine: ["WHERE", "genre", "="] },
+      { text: "Für den Text tippst du auf <code>'…'</code> und schreibst <code>Pop</code> hinein.", bausteine: ["'…'"], tippe: "Pop" },
+      { text: "Jetzt auf <strong>Ausführen</strong>.", ausfuehren: true },
+      { text: "Das Ergebnis: nur die Titel der <strong>Pop</strong>-Songs.", ergebnis: true },
+      { text: "Jetzt du! Probier es hier selbst – zum Beispiel mit <code>'Elektro'</code>.", leeren: true },
+    ],
+  });
   const { pick, quiz, hints } = window.Kurs;
   const L = window.Labor;
   const $ = (id) => document.getElementById(id);

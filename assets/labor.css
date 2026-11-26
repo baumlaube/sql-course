@@ -1,6 +1,6 @@
-:root { --tab-bg: #fff3d6; --tab-rand: #e0a526; --tab-fg: #7a4b00; --sp-bg: #dbeafe; --sp-rand: #3b82f6; --sp-fg: #1e3a8a; }
-:root[data-theme="dark"] { --tab-bg: #3a2e12; --tab-rand: #b8861b; --tab-fg: #ffd58a; --sp-bg: #1b2f55; --sp-rand: #5b8ff0; --sp-fg: #cfe0ff; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --tab-bg: #3a2e12; --tab-rand: #b8861b; --tab-fg: #ffd58a; --sp-bg: #1b2f55; --sp-rand: #5b8ff0; --sp-fg: #cfe0ff; } }
+:root { --tab-bg: #fff3d6; --tab-rand: #e0a526; --tab-fg: #7a4b00; --sp-bg: #dbeafe; --sp-rand: #3b82f6; --sp-fg: #1e3a8a; --bd-bg: #dcfce7; --bd-rand: #16a34a; --bd-fg: #14532d; }
+:root[data-theme="dark"] { --tab-bg: #3a2e12; --tab-rand: #b8861b; --tab-fg: #ffd58a; --sp-bg: #1b2f55; --sp-rand: #5b8ff0; --sp-fg: #cfe0ff; --bd-bg: #143a24; --bd-rand: #2fb36a; --bd-fg: #c4f5d6; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --tab-bg: #3a2e12; --tab-rand: #b8861b; --tab-fg: #ffd58a; --sp-bg: #1b2f55; --sp-rand: #5b8ff0; --sp-fg: #cfe0ff; --bd-bg: #143a24; --bd-rand: #2fb36a; --bd-fg: #c4f5d6; } }
 /* SQL-Kurs · SQL-Labor. Lizenz: CC BY-SA 4.0 · herrseibert.de · Erstellt von der KI Claude von Anthropic. */
 :root {
   --sql-kw: #0b5cad; --sql-s: #a3410f; --sql-n: #6a1b9a;
@@ -283,12 +283,23 @@ th.film-pfeil::before { color: var(--sp-rand); }
 @keyframes film-wink { 0%, 100% { transform: translateY(-3px); } 50% { transform: translateY(3px); } }
 @keyframes film-wink-x { 0%, 100% { transform: translateX(-3px); } 50% { transform: translateX(3px); } }
 .film-satz { margin: 12px 0; padding: 12px 14px; border-radius: 10px; background: var(--surface-2); }
-.film-ueb { border-collapse: separate; border-spacing: 6px 6px; font-size: 20px; margin: -6px; }
-.film-ueb th { font-size: 12px; font-weight: 800; color: var(--muted); letter-spacing: 1px; text-align: left; padding-right: 4px; }
-.film-ueb td { text-align: center; white-space: nowrap; }
+/* Übersetzung: Paare als Kästchen, die umbrechen dürfen */
+.film-ueb { display: flex; flex-wrap: wrap; gap: 8px 6px; font-size: 20px; align-items: stretch; }
+.film-paar { display: grid; grid-template-rows: auto auto; gap: 6px; text-align: center; white-space: nowrap; }
+.film-kopf { font-size: 12px; font-weight: 800; color: var(--muted); letter-spacing: 1px; text-align: left; align-content: space-around; padding-right: 4px; }
+.film-ueb:not(.mit-sql) .film-sql { display: none; }
 .film-ueb code { font-size: 1em; background: none; padding: 0; font-weight: 700; }
 .film-teil { padding: 4px 8px; border-radius: 8px; transition: background .4s, box-shadow .4s; }
 .film-teil.art-spalte.an { background: var(--sp-bg); color: var(--sp-fg); box-shadow: 0 0 0 2px var(--sp-rand); }
+.film-teil.art-bedingung.an { background: var(--bd-bg); color: var(--bd-fg); box-shadow: 0 0 0 2px var(--bd-rand); }
+.film .film-bd { background: var(--bd-bg) !important; color: var(--bd-fg); }
+.film th.film-bd { box-shadow: inset 0 0 0 2px var(--bd-rand); }
+th.film-bd.film-pfeil::before { color: var(--bd-rand); }
+.film-vorschau tbody tr { transition: opacity .6s; }
+.film-vorschau tr.film-treffer td { box-shadow: inset 0 2px 0 var(--bd-rand), inset 0 -2px 0 var(--bd-rand); }
+.film-vorschau tr.film-treffer td:not(.film-sp) { background: var(--bd-bg); color: var(--bd-fg); }
+.film-vorschau tr.film-treffer td:first-child { box-shadow: inset 4px 0 0 var(--bd-rand), inset 0 2px 0 var(--bd-rand), inset 0 -2px 0 var(--bd-rand); }
+.film-vorschau tr.film-raus { opacity: .25; }
 .film-teil.art-tabelle.an { background: var(--tab-bg); color: var(--tab-fg); box-shadow: 0 0 0 2px var(--tab-rand); }
 .film .labor-erg.film-erg { box-shadow: 0 0 0 3px var(--sp-rand); border-radius: 8px; }
 .film-puls { animation: film-puls .8s ease-in-out infinite; position: relative; z-index: 1; }
@@ -302,7 +313,7 @@ th.film-pfeil::before { color: var(--sp-rand); }
 .film-punkte li.fertig { background: var(--accent); }
 .film-punkte li.jetzt { background: var(--tab-rand); transform: scale(1.3); }
 .film .labor-ctrl .labor-run { pointer-events: auto; }
-@media (max-width: 520px) { .film-ueb { font-size: 15px; border-spacing: 3px 4px; } .film-ueb td { white-space: normal; } .film-teil { padding: 3px 4px; } .film-text { font-size: 17px; } .film-punkte { margin: 4px 0 0; flex-basis: 100%; } }
+@media (max-width: 520px) { .film-ueb { font-size: 16px; gap: 6px 4px; } .film-kopf { display: none; } .film-teil { padding: 3px 5px; } .film-text { font-size: 17px; } .film-punkte { margin: 4px 0 0; flex-basis: 100%; } }
 @media (prefers-reduced-motion: reduce) { .film-puls, .film-text.neu, .film-pfeil::before { animation: none; } .film-puls { outline: 3px solid var(--tab-rand); } }
 .film [hidden] { display: none !important; }
 .film-vorschau .labor-anzahl { display: none; }
