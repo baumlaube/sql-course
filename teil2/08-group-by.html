@@ -407,7 +407,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------- Training ---------- */
   const mit = (arr) => arr.map((a) => Object.assign({ extra: EXTRA }, a, { fallen: [...(a.fallen || []), ...IMMER] }));
 
-  L.training($("tr1"), { db: "tonspur", key: "l08-basis", tabelle: false, aufgaben: mit([
+  L.training($("tr1"), { db: "tonspur", key: "l08-basis", aufgaben: mit([
     { text: "Wie viele Songs gibt es <strong>je Jahr</strong>? Jahr und Anzahl.",
       loesung: "SELECT jahr, COUNT(*) FROM songs GROUP BY jahr",
       hints: ["Lösung: <code>SELECT jahr, COUNT(*) FROM songs GROUP BY jahr</code>"] },

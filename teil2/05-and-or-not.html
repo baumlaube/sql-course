@@ -431,7 +431,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ]);
 
   /* ---------- Training ---------- */
-  L.training($("tr1"), { db: "tonspur", key: "l05-basis", tabelle: false, aufgaben: [
+  L.training($("tr1"), { db: "tonspur", key: "l05-basis", aufgaben: [
     { text: "<strong>Hip-Hop</strong>-Songs aus dem Jahr <strong>2024</strong>. Zeig den Titel.",
       loesung: "SELECT titel FROM songs WHERE genre = 'Hip-Hop' AND jahr = 2024",
       hints: ["Beide Bedingungen müssen stimmen: <code>AND</code>.", "Lösung: <code>SELECT titel FROM songs WHERE genre = 'Hip-Hop' AND jahr = 2024</code>"] },

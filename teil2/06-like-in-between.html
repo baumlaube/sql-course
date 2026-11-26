@@ -424,7 +424,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------- Training ---------- */
   const mit = (arr) => arr.map((a) => Object.assign({ extra: EXTRA }, a, { fallen: [...(a.fallen || []), ...IMMER] }));
 
-  L.training($("tr1"), { db: "tonspur", key: "l06-basis", tabelle: false, aufgaben: mit([
+  L.training($("tr1"), { db: "tonspur", key: "l06-basis", aufgaben: mit([
     { text: "Alle Titel, die mit <strong>B</strong> beginnen.",
       loesung: "SELECT titel FROM songs WHERE titel LIKE 'B%'",
       hints: ["Lösung: <code>SELECT titel FROM songs WHERE titel LIKE 'B%'</code>"] },

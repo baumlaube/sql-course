@@ -420,7 +420,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------- Training ---------- */
   const mit = (arr) => arr.map((a) => Object.assign({ extra: EXTRA }, a, { fallen: [...(a.fallen || []), ...IMMER] }));
 
-  L.training($("tr1"), { db: "tonspur", key: "l07-basis", tabelle: false, aufgaben: mit([
+  L.training($("tr1"), { db: "tonspur", key: "l07-basis", aufgaben: mit([
     { text: "Alle Titel <strong>alphabetisch</strong> von A bis Z.", reihenfolge: true,
       loesung: "SELECT titel FROM songs ORDER BY titel",
       fallen: [{ sql: "SELECT titel FROM songs ORDER BY titel DESC", text: "Das ist von Z nach A. Von A bis Z ist aufsteigend." }],

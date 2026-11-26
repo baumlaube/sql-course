@@ -286,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ]);
 
   const ins = (a) => Object.assign({ db: "pfoten", leiste: LEISTE_INSERT, mitNamen: true, fallen: [KEIN_ANFUEHRUNG] }, a);
-  L.training($("tr1"), { db: "pfoten", key: "l13-basis", tabelle: false, aufgaben: [
+  L.training($("tr1"), { db: "pfoten", key: "l13-basis", aufgaben: [
     ins({ text: "Neue Art: der <strong>Igel</strong> (Fell: <strong>nein</strong>, fliegen: <strong>nein</strong>, im Wasser: <strong>nein</strong>).",
       zustand: "SELECT * FROM arten ORDER BY id",
       loesung: "INSERT INTO arten (name, fell, kann_fliegen, lebt_im_wasser) VALUES ('Igel', 'nein', 'nein', 'nein')",
@@ -312,7 +312,7 @@ document.addEventListener("DOMContentLoaded", () => {
       zustand: pragma("termine"), loesung: "CREATE TABLE termine (id INTEGER PRIMARY KEY, tier_id INTEGER REFERENCES tiere(id), datum TEXT, ort TEXT)",
       hints: ["Fremdschlüssel: <code>tier_id INTEGER REFERENCES tiere(id)</code>.", "Lösung: <code>CREATE TABLE termine (id INTEGER PRIMARY KEY, tier_id INTEGER REFERENCES tiere(id), datum TEXT, ort TEXT)</code>"] },
   ] });
-  L.training($("tr3"), { db: "pfoten", key: "l13-profi", tabelle: false, aufgaben: [
+  L.training($("tr3"), { db: "pfoten", key: "l13-profi", aufgaben: [
     ins({ text: "Mit <strong>einem</strong> <code>INSERT</code> zwei Besitzer anlegen: <strong>Ali</strong> aus <strong>Erlangen</strong> und <strong>Pia</strong> aus <strong>Passau</strong>. Tipp: <code>VALUES (…), (…)</code>.",
       zustand: "SELECT * FROM besitzer ORDER BY id",
       loesung: "INSERT INTO besitzer (vorname, wohnort) VALUES ('Ali', 'Erlangen'), ('Pia', 'Passau')",

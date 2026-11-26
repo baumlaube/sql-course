@@ -344,7 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const mit = (arr) => arr.map((a) => Object.assign({ extra: EXTRA }, a, { fallen: [...(a.fallen || []), ...IMMER] }));
 
-  L.training($("tr1"), { db: "musik", key: "l09-basis", tabelle: false, aufgaben: mit([
+  L.training($("tr1"), { db: "musik", key: "l09-basis", aufgaben: mit([
     { text: "Zu jedem Song <strong>Titel und Künstlername</strong>.",
       loesung: "SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id",
       hints: ["Lösung: <code>SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id</code>"] },

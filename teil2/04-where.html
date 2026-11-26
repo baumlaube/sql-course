@@ -425,7 +425,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ---------- Training ---------- */
-  L.training($("tr1"), { db: "tonspur", key: "l04-basis", tabelle: false, aufgaben: [
+  L.training($("tr1"), { db: "tonspur", key: "l04-basis", aufgaben: [
     { text: "Alle Songs der Band <strong>Die Kaltfront</strong>. Zeig nur den Titel.",
       loesung: "SELECT titel FROM songs WHERE kuenstler = 'Die Kaltfront'",
       hints: ["Die Band steht in der Spalte <code>kuenstler</code>.", "Der Name ist Text: <code>'Die Kaltfront'</code> – genau so geschrieben.",
