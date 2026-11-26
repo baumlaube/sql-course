@@ -443,5 +443,9 @@
  "id, name": "id, name",
  "songs.titel,": "songs.titel,",
  "ON songs.kuenstler_id = kuenstler.id": "ON songs.kuenstler_id = kuenstler.id",
- "songs.kuenstler_id = kuenstler.id": "songs.kuenstler_id = kuenstler.id"
+ "songs.kuenstler_id = kuenstler.id": "songs.kuenstler_id = kuenstler.id",
+ "die letzten {} von {} Zeilen": "the last {} of {} rows",
+ "neu – noch leer": "new – still empty",
+ "noch keine Spalten": "no columns yet",
+ "noch keine Zeile": "no row yet"
 }
