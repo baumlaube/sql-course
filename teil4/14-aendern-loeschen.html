@@ -23,13 +23,14 @@
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="stylesheet" href="../assets/kurs.css?v=816a1e20aa">
-<link rel="stylesheet" href="../assets/labor.css?v=2c1b761015">
+<link rel="stylesheet" href="../assets/labor.css?v=1fe722a642">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil4-14-aendern-loeschen" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
 <script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
 <script src="../assets/labor.js?v=a8fd6bb3c7"></script>
 <script src="../assets/labor-extra.js?v=e94bd060f6"></script>
+<script src="../assets/film.js?v=5d190cafe7"></script>
 <script src="../assets/projekt.js?v=35eb603fae"></script>
 <script src="../assets/daten/pfoten.js?v=7b482f3862"></script>
 </head>
@@ -123,6 +124,7 @@
   <!-- 2 · UPDATE -->
   <section class="card" id="s2" data-tab="UPDATE">
     <h2><span class="step-no">2</span> UPDATE: richtig ändern <span class="chip">6 Minuten</span></h2>
+    <div id="film2"></div>
     <pre class="sql" data-farbe>UPDATE tabelle SET spalte = neuer_wert WHERE bedingung</pre>
     <p><strong>a)</strong> Bello (<code>id</code> 1) ist jetzt <strong>6</strong> Jahre alt. Am sichersten triffst du genau eine Zeile über ihre <code>id</code>.</p>
     <div id="l2a"></div>
@@ -134,6 +136,7 @@
   <!-- 3 · DELETE -->
   <section class="card" id="s3" data-tab="DELETE">
     <h2><span class="step-no">3</span> DELETE: eine Zeile löschen <span class="chip">4 Minuten</span></h2>
+    <div id="film3"></div>
     <pre class="sql" data-farbe>DELETE FROM tabelle WHERE bedingung</pre>
     <p>Goldi hat einen Partner gefunden und verlässt die Börse. Lösche Goldi aus <code>tiere</code>.</p>
     <div id="l3"></div>
@@ -219,6 +222,57 @@ document.addEventListener("DOMContentLoaded", () => {
   const LEISTE = ["UPDATE", "SET", "DELETE FROM", "WHERE", "=", ",", "'…'", "AND", "OR", "IN", "(", ")", "<", ">", "+"];
   const ZUSTAND_TIERE = "SELECT id, name, alter_jahre, hobby, sucht FROM tiere ORDER BY id";
   const opt = (a) => Object.assign({ db: "pfoten", modus: "frei", tabellen: false, leiste: LEISTE, mitNamen: true, zustand: ZUSTAND_TIERE }, a);
+  /* Erklärfilm 1: UPDATE – nur in der passenden Zeile ändert sich der Wert. Hoppel statt Bello/Minka, damit die Aufgaben offen bleiben. */
+  Labor.film(document.getElementById("film2"), {
+    titel: "So änderst du einen Wert", db: "pfoten", vorschau: "tiere", spalten: "id, name, alter_jahre", zeilen: 5,
+    labor: { leiste: LEISTE, mitNamen: true, nurTabellen: ["tiere"], zustand: "SELECT id, name, alter_jahre FROM tiere WHERE id <= 5 ORDER BY id" },
+    paare: [["Ändere", "UPDATE"], ["in der Tabelle tiere", "tiere", "tabelle"], ["das Alter auf 3,", "SET alter_jahre = 3", "wert"],
+            ["aber nur, wenn", "WHERE"], ["die id 3 ist.", "id = 3", "bedingung"]],
+    schritte: [
+      // Phase 1: verstehen – noch keine Knöpfe
+      { text: "Das ist die Tabelle <code>tiere</code>. Hier siehst du die ersten 5 Tiere." },
+      { text: "Hoppel hatte Geburtstag. Er ist jetzt <strong>3</strong> Jahre alt." },
+      { text: "Du sagst der Datenbank:", zeige: "satz", bis: 2, markiere: "tabelle" },
+      { text: "Was soll sich ändern? Das <strong>Alter</strong> – auf 3.", bis: 3, markiere: "wert", spalte: "alter_jahre" },
+      { text: "Bei wem? Nur bei Hoppel. Er hat die <code>id</code> 3.", bis: 5, markiere: "bedingung", spalte: "id", zeilen: "id = 3" },
+      { text: "Nur in dieser Zeile ändert sich der Wert: aus 2 wird 3.", aendere: { spalte: "alter_jahre", wert: 3, wo: "id = 3" } },
+      { text: "In SQL heißt der Satz so:", zeige: "sql" },
+      { text: "<code>UPDATE</code> heißt „ändere“. Nach <code>SET</code> steht, was neu ist." },
+      { text: "<code>WHERE</code> sagt, welche Zeile. Ohne <code>WHERE</code> ändert SQL <strong>alle</strong> Zeilen!" },
+      // Phase 2: dasselbe im Labor
+      { text: "Jetzt im Labor. Zuerst <code>UPDATE</code> und die Tabelle.", zeige: "labor", bausteine: ["UPDATE", "tiere"] },
+      { text: "Dann <code>SET</code>: die Spalte, das Gleichheitszeichen, der neue Wert.", bausteine: ["SET", "alter_jahre", "=", "✎3"] },
+      { text: "Zum Schluss <code>WHERE</code>: nur die <code>id</code> 3.", bausteine: ["WHERE", "id", "=", "✎3"] },
+      { text: "Jetzt auf <strong>Ausführen</strong>.", ausfuehren: true },
+      { text: "Das Ergebnis: <strong>1 Zeile</strong> geändert. Hoppel ist jetzt 3.", ergebnis: true },
+      { text: "Jetzt du! Unten machst du Bello ein Jahr älter.", leeren: true },
+    ],
+  });
+
+  /* Erklärfilm 2: DELETE – die passende Zeile wird rot und verschwindet. Pieps statt Goldi, damit die Aufgabe offen bleibt. */
+  Labor.film(document.getElementById("film3"), {
+    titel: "So löschst du eine Zeile", db: "pfoten", vorschau: "tiere", spalten: "id, name, alter_jahre", zeilen: 6,
+    labor: { leiste: LEISTE, mitNamen: true, nurTabellen: ["tiere"], zustand: "SELECT id, name FROM tiere WHERE id <= 6 ORDER BY id" },
+    paare: [["Lösche aus der Tabelle", "DELETE FROM"], ["tiere", "tiere", "tabelle"], ["aber nur, wenn", "WHERE"], ["die id 4 ist.", "id = 4", "bedingung"]],
+    schritte: [
+      // Phase 1: verstehen – noch keine Knöpfe
+      { text: "Das ist wieder die Tabelle <code>tiere</code>. Hier siehst du die ersten 6 Tiere." },
+      { text: "Pieps hat ein Zuhause gefunden. Er soll aus der Börse raus." },
+      { text: "Du sagst der Datenbank:", zeige: "satz", bis: 2, markiere: "tabelle" },
+      { text: "Aber nur Pieps! Er hat die <code>id</code> 4.", bis: 4, markiere: "bedingung", spalte: "id", zeilen: "id = 4" },
+      { text: "Die <strong>ganze Zeile</strong> wird gelöscht.", loesche: "id = 4" },
+      { text: "Die anderen Zeilen bleiben." },
+      { text: "In SQL heißt der Satz so:", zeige: "sql" },
+      { text: "<code>DELETE FROM</code> heißt „lösche aus“. Es löscht immer die ganze Zeile – darum gibt es kein <code>*</code>." },
+      { text: "Ohne <code>WHERE</code> wären <strong>alle</strong> Tiere weg. Darum immer mit <code>WHERE</code>." },
+      // Phase 2: dasselbe im Labor
+      { text: "Jetzt im Labor. Zuerst <code>DELETE FROM</code> und die Tabelle.", zeige: "labor", bausteine: ["DELETE FROM", "tiere"] },
+      { text: "Dann <code>WHERE</code>: nur die <code>id</code> 4.", bausteine: ["WHERE", "id", "=", "✎4"] },
+      { text: "Jetzt auf <strong>Ausführen</strong>.", ausfuehren: true },
+      { text: "Das Ergebnis: Pieps ist weg. Die anderen Tiere bleiben.", ergebnis: true },
+      { text: "Jetzt du! Unten löschst du Goldi.", leeren: true },
+    ],
+  });
 
   quiz($("wdh"), [
     { q: "Wie fügt man eine Zeile ein?", options: ["<code>INSERT INTO tabelle (spalten) VALUES (werte)</code>", "<code>ADD tabelle VALUES (werte)</code>"], right: 0,

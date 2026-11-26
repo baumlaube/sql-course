@@ -32,6 +32,7 @@
        { text: "…", verbund: "SELECT s.titel, k.name, k.id FROM … LIMIT 6" },   // verbundenes Ergebnis; letzte Spalte färbt
        // CREATE: Option neu: "besitzer" (leere Tabelle ohne Vorschau) – Schritt spalteNeu: ["vorname", "TEXT"]
        // INSERT: Option ende: true (die letzten Zeilen) – Schritt neueZeile: { vorname: "Tom" } (id kommt von selbst)
+       // UPDATE: aendere: { spalte: "alter_jahre", wert: 3, wo: "id = 3" } – DELETE: loesche: "id = 4"
        // bausteine: ["CREATE TABLE", "✎besitzer ", "("] – mit ✎ wird getippt statt angetippt; labor: { … } = weitere Labor-Optionen                  // unter der Vorschau: je Gruppe eine Zeile mit der Anzahl  // ab Zeile 4: Schnittlinie, Rest blass (spalte darf auch eine Liste sein)    // LIKE-Muster in der Spalte zeigen: feste Buchstaben grün, das % gestrichelt
        { text: "…", zeige: "labor", spalte: "titel", bausteine: ["SELECT", "titel"] },
        { text: "…", nach: "titel", bausteine: [",", "jahr"] },   // hinter „titel“ einsetzen
@@ -98,7 +99,7 @@
     const verbund = {};          // Schritt-SQL → Ergebnis (für „so sieht das zusammen aus“)
     Labor.bereit().then((SQL) => {
       const db = oeffnen(SQL, o.db), v0 = vors[0] || {};
-      if (v0.tabelle) o.schritte.flatMap((x) => [x.zeilen, x.pruefe]).filter(Boolean).forEach((b) => {
+      if (v0.tabelle) o.schritte.flatMap((x) => [x.zeilen, x.pruefe, x.loesche, x.aendere && x.aendere.wo]).filter(Boolean).forEach((b) => {
         treffer[b] = db.exec(`SELECT (${b}) FROM "${v0.tabelle}" LIMIT ${v0.zeilen || 4}`)[0].values.map((v) => !!v[0]);
       });
       o.schritte.filter((x) => x.verbund).forEach((x) => { verbund[x.verbund] = db.exec(x.verbund)[0]; });
@@ -146,6 +147,7 @@
       if (art === "bedingung") spalteMarkieren(spalte, pfeil, "film-bd");
       if (art === "ordnen") spalteMarkieren(spalte, pfeil, "film-so");
       if (art === "gruppe") spalteMarkieren(spalte, pfeil, "film-gr");
+      if (art === "wert") spalteMarkieren(spalte, pfeil, "film-wt");
       if (art === "tabelle") {
         const t = spalte ? [...el.querySelectorAll(".film-tab .tabname")].find((x) => x.textContent.includes(spalte)) : $(".film-tab .tabname");
         if (t) t.classList.add("an"); if (t && pfeil) t.classList.add("film-pfeil"); }
@@ -263,6 +265,24 @@
       tab.querySelector("tbody").insertAdjacentHTML("beforeend", `<tr class="film-neuzeile">${namen.map((c) =>
         c in werte ? `<td>${esc(String(werte[c]))}</td>` : c === "id" ? `<td class="film-auto zahl">${naechsteId[t] ?? ""}</td>` : "<td></td>").join("")}</tr>`);
     }
+    /* UPDATE sichtbar machen: In den passenden Zeilen wird der alte Wert durchgestrichen, der neue steht daneben */
+    function aendern({ spalte, wert, wo }) {
+      const [tab, i] = finde(spalte), ja = treffer[wo] || [];
+      if (i < 0) return;
+      tab.querySelectorAll("tbody tr").forEach((z, k) => {
+        if (!ja[k]) return;
+        const c = z.children[i];
+        c.innerHTML = `<del>${esc(c.textContent)}</del> → <b>${esc(String(wert))}</b>`;
+        c.classList.add("film-geaendert");
+      });
+    }
+    /* DELETE sichtbar machen: passende Zeilen werden rot durchgestrichen und verschwinden dann */
+    async function loeschen(bed, p, ab) {
+      const ja = treffer[bed] || [], weg = [...el.querySelectorAll(".film-vorschau tbody tr")].filter((z, k) => ja[k]);
+      weg.forEach((z) => z.classList.add("film-loesch"));
+      await p(1500); if (ab()) return;
+      weg.forEach((z) => z.classList.add("film-weg"));
+    }
     function abschneiden(n) {
       el.querySelectorAll(".film-vorschau tbody tr").forEach((z, k) => {
         z.classList.toggle("film-raus", k >= n); z.classList.toggle("film-schnitt", k === n);
@@ -312,6 +332,8 @@
       if (s.ersetze && lab) lab.feld.value = lab.feld.value.replace(s.ersetze[0], s.ersetze[1]);
       if (s.ordnen) { await p(700); if (ab()) return; zeilenOrdnen(s.ordnen, sofort); await p(1800); if (ab()) return; }
       if (s.gruppen) { await p(700); if (ab()) return; gruppieren(s.gruppen, sofort); await p(1800); if (ab()) return; }
+      if (s.aendere) { await p(700); if (ab()) return; aendern(s.aendere); }
+      if (s.loesche) { await p(700); if (ab()) return; await loeschen(s.loesche, p, ab); if (ab()) return; }
       if (s.spalteNeu) { await p(600); if (ab()) return; spalteNeu(s.spalteNeu); }
       if (s.neueZeile) { await p(600); if (ab()) return; neueZeile(s.neueZeile); }
       if (s.verbinde) { await p(600); if (ab()) return; verbinden(s.verbinde); }
@@ -320,7 +342,8 @@
       if (s.abschneiden) { await p(600); if (ab()) return; abschneiden(s.abschneiden); }
       if (s.muster) { await p(600); if (ab()) return; musterZeigen(s.muster, s.spalte); }
       if (s.pruefe) { await p(600); if (ab()) return; zellenPruefen(s.pruefe, s.spalte); }
-      else if (s.spalte) spalteMarkieren(s.spalte, !sofort);
+      // spalte ohne markiere: nur die Spalte blau (z. B. „noch eine Spalte dazu“)
+      if (s.spalte && !s.markiere && !s.pruefe && !s.muster) spalteMarkieren(s.spalte, !sofort);
       if (s.zeilen) { await p(600); if (ab()) return; zeilenMarkieren(s.zeilen); }
       if (s.blass) el.querySelectorAll(".film-vorschau tbody tr:not(.film-treffer)").forEach((z) => z.classList.add("film-raus"));
       if (s.leeren) { lab.zuruecksetzen(); el.querySelectorAll(".film-erg").forEach((x) => x.classList.remove("film-erg")); }
