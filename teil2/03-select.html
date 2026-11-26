@@ -23,12 +23,12 @@
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="stylesheet" href="../assets/kurs.css?v=8f6cf5e194">
-<link rel="stylesheet" href="../assets/labor.css?v=e84ac2abf9">
+<link rel="stylesheet" href="../assets/labor.css?v=6a31f56941">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil2-03-select" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=c26439e733"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
 <script src="../assets/labor.js?v=740a7143cb"></script>
-<script src="../assets/film.js?v=6f1e74d0d6"></script>
+<script src="../assets/film.js?v=ce35a55f90"></script>
 <script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
 <script src="../assets/daten/nutzer.js?v=533561c012"></script>
 <script src="../assets/daten/azubi.js?v=5b1356cc35"></script>
@@ -251,17 +251,26 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  /* Erklärfilm: so baut man SELECT … FROM */
+  /* Erklärfilm: so baut man SELECT … FROM – erst verstehen (nur Tabelle, Satz, SQL), dann im Labor wiederholen */
   Labor.film(document.getElementById("film1"), {
     titel: "So funktioniert SELECT", db: "tonspur", vorschau: "songs",
+    paare: [["Zeig mir", "SELECT"], ["die Titel", "titel", "spalte"], ["aus der Tabelle", "FROM"], ["songs.", "songs", "tabelle"]],
     schritte: [
-      { text: "Die Tabelle <code>songs</code> hat viele Spalten. Du willst nur die <strong>Titel</strong> sehen." },
-      { text: "① Was willst du sehen? → <code>SELECT</code> und die Spalte <code>titel</code>", spalte: "titel", bausteine: ["SELECT", "titel"] },
-      { text: "② Woher? → <code>FROM</code> und der Name der Tabelle. Die Tabelle ist <strong>gelb</strong>.", bausteine: ["FROM", "songs"] },
-      { text: "Lies es wie einen Satz: „Zeig mir den Titel aus der Tabelle songs.“" },
-      { text: "③ Ausführen!", ausfuehren: true },
-      { text: "Das Ergebnis: nur die Spalte <code>titel</code> – für <strong>alle</strong> Songs.", ergebnis: true },
-      { text: "Noch eine Spalte? Ein <strong>Komma</strong>, dann der Name: <code>titel, jahr</code>", spalte: "jahr", nach: "titel", bausteine: [",", "jahr"] },
+      // Phase 1: verstehen – noch keine Knöpfe
+      { text: "Mit SQL fragst du Inhalte aus einer Tabelle ab. Das ist die Tabelle <code>songs</code>." },
+      { text: "Du willst vielleicht wissen: Welche <strong>Titel</strong> sind in der Tabelle gespeichert?" },
+      { text: "Dazu fragst du die Datenbank:", zeige: "satz" },
+      { text: "<strong>Was</strong> willst du sehen? Die Titel. Sie stehen in der Spalte <code>titel</code>.", markiere: "spalte", spalte: "titel" },
+      { text: "<strong>Woher</strong>? Aus der Tabelle <code>songs</code>.", markiere: "tabelle" },
+      { text: "In SQL heißt der Satz so:", zeige: "sql" },
+      { text: "<code>SELECT</code> heißt „Zeig mir“. <code>FROM</code> heißt „aus der Tabelle“." },
+      // Phase 2: dasselbe im Labor
+      { text: "Jetzt im Labor. Du tippst die Bausteine nacheinander an.", zeige: "labor" },
+      { text: "Zuerst <code>SELECT</code>, dann die Spalte <code>titel</code>.", bausteine: ["SELECT", "titel"] },
+      { text: "Dann <code>FROM</code> und die Tabelle <code>songs</code>. Die Tabelle ist <strong>gelb</strong>.", bausteine: ["FROM", "songs"] },
+      { text: "Jetzt auf <strong>Ausführen</strong>.", ausfuehren: true },
+      { text: "Das Ergebnis: nur die Titel – für <strong>alle</strong> Songs.", ergebnis: true },
+      { text: "Noch eine Spalte dazu? Ein <strong>Komma</strong>, dann der Name: <code>titel, jahr</code>", spalte: "jahr", nach: "titel", bausteine: [",", "jahr"] },
       { text: "Ausführen – jetzt kommen zwei Spalten.", ausfuehren: true, ergebnis: true },
       { text: "Jetzt du! Probier es hier selbst – zum Beispiel mit <code>kuenstler</code>.", leeren: true },
     ],
