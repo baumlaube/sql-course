@@ -435,5 +435,13 @@
  "aber nur, wenn": "but only if",
  "Du fragst:": "You ask:",
  "Ergebnis für diese Zeilen": "Result for these rows",
- "id, titel, genre": "id, titel, genre"
+ "id, titel, genre": "id, titel, genre",
+ "Jetzt im Labor. Zuerst die zwei Spalten – mit Tabelle und Punkt.": "Now in the lab. First the two columns – with table and dot.",
+ "den Titel": "the title",
+ "verbunden mit": "joined with",
+ "titel, kuenstler_id": "titel, kuenstler_id",
+ "id, name": "id, name",
+ "songs.titel,": "songs.titel,",
+ "ON songs.kuenstler_id = kuenstler.id": "ON songs.kuenstler_id = kuenstler.id",
+ "songs.kuenstler_id = kuenstler.id": "songs.kuenstler_id = kuenstler.id"
 }
