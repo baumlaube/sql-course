@@ -42,7 +42,6 @@
  "„Welcher Song ist der längste? Ich brauche Titel und Dauer.“": "<em>“Which song is the longest? I need title and length.”</em>",
  "Tipp: MAX(dauer_sek) liefert nur die Zahl. Wer den Song dazu will, sortiert und nimmt die erste Zeile.": "Hint: <code>MAX(dauer_sek)</code> only gives you the number. If you want the <strong>song</strong> as well, sort and take the first row.",
  "„Der Größte“, „die Teuerste“, „der Neueste“:ORDER BY spalte DESC LIMIT 1": "“The biggest”, “the most expensive”, “the newest”:<br/><code>ORDER BY spalte DESC LIMIT 1</code>",
- "Plus COUNT(DISTINCT …) für Schnelle": "<span class=\"badge plus\">Plus</span> COUNT(DISTINCT …) <span class=\"chip\">for fast learners</span>",
  "„Wie viele verschiedene Künstler haben wir?“ COUNT(*) zählt alle 36 Zeilen. Du brauchst jeden Künstler nur einmal. Probier COUNT(DISTINCT spalte).": "<em>“How many different artists do we have?”</em> <code>COUNT(*)</code> counts all 36 rows. You need each artist only once. Try <code>COUNT(DISTINCT spalte)</code>.",
  "Reihenfolge der Teile: SELECT … FROM … WHERE … ORDER BY … LIMIT …": "Order of the parts: <code>SELECT … FROM … WHERE … ORDER BY … LIMIT …</code>",
  "ORDER BY spalte = aufsteigend, ORDER BY spalte DESC = absteigend. Mehrere Spalten mit Komma.": "<code>ORDER BY spalte</code> = ascending, <code>ORDER BY spalte DESC</code> = descending. Several columns with a comma.",
@@ -182,5 +181,8 @@
  "Bei gleichem Preis soll das frühere Datum zuerst stehen – aufsteigend.": "If the price is the same, the <strong>earlier</strong> date should come first – ascending.",
  "Zwei Sortierungen mit Komma: erst Preis absteigend, dann Datum aufsteigend.": "Two sort orders with a comma: first price descending, then date ascending.",
  "Lösung: SELECT kuenstler, preis, datum FROM konzerte ORDER BY preis DESC, datum": "Solution: <code>SELECT kuenstler, preis, datum FROM konzerte ORDER BY preis DESC, datum</code>",
- "Lektion 8: GROUP BY – Gruppen bilden →": "Lesson 8: GROUP BY – forming groups →"
+ "Lektion 8: GROUP BY – Gruppen bilden →": "Lesson 8: GROUP BY – forming groups →",
+ "Zwei Spalten": "Two columns",
+ "Rechnen": "Calculating",
+ "★ Freiwillig COUNT(DISTINCT …)": "<span class=\"badge expedition\">★ Optional</span> COUNT(DISTINCT …)"
 }

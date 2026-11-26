@@ -225,5 +225,9 @@
  "Dass jemand Popcorn kauft": "That someone buys popcorn",
  "Dass das Kino Werbung zeigt": "That the cinema shows adverts",
  "Das ist nicht Sache der Datenbank.": "That is not the database's job.",
- "Ein DBMS sorgt dafür, dass gleichzeitige Änderungen sich nicht in die Quere kommen.": "A DBMS makes sure that changes made at the same time don't get in each other's way."
+ "Ein DBMS sorgt dafür, dass gleichzeitige Änderungen sich nicht in die Quere kommen.": "A DBMS makes sure that changes made at the same time don't get in each other's way.",
+ "Was weißt du?": "What you know",
+ "Datentypen": "Data types",
+ "DB oder Calc?": "DB or Calc?",
+ "Tempo": "Speed"
 }

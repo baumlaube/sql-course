@@ -30,7 +30,6 @@
  "INSERT INTO tabelle (spalten) VALUES (werte) fügt eine Zeile ein. Die id vergibt die Datenbank.": "<code>INSERT INTO tabelle (spalten) VALUES (werte)</code> adds a row. The database gives the <code>id</code>.",
  "Reihenfolge beim Füllen: erst die Tabellen, auf die verwiesen wird (Besitzer, Arten), dann die Tiere.": "Order when filling: first the tables that are pointed to (owners, species), then the animals.",
  "Speichere dein Projekt als .db-Datei – der Browser allein ist kein sicherer Ort.": "Save your project as a <code>.db</code> file – the browser alone is not a safe place.",
- "Geübt wird an einer Kopie der Muster-Börse – jede Ausführung beginnt wieder mit dem Original.": "You practise on a copy of the sample site – every run starts again with the original.",
  "● Basis Neue Einträge": "<span class=\"badge ueben\">● Basic</span> New entries",
  "●● Sicher Tabellen anlegen": "<span class=\"badge ueben\">●● Confident</span> Creating tables",
  "●●● Profi Mehrere Zeilen auf einmal": "<span class=\"badge expedition\">●●● Pro</span> Several rows at once",
@@ -122,5 +121,9 @@
  "Mehrere Zeilen: die Klammern mit Komma hintereinander.": "Several rows: the brackets one after the other with commas.",
  "Lösung: INSERT INTO besitzer (vorname, wohnort) VALUES ('Ali', 'Erlangen'), ('Pia', 'Passau')": "Solution: <code>INSERT INTO besitzer (vorname, wohnort) VALUES ('Ali', 'Erlangen'), ('Pia', 'Passau')</code>",
  "Zwei neue Arten in einem Befehl: Frettchen (Fell ja, fliegen nein, Wasser nein) und Ente (Fell nein, fliegen ja, Wasser ja).": "Two new species in one command: <strong>Frettchen</strong> (ferret; fur ja, flies nein, water nein) and <strong>Ente</strong> (duck; fur nein, flies ja, water ja).",
- "Lösung: INSERT INTO arten (name, fell, kann_fliegen, lebt_im_wasser) VALUES ('Frettchen', 'ja', 'nein', 'nein'), ('Ente', 'nein', 'ja', 'ja')": "Solution: <code>INSERT INTO arten (name, fell, kann_fliegen, lebt_im_wasser) VALUES ('Frettchen', 'ja', 'nein', 'nein'), ('Ente', 'nein', 'ja', 'ja')</code>"
+ "Lösung: INSERT INTO arten (name, fell, kann_fliegen, lebt_im_wasser) VALUES ('Frettchen', 'ja', 'nein', 'nein'), ('Ente', 'nein', 'ja', 'ja')": "Solution: <code>INSERT INTO arten (name, fell, kann_fliegen, lebt_im_wasser) VALUES ('Frettchen', 'ja', 'nein', 'nein'), ('Ente', 'nein', 'ja', 'ja')</code>",
+ "CREATE TABLE": "CREATE TABLE",
+ "REFERENCES": "REFERENCES",
+ "INSERT": "INSERT",
+ "Hier kommt nichts Neues – nur Übung. Geübt wird an einer Kopie der Muster-Börse – jede Ausführung beginnt wieder mit dem Original.": "Nothing new here – just practice. You practise on a copy of the sample site – every run starts again with the original."
 }

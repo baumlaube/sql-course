@@ -48,13 +48,11 @@
  "leser_id und buch_id sind Fremdschlüssel:Sie zeigen auf die id in einer anderen Tabelle.": "<code>leser_id</code> and <code>buch_id</code> are <strong>foreign keys</strong>:<br/>they point to the <code>id</code> in another table.",
  "5 Das ER-Diagramm 5 Minuten": "<span class=\"step-no\">5</span> The ER diagram <span class=\"chip\">5 minutes</span>",
  "Wie Tabellen zusammenhängen, zeichnet man in einem ER-Diagramm (Entity-Relationship-Diagramm). Jeder Kasten ist eine Tabelle, die Linien sind Beziehungen. 1 und n sagen, wie viele zusammengehören.": "How tables are connected is drawn in an <strong>ER diagram</strong> (entity-relationship diagram). Each box is a table, the lines are relationships. <strong>1</strong> and <strong>n</strong> say how many belong together.",
- "Plus Ein Faden ins Nichts für Schnelle": "<span class=\"badge plus\">Plus</span> A thread into nowhere <span class=\"chip\">for fast learners</span>",
  "In dieser kaputten Bücherei-Datenbank stimmt etwas nicht. Tipp alle blauen Nummern an. Was fällt dir auf?": "Something is wrong in this broken library database. Tap all the blue numbers. What do you notice?",
  "Jede Tabelle hat einen Primärschlüssel (meist id): eindeutig, nie leer, ändert sich nie.": "Every table has a <strong>primary key</strong> (usually <code>id</code>): unique, never empty, never changes.",
  "Jede Information steht nur einmal in der Datenbank – in ihrer eigenen Tabelle.": "Each piece of information is in the database only <strong>once</strong> – in its own table.",
  "Ein Fremdschlüssel (z. B. leser_id) zeigt auf die id einer anderen Tabelle.": "A <strong>foreign key</strong> (e.g. <code>leser_id</code>) points to the <code>id</code> of another table.",
  "Im ER-Diagramm: Kästen = Tabellen, Linien = Beziehungen, 1 und n = eins und viele. Der Fremdschlüssel steht auf der n-Seite.": "In the <strong>ER diagram</strong>: boxes = tables, lines = relationships, 1 and n = one and many. The foreign key is on the n side.",
- "Folge den Fäden. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.": "Follow the threads. Start with ●. When you are done, go on with ●● and ●●●.",
  "● Basis Noch mehr Fäden in der Bücherei": "<span class=\"badge ueben\">● Basic</span> More threads in the library",
  "Benutze die drei Tabellen von Schritt 4.": "Use the three tables from step 4.",
  "●● Sicher Tonspur: Songs, Künstler, Labels": "<span class=\"badge ueben\">●● Confident</span> Tonspur: songs, artists, labels",
@@ -218,5 +216,9 @@
  "Nein – man braucht eine eigene Tabelle, z. B. likes mit von_tier_id und an_tier_id": "No – you need a separate table, e.g. <code>likes</code> with <code>von_tier_id</code> and <code>an_tier_id</code>",
  "Eine Spalte hat nur Platz für ein gemochtes Tier.": "A column only has room for <strong>one</strong> liked animal.",
  "Viele zu viele (n:m) braucht eine Zwischentabelle. Genau wie ausleihen zwischen Lesern und Büchern!": "Many to many (n:m) needs a linking table. Just like <code>ausleihen</code> between readers and books!",
- "leiht": "borrows"
+ "leiht": "borrows",
+ "Mehrere Tabellen": "Several tables",
+ "Faden": "Threads",
+ "Hier kommt nichts Neues – nur Übung. Folge den Fäden. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.": "Nothing new here – just practice. Follow the threads. Start with ●. When you're done, carry on with ●● and ●●●.",
+ "★ Freiwillig Ein Faden ins Nichts": "<span class=\"badge expedition\">★ Optional</span> A thread into nowhere"
 }

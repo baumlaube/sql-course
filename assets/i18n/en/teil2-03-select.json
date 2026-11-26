@@ -37,7 +37,6 @@
  "Wie viele Spalten hat das Ergebnis? Wie viele sollten es sein?": "How many columns does the result have? How many should it have?",
  "Wie heißt die Spalte – und was steht darin?": "What is the column called – and what is in it?",
  "Was fehlt in der Abfrage?": "What is missing in the query?",
- "Plus Die Reihenfolge der Spalten für Schnelle": "<span class=\"badge plus\">Plus</span> The order of the columns <span class=\"chip\">for fast learners</span>",
  "Für eine Liste zum Ausdrucken will die Chefin zuerst den Künstler, dann den Titel – für alle Songs.": "For a list to print, the boss wants <strong>the artist first, then the title</strong> – for all songs.",
  "✓ Kurz-Check 4 Minuten": "<span class=\"step-no\">✓</span> Quick check <span class=\"chip\">4 minutes</span>",
  "Jede Abfrage beginnt so: SELECT spalten FROM tabelle": "Every query starts like this: <code>SELECT spalten FROM tabelle</code>",
@@ -213,5 +212,9 @@
  "Noch eine Spalte dazu? Ein Komma, dann der Name: titel, jahr": "Add another column? A <strong>comma</strong>, then the name: <code>titel, jahr</code>",
  "Zeig mir": "Show me",
  "die Titel": "the titles",
- "aus der Tabelle": "from the table"
+ "aus der Tabelle": "from the table",
+ "Lücken": "Gaps",
+ "Alles oder nötig?": "All or needed?",
+ "DISTINCT": "DISTINCT",
+ "★ Freiwillig Die Reihenfolge der Spalten": "<span class=\"badge expedition\">★ Optional</span> The order of the columns"
 }

@@ -34,7 +34,6 @@
  "7 Jetzt du: erst filtern, dann gruppieren 5 Minuten": "<span class=\"step-no\">7</span> Your turn: filter first, then group <span class=\"chip\">5 minutes</span>",
  "Die Geldgeber interessieren sich nur für neue Songs ab 2023. Wie viele davon gibt es je Genre? Zeig Genre und Anzahl.": "The investors are only interested in <strong>new songs from 2023 on</strong>. How many of them are there <strong>per genre</strong>? Show genre and count.",
  "WHERE sortiert vor dem Gruppieren einzelne Zeilen aus. Erst dann bildet GROUP BY die Gruppen.": "<code>WHERE</code> removes single rows <strong>before</strong> grouping.<br/> Only then does <code>GROUP BY</code> form the groups.",
- "Plus HAVING – Bedingung für Gruppen für Schnelle": "<span class=\"badge plus\">Plus</span> HAVING – a condition for groups <span class=\"chip\">for fast learners</span>",
  "„Welche Künstler haben mindestens 4 Songs?“ WHERE prüft einzelne Zeilen – es kann nicht zählen. Für Bedingungen an die Gruppe gibt es HAVING, direkt nach GROUP BY.": "<em>“Which artists have at least 4 songs?”</em> <code>WHERE</code> checks single rows – it cannot count. For conditions on the <strong>group</strong> there is <code>HAVING</code>, right after <code>GROUP BY</code>.",
  "GROUP BY spalte bildet Gruppen. COUNT, SUM, AVG, MIN, MAX rechnen dann je Gruppe.": "<code>GROUP BY spalte</code> forms groups. <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code> then calculate per group.",
  "Im SELECT stehen nur die Gruppen-Spalte und Rechnungen: SELECT genre, COUNT(*) … GROUP BY genre": "The <code>SELECT</code> only contains the group column and calculations: <code>SELECT genre, COUNT(*) … GROUP BY genre</code>",
@@ -169,5 +168,9 @@
  "Gruppieren, zählen, sortieren, abschneiden.": "Group, count, sort, cut off.",
  "Lösung: SELECT lieblingsgenre, COUNT(*) AS anzahl FROM nutzer GROUP BY lieblingsgenre ORDER BY anzahl DESC LIMIT 1": "Solution: <code>SELECT lieblingsgenre, COUNT(*) AS anzahl FROM nutzer GROUP BY lieblingsgenre ORDER BY anzahl DESC LIMIT 1</code>",
  "SELECT jahr, COUNT(*) FROM songs GROUP BY jahr – was kommt heraus?": "<code>SELECT jahr, COUNT(*) FROM songs GROUP BY jahr</code> – what comes out?",
- "Fit für die Probe – Teil 2 →": "Ready for the test – Part 2 →"
+ "Fit für die Probe – Teil 2 →": "Ready for the test – Part 2 →",
+ "GROUP BY": "GROUP BY",
+ "Je Genre": "Per genre",
+ "Rangliste": "Ranking",
+ "★ Freiwillig HAVING – Bedingung für Gruppen": "<span class=\"badge expedition\">★ Optional</span> HAVING – a condition for groups"
 }

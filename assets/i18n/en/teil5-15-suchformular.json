@@ -96,5 +96,6 @@
  "Eingaben nie in den SQL-Text kleben, sondern über Platzhalter (Parameter) übergeben": "Never stick input into the SQL text, pass it through placeholders (parameters) instead",
  "Großbuchstaben verbieten": "Forbid capital letters",
  "Das hilft nicht.": "That doesn't help.",
- "Mit Platzhaltern bleibt die Eingabe immer nur ein Wert – nie Teil des Befehls. Dein Baukasten setzt Anführungszeichen in Eingaben deshalb sicher.": "With placeholders the input always stays just a value – never part of the command. That is why your form builder puts quotation marks in input safely."
+ "Mit Platzhaltern bleibt die Eingabe immer nur ein Wert – nie Teil des Befehls. Dein Baukasten setzt Anführungszeichen in Eingaben deshalb sicher.": "With placeholders the input always stays just a value – never part of the command. That is why your form builder puts quotation marks in input safely.",
+ "Platzhalter": "Placeholders"
 }

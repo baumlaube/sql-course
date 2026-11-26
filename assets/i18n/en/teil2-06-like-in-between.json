@@ -50,7 +50,6 @@
  "BETWEEN a AND b ist dasselbe wie >= a AND <= b.Beide Grenzen gehören dazu. Die kleinere Zahl kommt zuerst.": "<code>BETWEEN a AND b</code> is the same as <code>&gt;= a AND &lt;= b</code>.<br/>Both limits are included. The smaller number comes first.",
  "6 Jetzt du: alles zusammen 5 Minuten": "<span class=\"step-no\">6</span> Your turn: everything together <span class=\"chip\">5 minutes</span>",
  "Ein Fan sucht Songs von Künstlern, deren Name mit N beginnt – aber nur aus den Jahren 2019 bis 2022. Zeig Titel, Künstler und Jahr.": "A fan is looking for songs by artists whose name starts with <strong>N</strong> – but only from the years <strong>2019 to 2022</strong>. Show title, artist and year.",
- "Plus NOT IN und NOT LIKE für Schnelle": "<span class=\"badge plus\">Plus</span> NOT IN and NOT LIKE <span class=\"chip\">for fast learners</span>",
  "NOT funktioniert auch hier: genre NOT IN (…), titel NOT LIKE '…'. Gesucht: alle Songs, die weder Pop noch Rock noch Hip-Hop sind. Zeig Titel und Genre.": "<code>NOT</code> works here too: <code>genre NOT IN (…)</code>, <code>titel NOT LIKE '…'</code>. Wanted: all songs that are <strong>neither pop nor rock nor hip-hop</strong>. Show title and genre.",
  "LIKE sucht mit Muster: % = beliebig viel Text, _ = genau ein Zeichen. Mit = funktionieren Platzhalter nicht.": "<code>LIKE</code> searches with a pattern: <code>%</code> = any amount of text, <code>_</code> = exactly one character. Wildcards do not work with <code>=</code>.",
  "'S%' beginnt mit S · '%e' endet auf e · '%licht%' enthält „licht“.": "<code>'S%'</code> starts with S · <code>'%e'</code> ends with e · <code>'%licht%'</code> contains “licht”.",
@@ -184,5 +183,9 @@
  "Lösung: SELECT kuenstler, stadt, datum FROM konzerte WHERE kuenstler LIKE '% %' AND stadt IN ('Augsburg', 'Würzburg')": "Solution: <code>SELECT kuenstler, stadt, datum FROM konzerte WHERE kuenstler LIKE '% %' AND stadt IN ('Augsburg', 'Würzburg')</code>",
  "nur 2021": "only 2021",
  "2020 und 2021": "2020 and 2021",
- "2021 und 2022": "2021 and 2022"
+ "2021 und 2022": "2021 and 2022",
+ "Das %": "The %",
+ "IN": "IN",
+ "BETWEEN": "BETWEEN",
+ "★ Freiwillig NOT IN und NOT LIKE": "<span class=\"badge expedition\">★ Optional</span> NOT IN and NOT LIKE"
 }

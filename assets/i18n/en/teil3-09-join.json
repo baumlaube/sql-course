@@ -34,14 +34,12 @@
  "Was fehlt, damit nur der richtige Partner dazukommt?": "What is missing so that only the right partner is added?",
  "6 Jetzt du: Künstler und Labels 5 Minuten": "<span class=\"step-no\">6</span> Your turn: artists and labels <span class=\"chip\">5 minutes</span>",
  "Jeder Künstler ist bei einer Plattenfirma (labels). kuenstler.label_id zeigt auf labels.id. Zeig zu jedem Künstler seinen Namen und den Namen seines Labels.": "Every artist is with a record company (<code>labels</code>). <code>kuenstler.label_id</code> points to <code>labels.id</code>. For each artist show <strong>their name and the name of their label</strong>.",
- "Plus Kürzer schreiben mit Abkürzungen für Schnelle": "<span class=\"badge plus\">Plus</span> Writing it shorter with aliases <span class=\"chip\">for fast learners</span>",
  "Nach dem Tabellennamen kannst du eine Abkürzung setzen und sie dann statt des langen Namens benutzen:": "After the table name you can put a short name and then use it instead of the long name:",
  "Schreib damit: alle Songs mit Titel, Jahr und Künstlername.": "Use it to write: <strong>all songs with title, year and artist name</strong>.",
  "SELECT … FROM a JOIN b ON a.b_id = b.id legt zu jeder Zeile von a den passenden Partner aus b.": "<code>SELECT … FROM a JOIN b ON a.b_id = b.id</code> adds the matching partner from <code>b</code> to each row of <code>a</code>.",
  "Nach ON steht immer: Fremdschlüssel = id der anderen Tabelle.": "After <code>ON</code> there is always: <strong>foreign key = id</strong> of the other table.",
  "Ohne ON wird jede Zeile mit jeder verbunden – viel zu viele Zeilen.": "Without <code>ON</code> every row is joined with every row – far too many rows.",
  "Gibt es eine Spalte in beiden Tabellen (z. B. id, name), schreib den Tabellennamen davor: kuenstler.name.": "If a column exists in both tables (e.g. <code>id</code>, <code>name</code>), write the table name in front: <code>kuenstler.name</code>.",
- "Je mehr JOINs du schreibst, desto selbstverständlicher werden sie. Fang bei ● an.": "The more JOINs you write, the more natural they become. Start with ●.",
  "● Basis Tonspur: Songs und Künstler": "<span class=\"badge ueben\">● Basic</span> Tonspur: songs and artists",
  "Tabellen songs und kuenstler (und labels).": "Tables <code>songs</code> and <code>kuenstler</code> (and <code>labels</code>).",
  "Tabellen ausleihen, leser und buecher – die kennst du aus Lektion 2.": "Tables <code>ausleihen</code>, <code>leser</code> and <code>buecher</code> – you know them from lesson 2.",
@@ -127,5 +125,8 @@
  "Lösung: SELECT tiere.name, tiere.sucht, besitzer.wohnort FROM tiere JOIN besitzer ON tiere.besitzer_id = besitzer.id": "Solution: <code>SELECT tiere.name, tiere.sucht, besitzer.wohnort FROM tiere JOIN besitzer ON tiere.besitzer_id = besitzer.id</code>",
  "Zu jedem Tier: Name und ob seine Art fliegen kann.": "For each animal: the <strong>name and whether its species can fly</strong>.",
  "Lösung: SELECT tiere.name, arten.kann_fliegen FROM tiere JOIN arten ON tiere.art_id = arten.id": "Solution: <code>SELECT tiere.name, arten.kann_fliegen FROM tiere JOIN arten ON tiere.art_id = arten.id</code>",
- "← Fit für die Probe – Teil 2": "← Ready for the test – Part 2"
+ "← Fit für die Probe – Teil 2": "← Ready for the test – Part 2",
+ "Aufbauen": "Building",
+ "Hier kommt nichts Neues – nur Übung. Je mehr JOINs du schreibst, desto selbstverständlicher werden sie. Fang bei ● an.": "Nothing new here – just practice. The more JOINs you write, the more natural they become. Start with ●.",
+ "★ Freiwillig Kürzer schreiben mit Abkürzungen": "<span class=\"badge expedition\">★ Optional</span> Writing shorter with aliases"
 }

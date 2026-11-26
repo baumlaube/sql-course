@@ -81,5 +81,8 @@
  "Teil 5: Warum Platzhalter statt Eingaben direkt in den SQL-Text?": "Part 5: Why placeholders instead of putting input straight into the SQL text?",
  "Wegen der Geschwindigkeit": "Because of the speed",
  "Damit keine SQL-Injection möglich ist": "So that no SQL injection is possible",
- "Mit Platzhaltern bleibt eine Eingabe immer nur ein Wert.": "With placeholders an input always stays just a value."
+ "Mit Platzhaltern bleibt eine Eingabe immer nur ein Wert.": "With placeholders an input always stays just a value.",
+ "Testen": "Testing",
+ "Abgabe": "Hand-in",
+ "Weiter zum Rückblick ↓": "On to the review ↓"
 }

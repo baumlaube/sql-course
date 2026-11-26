@@ -27,7 +27,6 @@
  "Jonas wollte alle 36 Songs mit ihrem Label. Seine Abfrage läuft ohne Fehler – aber es fehlen Songs. Führ sie aus und vergleich mit dem ER-Diagramm oben.": "Jonas wanted <strong>all 36 songs</strong> with their label. His query runs without an error – but songs are missing. Run it and compare with the ER diagram above.",
  "Welche Spalten verbindet der zweite ON?": "Which columns does the second <code>ON</code> join?",
  "Welcher Fremdschlüssel zeigt auf labels?": "Which foreign key points to <code>labels</code>?",
- "Plus Noch nicht zurück: IS NULL für Schnelle": "<span class=\"badge plus\">Plus</span> Not back yet: IS NULL <span class=\"chip\">for fast learners</span>",
  "In der Bücherei ist zurueck leer (NULL), solange ein Buch noch ausgeliehen ist. Leere Werte findet man nicht mit = NULL, sondern mit IS NULL. Zeig Vorname, Nachname und Buchtitel aller Bücher, die noch nicht zurück sind – drei Tabellen!": "In the library, <code>zurueck</code> is empty (<code>NULL</code>) as long as a book is still borrowed. You don't find empty values with <code>= NULL</code>, but with <code>IS NULL</code>. Show the <strong>first name, surname and book title</strong> of all books that are not back yet – three tables!",
  "Nach dem JOIN funktionieren WHERE, GROUP BY, ORDER BY wie gewohnt – mit allen Spalten beider Tabellen.": "After the <code>JOIN</code>, <code>WHERE</code>, <code>GROUP BY</code>, <code>ORDER BY</code> work as usual – with all columns of both tables.",
  "Drei Tabellen: zwei JOIN … ON … hintereinander. Jeder ON verbindet einen Fremdschlüssel mit seiner id.": "Three tables: two <code>JOIN … ON …</code> one after the other. Each <code>ON</code> joins a foreign key with its <code>id</code>.",
@@ -122,5 +121,8 @@
  "danach": "after",
  "einen": "one",
  "singt": "sings",
- "vertritt": "represents"
+ "vertritt": "represents",
+ "JOIN + GROUP BY": "JOIN + GROUP BY",
+ "Drei Tabellen": "Three tables",
+ "★ Freiwillig Noch nicht zurück: IS NULL": "<span class=\"badge expedition\">★ Optional</span> Not returned yet: IS NULL"
 }

@@ -35,7 +35,6 @@
  "DELETE FROM tabelle WHERE … löscht ganze Zeilen – unwiderruflich.": "<code>DELETE FROM tabelle WHERE …</code> deletes whole rows – for good.",
  "Ohne WHERE trifft es alle Zeilen. Am sichersten: WHERE id = …": "Without <code>WHERE</code> it hits all rows. Safest: <code>WHERE id = …</code>",
  "Erst mit SELECT und demselben WHERE prüfen, dann ändern oder löschen. Und vorher eine Sicherung speichern.": "First check with <code>SELECT</code> and the same <code>WHERE</code>, then change or delete. And save a backup first.",
- "Alles an einer Kopie der Muster-Börse – jede Ausführung beginnt wieder mit dem Original.": "Everything on a copy of the sample site – every run starts again with the original.",
  "● Basis Steckbriefe pflegen": "<span class=\"badge ueben\">● Basic</span> Looking after profiles",
  "●● Sicher Aufräumen": "<span class=\"badge ueben\">●● Confident</span> Tidying up",
  "●●● Profi Viele auf einmal": "<span class=\"badge expedition\">●●● Pro</span> Many at once",
@@ -105,5 +104,8 @@
  "Rechnen geht auch: SET alter_jahre = alter_jahre + 1.": "You can calculate too: <code>SET alter_jahre = alter_jahre + 1</code>.",
  "Lösung: UPDATE tiere SET alter_jahre = alter_jahre + 1": "Solution: <code>UPDATE tiere SET alter_jahre = alter_jahre + 1</code>",
  "Alle Tiere, die älter als 10 sind, suchen ab jetzt Freundschaft.": "All animals <strong>older than 10</strong> are now looking for <strong>Freundschaft</strong> (friendship).",
- "Lösung: UPDATE tiere SET sucht = 'Freundschaft' WHERE alter_jahre > 10": "Solution: <code>UPDATE tiere SET sucht = 'Freundschaft' WHERE alter_jahre &gt; 10</code>"
+ "Lösung: UPDATE tiere SET sucht = 'Freundschaft' WHERE alter_jahre > 10": "Solution: <code>UPDATE tiere SET sucht = 'Freundschaft' WHERE alter_jahre &gt; 10</code>",
+ "UPDATE": "UPDATE",
+ "DELETE": "DELETE",
+ "Hier kommt nichts Neues – nur Übung. Alles an einer Kopie der Muster-Börse – jede Ausführung beginnt wieder mit dem Original.": "Nothing new here – just practice. Everything on a copy of the sample site – every run starts again with the original."
 }

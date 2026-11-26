@@ -46,7 +46,6 @@
  "Wie muss die zweite Bedingung vollständig heißen?": "What must the second condition look like in full?",
  "7 Jetzt du: kurze Hits 4 Minuten": "<span class=\"step-no\">7</span> Your turn: short hits <span class=\"chip\">4 minutes</span>",
  "Für Social Media braucht das Team Songs, die kürzer als 3 Minuten sind und mehr als 40 000 Likes haben. Zeig Titel, Dauer und Likes.": "For social media the team needs songs that are <strong>shorter than 3 minutes</strong> <strong>and have more than 40,000 likes</strong>. Show title, length and likes.",
- "Plus NOT für Schnelle": "<span class=\"badge plus\">Plus</span> NOT <span class=\"chip\">for fast learners</span>",
  "NOT dreht eine Bedingung um: NOT kuenstler = 'Juna' heißt „nicht von Juna“. Gesucht: alle Songs aus 2025, aber nicht von Juna. Zeig Titel und Künstler.": "<code>NOT</code> turns a condition around: <code>NOT kuenstler = 'Juna'</code> means “not by Juna”. Wanted: <strong>all songs from 2025, but not by Juna</strong>. Show title and artist.",
  "AND: beide Bedingungen müssen stimmen. OR: mindestens eine muss stimmen.": "<code>AND</code>: both conditions must be true. <code>OR</code>: at least one must be true.",
  "Jede Bedingung ist vollständig: genre = 'Pop' OR genre = 'Rock' – nicht genre = 'Pop' OR 'Rock'.": "Every condition is complete: <code>genre = 'Pop' OR genre = 'Rock'</code> – not <code>genre = 'Pop' OR 'Rock'</code>.",
@@ -189,5 +188,8 @@
  "Für Leute mit wenig Geld oder wenig Planung: Konzerte, die unter 20 € kosten oder bei denen noch mehr als 500 Plätze frei sind. Zeig Künstler, Preis und freie Plätze.": "For people with little money or little planning: concerts that cost <strong>under 20 €</strong> <strong>or</strong> that still have <strong>more than 500 free places</strong>. Show artist, price and free places.",
  "Mit AND müsste beides gleichzeitig stimmen. Hier reicht eins von beiden.": "With <code>AND</code> both would have to be true at the same time. Here one of the two is enough.",
  "Lösung: SELECT kuenstler, preis, plaetze_frei FROM konzerte WHERE preis < 20 OR plaetze_frei > 500": "Solution: <code>SELECT kuenstler, preis, plaetze_frei FROM konzerte WHERE preis &lt; 20 OR plaetze_frei &gt; 500</code>",
- "alles gleichzeitig von links nach rechts": "all at the same time, from left to right"
+ "alles gleichzeitig von links nach rechts": "all at the same time, from left to right",
+ "Die Und-Falle": "The AND trap",
+ "Klammern": "Brackets",
+ "★ Freiwillig NOT": "<span class=\"badge expedition\">★ Optional</span> NOT"
 }
