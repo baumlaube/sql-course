@@ -23,7 +23,9 @@
        { text: "…", tausche: [6, "oder", "OR"], ersetze: ["AND", "OR"] },  // Satzteil austauschen, im Labor ersetzen
        { text: "…", muster: "B%", spalte: "titel" },
        { text: "…", markiere: "ordnen", spalte: "dauer_sek", ordnen: "dauer_sek DESC" },  // Spalte türkis, Zeilen gleiten an ihren Platz
-       { text: "…", markiere: "limit", abschneiden: 3 },  // ab Zeile 4: Schnittlinie, Rest blass (spalte darf auch eine Liste sein)    // LIKE-Muster in der Spalte zeigen: feste Buchstaben grün, das % gestrichelt
+       { text: "…", markiere: "limit", abschneiden: 3 },
+       { text: "…", markiere: "gruppe", gruppen: "genre" },  // gleiche Werte rücken zusammen, jede Gruppe eine Farbe
+       { text: "…", zaehle: "genre" },                  // unter der Vorschau: je Gruppe eine Zeile mit der Anzahl  // ab Zeile 4: Schnittlinie, Rest blass (spalte darf auch eine Liste sein)    // LIKE-Muster in der Spalte zeigen: feste Buchstaben grün, das % gestrichelt
        { text: "…", zeige: "labor", spalte: "titel", bausteine: ["SELECT", "titel"] },
        { text: "…", nach: "titel", bausteine: [",", "jahr"] },   // hinter „titel“ einsetzen
        { text: "…", tippe: "…" }, { text: "…", ausfuehren: true }, { text: "…", ergebnis: true },
@@ -114,6 +116,7 @@
       if (art === "spalte") spalteMarkieren(spalte, pfeil);
       if (art === "bedingung") spalteMarkieren(spalte, pfeil, "film-bd");
       if (art === "ordnen") spalteMarkieren(spalte, pfeil, "film-so");
+      if (art === "gruppe") spalteMarkieren(spalte, pfeil, "film-gr");
       if (art === "tabelle") { const t = $(".film-tab .tabname"); if (t) t.classList.add("an"); if (t && pfeil) t.classList.add("film-pfeil"); }
     }
     function zeilenMarkieren(bed) {
@@ -167,6 +170,27 @@
       void body.offsetWidth;
       zeilen.forEach((z) => { z.style.transition = "transform 1.6s ease-in-out, opacity .6s"; z.style.transform = ""; });
     }
+    /* GROUP BY sichtbar machen: gleiche Werte rücken zusammen (Gleiten wie beim Sortieren), jede Gruppe bekommt eine Farbe */
+    const spaltenNr = (name) => [...el.querySelectorAll(".film-vorschau th")].findIndex((th) => th.textContent.trim() === name);
+    function gruppieren(name, sofort) {
+      zeilenOrdnen(name, sofort);
+      const i = spaltenNr(name), werte = [];
+      el.querySelectorAll(".film-vorschau tbody tr").forEach((z) => {
+        const w = z.children[i].textContent.trim();
+        if (!werte.includes(w)) werte.push(w);
+        z.classList.add("film-g" + (werte.indexOf(w) % 6));
+      });
+    }
+    function zaehlen(name) {
+      const i = spaltenNr(name), zahl = new Map();
+      el.querySelectorAll(".film-vorschau tbody tr").forEach((z) => { const w = z.children[i].textContent.trim(); zahl.set(w, (zahl.get(w) || 0) + 1); });
+      const box = document.createElement("div");
+      box.className = "film-gruppen";
+      box.innerHTML = `<p class="film-tab"><span class="muted">${T("Ergebnis für diese Zeilen")}</span></p>
+        <table class="labor-tab"><thead><tr><th>${esc(name)}</th><th>COUNT(*)</th></tr></thead><tbody>
+        ${[...zahl].map(([w, n], k) => `<tr class="film-g${k % 6}"><td>${esc(w)}</td><td class="zahl">${n}</td></tr>`).join("")}</tbody></table>`;
+      $(".film-vorschau").appendChild(box);
+    }
     function abschneiden(n) {
       el.querySelectorAll(".film-vorschau tbody tr").forEach((z, k) => {
         z.classList.toggle("film-raus", k >= n); z.classList.toggle("film-schnitt", k === n);
@@ -215,6 +239,8 @@
       }
       if (s.ersetze && lab) lab.feld.value = lab.feld.value.replace(s.ersetze[0], s.ersetze[1]);
       if (s.ordnen) { await p(700); if (ab()) return; zeilenOrdnen(s.ordnen, sofort); await p(1800); if (ab()) return; }
+      if (s.gruppen) { await p(700); if (ab()) return; gruppieren(s.gruppen, sofort); await p(1800); if (ab()) return; }
+      if (s.zaehle) { await p(600); if (ab()) return; zaehlen(s.zaehle); }
       if (s.abschneiden) { await p(600); if (ab()) return; abschneiden(s.abschneiden); }
       if (s.muster) { await p(600); if (ab()) return; musterZeigen(s.muster, s.spalte); }
       if (s.pruefe) { await p(600); if (ab()) return; zellenPruefen(s.pruefe, s.spalte); }

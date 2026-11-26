@@ -23,12 +23,13 @@
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="stylesheet" href="../assets/kurs.css?v=816a1e20aa">
-<link rel="stylesheet" href="../assets/labor.css?v=50495aa17a">
+<link rel="stylesheet" href="../assets/labor.css?v=d118768c45">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil2-08-group-by" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
 <script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
 <script src="../assets/labor.js?v=153ec0279e"></script>
+<script src="../assets/film.js?v=aa581c364c"></script>
 <script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
 <script src="../assets/daten/azubi.js?v=5b1356cc35"></script>
 <script src="../assets/daten/nutzer.js?v=533561c012"></script>
@@ -122,6 +123,7 @@
   <!-- 2 · Gruppen-Ansicht -->
   <section class="card" id="s2" data-tab="GROUP BY">
     <h2><span class="step-no">2</span> Was GROUP BY macht <span class="chip">4 Minuten</span></h2>
+    <div id="film1"></div>
     <p>Tipp auf <strong>① Gruppen bilden</strong>, dann auf <strong>② Je Gruppe rechnen</strong>.</p>
     <div id="gr"></div>
     <p class="rule"><code>GROUP BY spalte</code> legt alle Zeilen mit gleichem Wert zusammen.<br>
@@ -245,6 +247,33 @@ document.addEventListener("DOMContentLoaded", () => {
   const L = window.Labor;
   const $ = (id) => document.getElementById(id);
   const EXTRA = ["AND", "OR", "GROUP BY", "ORDER BY", "DESC", "LIMIT", "AS", "HAVING", "COUNT(*)", "SUM(", "AVG(", "MIN(", "MAX(", "ROUND(", "(", ")"];
+  /* Erklärfilm: GROUP BY – gleiche Genres rücken zusammen, je Gruppe eine Zahl. Steht im Reiter „GROUP BY“, nach der Überleg-Frage. */
+  Labor.film(document.getElementById("film1"), {
+    titel: "So funktioniert GROUP BY", db: "tonspur", vorschau: "songs", zeilen: 8, spalten: "id, titel, genre", extra: EXTRA,
+    paare: [["Zeig mir", "SELECT"], ["das Genre", "genre,", "spalte"], ["und die Anzahl", "COUNT(*)", "zaehlen"], ["aus der Tabelle", "FROM"], ["songs,", "songs", "tabelle"],
+            ["für jedes Genre.", "GROUP BY genre", "gruppe"]],
+    schritte: [
+      // Phase 1: verstehen – noch keine Knöpfe
+      { text: "Das ist wieder die Tabelle <code>songs</code>. Hier siehst du die ersten 8 Songs." },
+      { text: "Du willst wissen: Wie viele Songs gibt es <strong>in jedem Genre</strong>?" },
+      { text: "Du fragst:", zeige: "satz", markiere: ["spalte", "tabelle"], spalte: "genre" },
+      { text: "Die <strong>Anzahl</strong>: Die Datenbank zählt Zeilen.", markiere: "zaehlen", teil: 2 },
+      { text: "<strong>Für jedes Genre</strong>: Sie legt gleiche Genres zusammen.", markiere: "gruppe", teil: 5, spalte: "genre", gruppen: "genre" },
+      { text: "Jede Farbe ist eine <strong>Gruppe</strong>. Hier sind es 5 Gruppen." },
+      { text: "Jetzt zählt sie <strong>in jeder Gruppe</strong> die Zeilen.", zaehle: "genre" },
+      { text: "Aus jeder Gruppe wird <strong>eine</strong> Zeile im Ergebnis." },
+      { text: "In SQL heißt der Satz so:", zeige: "sql" },
+      { text: "<code>GROUP BY genre</code> heißt „für jedes Genre“. Es steht hinter <code>FROM</code>." },
+      { text: "<code>COUNT(*)</code> zählt die Zeilen – hier in jeder Gruppe einzeln." },
+      // Phase 2: dasselbe im Labor
+      { text: "Jetzt im Labor. Zuerst <code>SELECT</code>, die Spalte <code>genre</code>, ein Komma und <code>COUNT(*)</code>.", zeige: "labor", bausteine: ["SELECT", "genre", ",", "COUNT(*)"] },
+      { text: "Dann <code>FROM</code> und die Tabelle <code>songs</code>.", bausteine: ["FROM", "songs"] },
+      { text: "Zum Schluss <code>GROUP BY</code> und wieder die Spalte <code>genre</code>.", bausteine: ["GROUP BY", "genre"] },
+      { text: "Jetzt auf <strong>Ausführen</strong>.", ausfuehren: true },
+      { text: "Das Ergebnis: eine Zeile für jedes Genre – jetzt für alle 36 Songs.", ergebnis: true },
+      { text: "Jetzt du! Probier es selbst – zum Beispiel: die Anzahl für jedes <strong>Jahr</strong>.", leeren: true },
+    ],
+  });
   const UNGERUNDET = { wenn: ({ res, ref }) => res.ok && ref && res.zeilen.length === ref.zeilen.length && res.zeilen.some((z) => z.some((v) => typeof v === "number" && !Number.isInteger(v) && String(v).split(".")[1]?.length > 2)),
     text: "Fast! Da stehen noch viele Nachkommastellen. Runde mit <code>ROUND(…)</code>." };
   const OHNE_GRUPPE = { wenn: ({ res, ref }) => res.ok && ref && res.zeilen.length === 1 && ref.zeilen.length > 1,
