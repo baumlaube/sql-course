@@ -23,12 +23,13 @@
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="stylesheet" href="../assets/kurs.css?v=816a1e20aa">
-<link rel="stylesheet" href="../assets/labor.css?v=1616bca415">
+<link rel="stylesheet" href="../assets/labor.css?v=5bf069dd5d">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil2-06-like-in-between" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
 <script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
 <script src="../assets/labor.js?v=81a83fb334"></script>
+<script src="../assets/film.js?v=4baae2aa92"></script>
 <script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
 <script src="../assets/daten/azubi.js?v=5b1356cc35"></script>
 <script src="../assets/daten/konzerte.js?v=51212600cc"></script>
@@ -124,6 +125,7 @@
   <!-- 2 · LIKE mit % -->
   <section class="card" id="s2" data-tab="Das %">
     <h2><span class="step-no">2</span> Wo steht das %? <span class="chip">5 Minuten</span></h2>
+    <div id="film1"></div>
     <p><code>%</code> steht für <strong>beliebig viel Text</strong> – auch für gar keinen. Wo du es hinsetzt, entscheidet alles:</p>
     <div class="tbl-scroll"><table class="plain">
       <tr><th>Muster</th><th>findet</th><th>Beispiel</th></tr>
@@ -260,6 +262,33 @@ document.addEventListener("DOMContentLoaded", () => {
   const L = window.Labor;
   const $ = (id) => document.getElementById(id);
   const EXTRA = ["AND", "OR", "NOT", "LIKE", "%", "_", "IN", "BETWEEN", "(", ")"];
+  /* Erklärfilm: LIKE und % – „mit B beginnt“. Steht im Reiter „Das %“, nach der Überleg-Frage (S%). */
+  Labor.film(document.getElementById("film1"), {
+    titel: "So funktioniert LIKE", db: "tonspur", vorschau: "songs", zeilen: 8, spalten: "titel, kuenstler", extra: EXTRA,
+    paare: [["Zeig mir", "SELECT"], ["die Titel", "titel", "spalte"], ["aus der Tabelle", "FROM"], ["songs,", "songs", "tabelle"],
+            ["aber nur, wenn", "WHERE"], ["der Titel", "titel", "bedingung"], ["mit B beginnt.", "LIKE 'B%'", "bedingung"]],
+    schritte: [
+      // Phase 1: verstehen – noch keine Knöpfe
+      { text: "Das ist wieder die Tabelle <code>songs</code>. Hier siehst du die ersten 8 Songs." },
+      { text: "Du willst alle Songs, deren Titel mit <strong>B</strong> beginnt." },
+      { text: "Du fragst:", zeige: "satz", markiere: ["spalte", "tabelle"], spalte: "titel" },
+      { text: "Die Bedingung: Der Titel beginnt mit B.", markiere: "bedingung" },
+      { text: "Die Datenbank schaut auf den <strong>Anfang</strong> jedes Titels. Steht da ein B?", muster: "B%", spalte: "titel", zeilen: "titel LIKE 'B%'" },
+      { text: "Zwei Titel passen. Die anderen fliegen raus.", blass: true },
+      { text: "In SQL heißt der Satz so:", zeige: "sql" },
+      { text: "<code>LIKE</code> heißt „sieht aus wie“. Danach kommt ein <strong>Muster</strong>." },
+      { text: "Im Muster <code>'B%'</code> steht zuerst das <strong>B</strong>." },
+      { text: "Das <code>%</code> heißt: <strong>egal, was danach kommt</strong>. Auch gar nichts." },
+      { text: "Mit <code>=</code> geht das nicht: <code>titel = 'B'</code> sucht einen Titel, der genau „B“ heißt." },
+      // Phase 2: dasselbe im Labor
+      { text: "Jetzt im Labor. Den Anfang kennst du schon.", zeige: "labor", bausteine: ["SELECT", "titel", "FROM", "songs"] },
+      { text: "Dann <code>WHERE</code>, die Spalte <code>titel</code> und <code>LIKE</code>.", bausteine: ["WHERE", "titel", "LIKE"] },
+      { text: "Das Muster steht in Hochkommas: zuerst das B, dann das %.", bausteine: ["'…'"], tippe: "B%" },
+      { text: "Jetzt auf <strong>Ausführen</strong>.", ausfuehren: true },
+      { text: "Das Ergebnis: alle Titel mit B am Anfang.", ergebnis: true },
+      { text: "Jetzt du! Probier es selbst – zum Beispiel mit <code>'K%'</code>.", leeren: true },
+    ],
+  });
   /* Typische Fehler, die in vielen Aufgaben vorkommen */
   const GLEICH_PROZENT = { muster: /=\s*'[^']*[%_][^']*'/, text: "Mit <code>=</code> sucht SQL das Zeichen <code>%</code> wirklich als Buchstaben. Für ein Muster brauchst du <code>LIKE</code>." };
   const LIKE_OHNE_PROZENT = { wenn: ({ res, sql }) => res.ok && res.zeilen.length === 0 && /LIKE\s*'[^'%_]*'/i.test(sql),

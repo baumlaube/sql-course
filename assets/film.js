@@ -21,6 +21,7 @@
        { text: "…", markiere: "bedingung", teil: 7, spalte: "jahr" },   // nur Satzteil Nr. 7 (ab 0 gezählt) markieren
        { text: "…", pruefe: "jahr = 2024", spalte: "jahr" },            // Zellen der Spalte mit ✓, wo die Bedingung stimmt
        { text: "…", tausche: [6, "oder", "OR"], ersetze: ["AND", "OR"] },  // Satzteil austauschen, im Labor ersetzen
+       { text: "…", muster: "B%", spalte: "titel" },    // LIKE-Muster in der Spalte zeigen: feste Buchstaben grün, das % gestrichelt
        { text: "…", zeige: "labor", spalte: "titel", bausteine: ["SELECT", "titel"] },
        { text: "…", nach: "titel", bausteine: [",", "jahr"] },   // hinter „titel“ einsetzen
        { text: "…", tippe: "…" }, { text: "…", ausfuehren: true }, { text: "…", ergebnis: true },
@@ -75,6 +76,7 @@
       </div>`;
     const $ = (s) => el.querySelector(s);
     const text = $(".film-text");
+    let vorschauHTML = "";
     let lab = null, akt = -1, fertigBis = -1, laeuft = false, lauf = 0;
     const treffer = {};          // SQL-Bedingung → [true/false je Vorschauzeile]
 
@@ -88,8 +90,9 @@
       });
       db.close();
       $(".film-poster").innerHTML = ergebnisHTML({ spalten: r.columns, zeilen: r.values });
-      $(".film-vorschau").innerHTML = `<p class="film-tab"><span class="tabname">📋 ${esc(o.vorschau)}</span> <span class="muted">${T(`die ersten ${r.values.length} von ${n} Zeilen`)}</span></p>`
+      vorschauHTML = `<p class="film-tab"><span class="tabname">📋 ${esc(o.vorschau)}</span> <span class="muted">${T(`die ersten ${r.values.length} von ${n} Zeilen`)}</span></p>`
         + ergebnisHTML({ spalten: r.columns, zeilen: r.values });
+      $(".film-vorschau").innerHTML = vorschauHTML;
     });
 
     /* ---- Markierungen ---- */
@@ -124,7 +127,23 @@
     function teileZeigen(bis) {
       el.querySelectorAll(".film-ueb .film-paar[data-i]").forEach((x) => { x.hidden = bis != null && +x.dataset.i >= bis; });
     }
+    /* LIKE-Muster sichtbar machen: In jeder passenden Zelle werden die festen Buchstaben grün,
+       was das % (beliebig viel Text) abdeckt, steht gestrichelt. _ = genau ein Zeichen. */
+    function musterZeigen(muster, name) {
+      const tab = $(".film-vorschau table");
+      if (!tab) return;
+      const i = [...tab.querySelectorAll("th")].findIndex((th) => th.textContent.trim() === name);
+      if (i < 0) return;
+      const teile = muster.split("%");
+      const re = new RegExp("^" + teile.map((t) => "(" + t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/_/g, ".") + ")").join("(.*?)") + "$", "is");
+      tab.querySelectorAll("tbody tr").forEach((z) => {
+        const c = z.children[i], m = c && c.textContent.match(re);
+        if (!m) return;
+        c.innerHTML = m.slice(1).map((g, k) => !g ? "" : k % 2 ? `<span class="film-rest">${esc(g)}</span>` : `<mark class="film-fix">${esc(g)}</mark>`).join("");
+      });
+    }
     function buehneLeeren() {
+      if (vorschauHTML) $(".film-vorschau").innerHTML = vorschauHTML;   // Vorschau frisch (auch Muster-Markierungen weg)
       lab && lab.zuruecksetzen();
       $(".film-satz").hidden = true; $(".film-satz").innerHTML = uebersetzung(o.paare || []);   // auch Getauschtes zurück $(".film-labor").hidden = true;
       el.querySelectorAll(".an, .film-sp, .film-bd, .film-ok, .film-pfeil, .film-puls, .film-erg, .film-treffer, .film-raus").forEach((x) =>
@@ -164,6 +183,7 @@
         }
       }
       if (s.ersetze && lab) lab.feld.value = lab.feld.value.replace(s.ersetze[0], s.ersetze[1]);
+      if (s.muster) { await p(600); if (ab()) return; musterZeigen(s.muster, s.spalte); }
       if (s.pruefe) { await p(600); if (ab()) return; zellenPruefen(s.pruefe, s.spalte); }
       else if (s.spalte) spalteMarkieren(s.spalte, !sofort);
       if (s.zeilen) { await p(600); if (ab()) return; zeilenMarkieren(s.zeilen); }
