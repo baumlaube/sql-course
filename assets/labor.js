@@ -378,6 +378,9 @@
       ta.value = o.sql || "";
       holeSQL = () => ta.value;
       setzeSQL = (s) => { ta.value = s; };
+      // Für den Erklärfilm (film.js): Baustein einsetzen wie per Antippen, wahlweise an einer Stelle
+      api.einsetzen = (t, pos) => { const p = pos == null ? ta.value.length : pos; ta.setSelectionRange(p, p); einfuegen(ta, t, true); };
+      api.feld = ta;
       ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); los(); } });
       if (o.leiste === false) { codeBox.querySelector(".labor-bausteine").remove(); return; }
       const leiste = codeBox.querySelector(".labor-bausteine");
@@ -418,7 +421,7 @@
       }
     }
 
-    function einfuegen(ta, t) {
+    function einfuegen(ta, t, ohneFokus) {
       const a = ta.selectionStart ?? ta.value.length, z = ta.selectionEnd ?? a;
       const vor = ta.value.slice(0, a), nach = ta.value.slice(z);
       let txt = t === "'…'" ? "''" : t;
@@ -427,7 +430,7 @@
       const danach = t === "'…'" || klebt ? "" : " ";
       ta.value = vor + davor + txt + danach + (klebt ? nach : nach.replace(/^ /, ""));
       const pos = (vor + davor).length + (t === "'…'" ? 1 : txt.length + danach.length);
-      ta.focus();
+      if (!ohneFokus) ta.focus();        // Erklärfilm: kein Fokus, sonst springt am Handy die Tastatur auf
       ta.setSelectionRange(pos, pos);
     }
 
@@ -647,6 +650,7 @@
     }).catch((e) => zeige(T("Das SQL-Labor konnte nicht starten:") + " " + esc(e.message), "hint"));
 
     api.los = () => los();
+    api.zuruecksetzen = () => { setzeSQL(""); fb.className = "fb labor-fb"; fb.innerHTML = ""; erg.hidden = true; };
     return api;
   }
 
