@@ -26,8 +26,9 @@
 <link rel="stylesheet" href="../assets/labor.css?v=5eb6de2187">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil2-06-like-in-between" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
+<script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
-<script src="../assets/labor.js?v=ca2d940769"></script>
+<script src="../assets/labor.js?v=81a83fb334"></script>
 <script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
 <script src="../assets/daten/azubi.js?v=5b1356cc35"></script>
 <script src="../assets/daten/konzerte.js?v=51212600cc"></script>
@@ -77,11 +78,6 @@
       Jedes Suchfeld in einer App arbeitet so – du tippst ein paar Buchstaben, und die Datenbank sucht mit <code>LIKE</code>.</p>
   </section>
 
-  <section class="card wdh">
-    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
-    <div id="wdh"></div>
-  </section>
-
   <details class="card woerter">
     <summary>📖 Wörter für diese Lektion</summary>
     <p class="note">Die SQL-Befehle bleiben englisch – so heißen sie in jeder Datenbank der Welt.</p>
@@ -94,14 +90,20 @@
       <tr><th class="wort">die Grenze <small>die Grenzen</small></th><td>Der erste und der letzte Wert eines Bereichs.</td></tr>
     </table></div>
   </details>
-
   <section class="card szenario">
     <h2><span class="step-no">🎧</span> Szenario</h2>
     <p>Bei <strong>Tonspur</strong> wird die Suchfunktion der App gebaut. Du testest, welche Abfragen dahinter stecken – mit der Tabelle <code>songs</code>.</p>
   </section>
 
+  <!-- ===== Lernblock: Reiter, immer nur ein Schritt offen (register.js) ===== -->
+  <div id="lernen">
+  <section class="card wdh" id="wdh-s" data-tab="Weißt du noch?">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
   <!-- 1 · Überleg -->
-  <section class="card">
+  <section class="card" id="s1" data-tab="Überleg">
     <h2><span class="step-no">1</span> Überleg: das Suchfeld <span class="chip">4 Minuten</span></h2>
     <div id="tab-songs"></div>
     <p>Jemand tippt ins Suchfeld ein „S“. Die App schickt diese Abfrage los:</p>
@@ -120,7 +122,7 @@
   </section>
 
   <!-- 2 · LIKE mit % -->
-  <section class="card">
+  <section class="card" id="s2" data-tab="Das %">
     <h2><span class="step-no">2</span> Wo steht das %? <span class="chip">5 Minuten</span></h2>
     <p><code>%</code> steht für <strong>beliebig viel Text</strong> – auch für gar keinen. Wo du es hinsetzt, entscheidet alles:</p>
     <div class="tbl-scroll"><table class="plain">
@@ -137,7 +139,7 @@
   </section>
 
   <!-- 3 · Fehlerdetektiv -->
-  <section class="card">
+  <section class="card" id="s3" data-tab="Detektiv">
     <h2><span class="step-no">3</span> Fehlerdetektiv: Die Suche findet nichts <span class="chip">4 Minuten</span></h2>
     <p>Ein Kollege hat die Suche nach Titeln mit „B“ am Anfang programmiert. Es kommt kein Fehler – aber auch kein einziger Song.
       Dabei gibt es Titel mit B! Führ die Abfrage aus und finde den Fehler.</p>
@@ -151,7 +153,7 @@
   </section>
 
   <!-- 4 · IN -->
-  <section class="card">
+  <section class="card" id="s4" data-tab="IN">
     <h2><span class="step-no">4</span> IN: eine ganze Liste auf einmal <span class="chip">5 Minuten</span></h2>
     <p>Für die Playlist „Gitarre“ sollen alle Songs aus <strong>Rock oder Indie</strong> rein. Mit <code>OR</code> geht das so:</p>
     <pre class="sql" data-farbe>SELECT titel, genre FROM songs WHERE genre = 'Rock' OR genre = 'Indie'</pre>
@@ -163,7 +165,7 @@
   </section>
 
   <!-- 5 · BETWEEN -->
-  <section class="card">
+  <section class="card" id="s5" data-tab="BETWEEN">
     <h2><span class="step-no">5</span> BETWEEN: von … bis … <span class="chip">5 Minuten</span></h2>
     <pre class="sql" data-farbe>SELECT titel, jahr FROM songs WHERE jahr BETWEEN 2019 AND 2021</pre>
     <p><strong>Überleg:</strong> Sind die Songs aus 2019 und aus 2021 dabei?</p>
@@ -184,7 +186,7 @@
   </section>
 
   <!-- 6 · Alles zusammen -->
-  <section class="card">
+  <section class="card" id="s6" data-tab="Jetzt du">
     <h2><span class="step-no">6</span> Jetzt du: alles zusammen <span class="chip">5 Minuten</span></h2>
     <p>Ein Fan sucht Songs von Künstlern, deren Name mit <strong>N</strong> beginnt – aber nur aus den Jahren <strong>2019 bis 2022</strong>.
       Zeig Titel, Künstler und Jahr.</p>
@@ -192,22 +194,44 @@
     <div id="hints6"></div>
   </section>
 
-  <!-- Plus -->
-  <section class="card">
-    <h2><span class="badge plus">Plus</span> NOT IN und NOT LIKE <span class="chip">für Schnelle</span></h2>
+  <!-- Kurz-Check -->
+  <section class="card" id="check" data-tab="Kurz-Check">
+    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
+    <div id="quiz"></div>
+  </section>
+  </div>
+
+  <!-- Training -->
+  <section class="card ueben-block" id="training">
+    <h2><span class="step-no">🏋</span> Üben</h2>
+    <p class="lead">Hier kommt nichts Neues – nur Übung. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
+
+    <div class="stufe-box st1">
+    <h3 class="sub"><span class="badge basis">● Basis</span> Die Suchfunktion testen</h3>
+    <div id="tr1"></div>
+    </div>
+    <div class="stufe-box st2">
+    <h3 class="sub"><span class="badge plus">●● Sicher</span> Azubi-Börse</h3>
+    <p>Die Azubi-Börse bekommt ein Suchfeld und Filter. Teste sie mit der Tabelle <code>stellen</code>.</p>
+    <div id="tr2"></div>
+    </div>
+    <div class="stufe-box st3">
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Konzertkalender</h3>
+    <p>Tabelle <code>konzerte</code>. Datumswerte stehen als Text im Format <code>'JJJJ-MM-TT'</code>.</p>
+    <div id="tr3"></div>
+    </div>
+
+    <!-- Freiwillig: das frühere „Plus für Schnelle“ – ein Stück Neues, darum ganz am Ende -->
+    <div class="frei-box" id="freiwillig">
+    <h3 class="frei-titel"><span class="badge expedition">★ Freiwillig</span> NOT IN und NOT LIKE</h3>
     <p><code>NOT</code> funktioniert auch hier: <code>genre NOT IN (…)</code>, <code>titel NOT LIKE '…'</code>.
       Gesucht: alle Songs, die <strong>weder Pop noch Rock noch Hip-Hop</strong> sind. Zeig Titel und Genre.</p>
     <div id="lplus"></div>
     <div id="hintsplus"></div>
+    </div>
   </section>
 
-  <!-- Kurz-Check -->
-  <section class="card">
-    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
-    <div id="quiz"></div>
-  </section>
-
-  <section class="card merke">
+  <section class="card merke" id="merke">
     <h2>Merke</h2>
     <ul>
       <li><code>LIKE</code> sucht mit Muster: <code>%</code> = beliebig viel Text, <code>_</code> = genau ein Zeichen. Mit <code>=</code> funktionieren Platzhalter nicht.</li>
@@ -215,23 +239,6 @@
       <li><code>IN ('A', 'B')</code> ersetzt lange <code>OR</code>-Ketten. Die Liste steht in Klammern.</li>
       <li><code>BETWEEN a AND b</code>: von a bis b, beide Grenzen gehören dazu. Klappt mit Zahlen und mit Datum.</li>
     </ul>
-  </section>
-
-  <!-- Training -->
-  <section class="card frei" id="training">
-    <h2><span class="step-no">🏋</span> Training</h2>
-    <p class="lead">Je mehr Abfragen du schreibst, desto sicherer wirst du. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
-
-    <h3 class="sub"><span class="badge ueben">● Basis</span> Die Suchfunktion testen</h3>
-    <div id="tr1"></div>
-
-    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Azubi-Börse</h3>
-    <p>Die Azubi-Börse bekommt ein Suchfeld und Filter. Teste sie mit der Tabelle <code>stellen</code>.</p>
-    <div id="tr2"></div>
-
-    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Konzertkalender</h3>
-    <p>Tabelle <code>konzerte</code>. Datumswerte stehen als Text im Format <code>'JJJJ-MM-TT'</code>.</p>
-    <div id="tr3"></div>
   </section>
 
   <nav class="pager">
@@ -456,6 +463,11 @@ document.addEventListener("DOMContentLoaded", () => {
       loesung: "SELECT kuenstler, stadt, datum FROM konzerte WHERE kuenstler LIKE '% %' AND stadt IN ('Augsburg', 'Würzburg')",
       hints: ["Leerzeichen irgendwo: <code>'% %'</code>.", "Lösung: <code>SELECT kuenstler, stadt, datum FROM konzerte WHERE kuenstler LIKE '% %' AND stadt IN ('Augsburg', 'Würzburg')</code>"] },
   ]) });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  Register(document.getElementById("lernen"), { key: "l06", after: "training", nr: "6" });
 });
 </script>
 </body>

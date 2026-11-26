@@ -26,8 +26,9 @@
 <link rel="stylesheet" href="../assets/labor.css?v=5eb6de2187">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil5-16-eingabeformular" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
+<script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
-<script src="../assets/labor.js?v=ca2d940769"></script>
+<script src="../assets/labor.js?v=81a83fb334"></script>
 <script src="../assets/labor-extra.js?v=e94bd060f6"></script>
 <script src="../assets/projekt.js?v=35eb603fae"></script>
 <script src="../assets/daten/pfoten.js?v=7b482f3862"></script>
@@ -77,11 +78,6 @@
       dann eine kleine <strong>Anwendung</strong>: Daten eingeben, Daten finden.</p>
   </section>
 
-  <section class="card wdh">
-    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
-    <div id="wdh"></div>
-  </section>
-
   <details class="card woerter">
     <summary>📖 Wörter für diese Lektion</summary>
     <p class="note">Die Fachwörter links bleiben deutsch – so heißen sie im Unterricht.</p>
@@ -92,14 +88,20 @@
       <tr><th class="wort">abgeben <small>die Abgabe</small></th><td>Deine fertige <code>.db</code>-Datei an die Lehrkraft geben.</td></tr>
     </table></div>
   </details>
-
   <section class="card szenario">
     <h2><span class="step-no">🐾</span> Szenario</h2>
     <p>Die Firmenleitung von <strong>Pfotenglück</strong> ist begeistert von deiner Suche. Jetzt sollen sich Tiere selbst anmelden können. Letzte Aufgabe: das <strong>Eingabeformular</strong>.</p>
   </section>
 
+  <!-- ===== Lernblock: Reiter, immer nur ein Schritt offen (register.js) ===== -->
+  <div id="lernen">
+  <section class="card wdh" id="wdh-s" data-tab="Weißt du noch?">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
   <!-- 1 · Überleg -->
-  <section class="card">
+  <section class="card" id="s1" data-tab="Überleg">
     <h2><span class="step-no">1</span> Überleg: Aus dem Formular wird … <span class="chip">4 Minuten</span></h2>
     <div class="fb-form" style="max-width:360px;margin:10px 0">
       <label class="fb-feld"><span class="t">Name</span><input disabled value="Flocki"></label>
@@ -111,7 +113,7 @@
   </section>
 
   <!-- 2 · Baukasten -->
-  <section class="card">
+  <section class="card" id="s2" data-tab="Jetzt du">
     <h2><span class="step-no">2</span> Jetzt du: das Formular „Tier anmelden“ <span class="chip">14 Minuten</span></h2>
     <ol class="howto">
       <li>Öffne deine <code>.db</code>-Datei (oder lade die Muster-Börse).</li>
@@ -122,7 +124,7 @@
   </section>
 
   <!-- 3 · Anwendung testen -->
-  <section class="card">
+  <section class="card" id="s3" data-tab="Testen">
     <h2><span class="step-no">3</span> Die Anwendung testen: Findet die Suche die neuen Tiere? <span class="chip">8 Minuten</span></h2>
     <p>Baue hier dein Suchformular aus Lektion 15 noch einmal (es geht schnell) und such nach den Tieren, die du gerade angemeldet hast.
       Wenn sie gefunden werden, arbeiten Eingabe und Suche zusammen – <strong>deine Anwendung funktioniert</strong>.</p>
@@ -130,19 +132,27 @@
   </section>
 
   <!-- 4 · Abgabe -->
-  <section class="card">
+  <section class="card" id="s4" data-tab="Abgabe">
     <h2><span class="step-no">4</span> Abgabe <span class="chip">2 Minuten</span></h2>
     <p>Speichere deine Datenbank ein letztes Mal mit <strong>„Als Datei speichern (.db)“</strong> und gib die Datei bei deiner Lehrkraft ab.
       Die Lehrkraft kann sie hier im Kurs mit „Datei öffnen“ ansehen – mit allen Tabellen und Daten.</p>
   </section>
 
   <!-- Kurz-Check -->
-  <section class="card">
+  <section class="card" id="check" data-tab="Kurz-Check">
     <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
     <div id="quiz"></div>
   </section>
+  </div>
 
-  <section class="card merke">
+  <!-- Rückblick -->
+  <section class="card ueben-block" id="training">
+    <h2><span class="step-no">🎓</span> Rückblick auf den Kurs</h2>
+    <p class="lead">Du kannst jetzt erklären, wozu Datenbanken da sind, sie planen, bauen, befragen und mit Formularen bedienen. Teste dich zum Abschluss quer durch alle Teile.</p>
+    <div id="rueck"></div>
+  </section>
+
+  <section class="card merke" id="merke">
     <h2>Merke</h2>
     <ul>
       <li>Ein Eingabeformular wird zu <code>INSERT INTO tabelle (spalten) VALUES (:platzhalter)</code>.</li>
@@ -150,13 +160,6 @@
       <li>Fremdschlüssel wählt man aus einer Liste – so zeigen sie nie ins Nichts.</li>
       <li>Eingabe + Suche über Formulare = eine Anwendung, die jeder ohne SQL benutzen kann.</li>
     </ul>
-  </section>
-
-  <!-- Rückblick -->
-  <section class="card frei" id="training">
-    <h2><span class="step-no">🎓</span> Rückblick auf den Kurs</h2>
-    <p class="lead">Du kannst jetzt erklären, wozu Datenbanken da sind, sie planen, bauen, befragen und mit Formularen bedienen. Teste dich zum Abschluss quer durch alle Teile.</p>
-    <div id="rueck"></div>
   </section>
 
   <nav class="pager">
@@ -220,6 +223,11 @@ document.addEventListener("DOMContentLoaded", () => {
     { q: "Teil 5: Warum Platzhalter statt Eingaben direkt in den SQL-Text?", options: ["Wegen der Geschwindigkeit", "Damit keine SQL-Injection möglich ist", "Weil es kürzer ist"], right: 1,
       miss: ["Darum geht es nicht.", null, "Darum geht es nicht."], why: "Mit Platzhaltern bleibt eine Eingabe immer nur ein Wert." },
   ]);
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  Register(document.getElementById("lernen"), { key: "l16", after: "training", nr: "16", weiterText: "Weiter zum Rückblick ↓" });
 });
 </script>
 </body>

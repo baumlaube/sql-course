@@ -26,8 +26,9 @@
 <link rel="stylesheet" href="../assets/labor.css?v=5eb6de2187">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil2-07-sortieren-rechnen" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
+<script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
-<script src="../assets/labor.js?v=ca2d940769"></script>
+<script src="../assets/labor.js?v=81a83fb334"></script>
 <script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
 <script src="../assets/daten/azubi.js?v=5b1356cc35"></script>
 <script src="../assets/daten/konzerte.js?v=51212600cc"></script>
@@ -77,11 +78,6 @@
       <code>AVG</code>, <code>MIN</code> und <code>MAX</code> rechnen für dich. Auch über eine Million Zeilen, in einem Augenblick.</p>
   </section>
 
-  <section class="card wdh">
-    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
-    <div id="wdh"></div>
-  </section>
-
   <details class="card woerter">
     <summary>📖 Wörter für diese Lektion</summary>
     <p class="note">Die SQL-Befehle bleiben englisch – so heißen sie in jeder Datenbank der Welt.</p>
@@ -94,14 +90,20 @@
       <tr><th class="wort">runden <small>gerundet</small></th><td>Eine Kommazahl kürzer machen: 225,06 → 225. In SQL: <code>ROUND</code>.</td></tr>
     </table></div>
   </details>
-
   <section class="card szenario">
     <h2><span class="step-no">🎧</span> Szenario</h2>
     <p>Jahresende bei <strong>Tonspur</strong>: Die App bekommt Charts, und die Chefin will Zahlen für die Jahresbilanz. Alles steht in der Tabelle <code>songs</code>.</p>
   </section>
 
+  <!-- ===== Lernblock: Reiter, immer nur ein Schritt offen (register.js) ===== -->
+  <div id="lernen">
+  <section class="card wdh" id="wdh-s" data-tab="Weißt du noch?">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
   <!-- 1 · Überleg -->
-  <section class="card">
+  <section class="card" id="s1" data-tab="Überleg">
     <h2><span class="step-no">1</span> Überleg: Wer steht oben? <span class="chip">4 Minuten</span></h2>
     <div id="tab-songs"></div>
     <pre class="sql" data-farbe>SELECT titel, likes FROM songs ORDER BY likes DESC</pre>
@@ -121,7 +123,7 @@
   </section>
 
   <!-- 2 · Puzzle Top 5 -->
-  <section class="card">
+  <section class="card" id="s2" data-tab="Puzzle">
     <h2><span class="step-no">2</span> Puzzle: die Top 5 <span class="chip">4 Minuten</span></h2>
     <p>Die App-Startseite zeigt die <strong>Top 5</strong>: die fünf Songs mit den meisten Likes, mit Titel und Likes, der beliebteste zuerst.
       <code>LIMIT 5</code> schneidet nach fünf Zeilen ab. Zwei Bausteine brauchst du nicht.</p>
@@ -129,7 +131,7 @@
   </section>
 
   <!-- 3 · Zwei Sortierungen -->
-  <section class="card">
+  <section class="card" id="s3" data-tab="Zwei Spalten">
     <h2><span class="step-no">3</span> Nach zwei Spalten sortieren <span class="chip">4 Minuten</span></h2>
     <p>Die Künstlerseite: alle Songs <strong>nach Künstler von A bis Z</strong> – und bei jedem Künstler <strong>die neuesten Songs zuerst</strong>.
       Wähle in den Lücken.</p>
@@ -138,7 +140,7 @@
   </section>
 
   <!-- 4 · Rechnen -->
-  <section class="card">
+  <section class="card" id="s4" data-tab="Rechnen">
     <h2><span class="step-no">4</span> Rechnen statt zählen <span class="chip">6 Minuten</span></h2>
     <p>Statt Zeilen anzuzeigen, kann die Datenbank rechnen. Heraus kommt dann <strong>ein einziger Wert</strong>:</p>
     <div class="tbl-scroll"><table class="plain">
@@ -159,7 +161,7 @@
   </section>
 
   <!-- 5 · Fehlerdetektiv -->
-  <section class="card">
+  <section class="card" id="s5" data-tab="Detektiv">
     <h2><span class="step-no">5</span> Fehlerdetektiv: die kürzesten Songs <span class="chip">4 Minuten</span></h2>
     <p>Für eine Playlist „Schnell durch“ wollte Jonas die <strong>3 kürzesten Songs</strong>. Seine Abfrage läuft ohne Fehler.
       Führ sie aus und schau dir die Dauer an.</p>
@@ -173,7 +175,7 @@
   </section>
 
   <!-- 6 · Der Längste -->
-  <section class="card">
+  <section class="card" id="s6" data-tab="Jetzt du">
     <h2><span class="step-no">6</span> Jetzt du: der längste Song <span class="chip">5 Minuten</span></h2>
     <p><em>„Welcher Song ist der längste? Ich brauche Titel und Dauer.“</em></p>
     <p class="note">Tipp: <code>MAX(dauer_sek)</code> liefert nur die Zahl. Wer den <strong>Song</strong> dazu will, sortiert und nimmt die erste Zeile.</p>
@@ -182,22 +184,45 @@
     <p class="rule">„Der Größte“, „die Teuerste“, „der Neueste“:<br><code>ORDER BY spalte DESC LIMIT 1</code></p>
   </section>
 
-  <!-- Plus -->
-  <section class="card">
-    <h2><span class="badge plus">Plus</span> COUNT(DISTINCT …) <span class="chip">für Schnelle</span></h2>
+  <!-- Kurz-Check -->
+  <section class="card" id="check" data-tab="Kurz-Check">
+    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
+    <div id="quiz"></div>
+  </section>
+  </div>
+
+  <!-- Training -->
+  <section class="card ueben-block" id="training">
+    <h2><span class="step-no">🏋</span> Üben</h2>
+    <p class="lead">Hier kommt nichts Neues – nur Übung. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
+
+    <div class="stufe-box st1">
+    <h3 class="sub"><span class="badge basis">● Basis</span> Charts und Zahlen für Tonspur</h3>
+    <div id="tr1"></div>
+    </div>
+    <div class="stufe-box st2">
+    <h3 class="sub"><span class="badge plus">●● Sicher</span> Azubi-Börse: die Statistik</h3>
+    <p>Die Azubi-Börse veröffentlicht eine Statistik aus der Tabelle <code>stellen</code>. <code>verguetung</code> = Euro pro Monat im 1. Jahr,
+      <code>plaetze</code> = freie Plätze.</p>
+    <div id="tr2"></div>
+    </div>
+    <div class="stufe-box st3">
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Konzertkalender</h3>
+    <p>Tabelle <code>konzerte</code>. <strong>Heute ist der 15. März 2026.</strong></p>
+    <div id="tr3"></div>
+    </div>
+
+    <!-- Freiwillig: das frühere „Plus für Schnelle“ – ein Stück Neues, darum ganz am Ende -->
+    <div class="frei-box" id="freiwillig">
+    <h3 class="frei-titel"><span class="badge expedition">★ Freiwillig</span> COUNT(DISTINCT …)</h3>
     <p><em>„Wie viele verschiedene Künstler haben wir?“</em> <code>COUNT(*)</code> zählt alle 36 Zeilen. Du brauchst jeden Künstler nur einmal.
       Probier <code>COUNT(DISTINCT spalte)</code>.</p>
     <div id="lplus"></div>
     <div id="hintsplus"></div>
+    </div>
   </section>
 
-  <!-- Kurz-Check -->
-  <section class="card">
-    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
-    <div id="quiz"></div>
-  </section>
-
-  <section class="card merke">
+  <section class="card merke" id="merke">
     <h2>Merke</h2>
     <ul>
       <li>Reihenfolge der Teile: <code>SELECT … FROM … WHERE … ORDER BY … LIMIT …</code></li>
@@ -205,24 +230,6 @@
       <li><code>COUNT(*)</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code> rechnen über alle Zeilen – heraus kommt ein Wert. <code>ROUND</code> rundet.</li>
       <li>Wer den ganzen Datensatz zum Größten will: <code>ORDER BY … DESC LIMIT 1</code>.</li>
     </ul>
-  </section>
-
-  <!-- Training -->
-  <section class="card frei" id="training">
-    <h2><span class="step-no">🏋</span> Training</h2>
-    <p class="lead">Je mehr Abfragen du schreibst, desto sicherer wirst du. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
-
-    <h3 class="sub"><span class="badge ueben">● Basis</span> Charts und Zahlen für Tonspur</h3>
-    <div id="tr1"></div>
-
-    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Azubi-Börse: die Statistik</h3>
-    <p>Die Azubi-Börse veröffentlicht eine Statistik aus der Tabelle <code>stellen</code>. <code>verguetung</code> = Euro pro Monat im 1. Jahr,
-      <code>plaetze</code> = freie Plätze.</p>
-    <div id="tr2"></div>
-
-    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Konzertkalender</h3>
-    <p>Tabelle <code>konzerte</code>. <strong>Heute ist der 15. März 2026.</strong></p>
-    <div id="tr3"></div>
   </section>
 
   <nav class="pager">
@@ -455,6 +462,11 @@ document.addEventListener("DOMContentLoaded", () => {
       fallen: [{ sql: "SELECT kuenstler, preis, datum FROM konzerte ORDER BY preis DESC, datum DESC", text: "Bei gleichem Preis soll das <strong>frühere</strong> Datum zuerst stehen – aufsteigend." }],
       hints: ["Zwei Sortierungen mit Komma: erst Preis absteigend, dann Datum aufsteigend.", "Lösung: <code>SELECT kuenstler, preis, datum FROM konzerte ORDER BY preis DESC, datum</code>"] },
   ]) });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  Register(document.getElementById("lernen"), { key: "l07", after: "training", nr: "7" });
 });
 </script>
 </body>

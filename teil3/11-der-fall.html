@@ -26,8 +26,9 @@
 <link rel="stylesheet" href="../assets/labor.css?v=5eb6de2187">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil3-11-der-fall" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
+<script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
-<script src="../assets/labor.js?v=ca2d940769"></script>
+<script src="../assets/labor.js?v=81a83fb334"></script>
 <script src="../assets/labor-extra.js?v=e94bd060f6"></script>
 <script src="../assets/daten/fall.js?v=05625d4ed0"></script>
 <style>
@@ -79,11 +80,6 @@
       genau diese Daten aus – mit SQL. Heute bist du diese Fachkraft. Alles, was du in diesem Kurs gelernt hast, brauchst du jetzt.</p>
   </section>
 
-  <section class="card wdh">
-    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
-    <div id="wdh"></div>
-  </section>
-
   <section class="card">
     <h2><span class="step-no">🗂</span> Die Akte</h2>
     <div class="akte">
@@ -96,35 +92,45 @@
     <div id="er"></div>
   </section>
 
+  <!-- ===== Lernblock: Reiter, immer nur ein Schritt offen (register.js) ===== -->
+  <div id="lernen">
+  <section class="card wdh" id="wdh-s" data-tab="Weißt du noch?">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
   <!-- Ermittlung -->
-  <section class="card" id="ermittlung">
+  <section class="card" id="ermittlung" data-tab="Ermittlung">
     <h2><span class="step-no">🔍</span> Die Ermittlung <span class="chip">25 Minuten</span></h2>
     <p class="lead">Sechs Spuren. Jede Abfrage bringt dich einen Schritt weiter. Die Tabellen kannst du oben aufklappen.</p>
     <div id="spuren"></div>
   </section>
 
   <!-- Auflösung -->
-  <section class="card">
+  <section class="card" id="s2" data-tab="Entscheidung">
     <h2><span class="step-no">⚖</span> Die Entscheidung <span class="chip">3 Minuten</span></h2>
     <p>Du hast alle Spuren. Wer hat die Master-Datei kopiert?</p>
     <div id="urteil"></div>
   </section>
+  </div>
 
-  <section class="card merke">
+  <!-- Freiwillig -->
+  <section class="card ueben-block" id="training">
+    <h2><span class="step-no">🏋</span> Üben</h2>
+    <p class="lead">Hier kommt nichts Neues – nur Übung. Der Fall ist gelöst – aber es gibt noch offene Fragen.</p>
+    <div class="stufe-box st3">
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Nachermittlung</h3>
+    <div id="tr3"></div>
+    </div>
+  </section>
+
+  <section class="card merke" id="merke">
     <h2>Merke</h2>
     <ul>
       <li>Große Fragen löst man in kleinen Schritten: erst eine Tabelle, dann <code>JOIN</code>, dann filtern.</li>
       <li>Jeder Fremdschlüssel (<code>…_id</code>) ist ein Faden zu einer anderen Tabelle – <code>JOIN … ON fremdschluessel = id</code>.</li>
       <li>Daten zeigen, <strong>was</strong> passiert ist – aber nicht immer, <strong>wer</strong> wirklich am Rechner saß. Darum mehrere Quellen vergleichen.</li>
     </ul>
-  </section>
-
-  <!-- Freiwillig -->
-  <section class="card frei" id="training">
-    <h2><span class="step-no">🏋</span> Training</h2>
-    <p class="lead">Der Fall ist gelöst – aber es gibt noch offene Fragen.</p>
-    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Nachermittlung</h3>
-    <div id="tr3"></div>
   </section>
 
   <nav class="pager">
@@ -242,6 +248,11 @@ document.addEventListener("DOMContentLoaded", () => {
       loesung: "SELECT mitarbeiter.vorname, mitarbeiter.nachname, zutritte.tuer, zutritte.richtung, zutritte.zeitpunkt FROM zutritte JOIN mitarbeiter ON zutritte.mitarbeiter_id = mitarbeiter.id WHERE zutritte.zeitpunkt >= '2025-11-13 21:00' ORDER BY zutritte.zeitpunkt",
       hints: ["Lösung: <code>SELECT mitarbeiter.vorname, mitarbeiter.nachname, zutritte.tuer, zutritte.richtung, zutritte.zeitpunkt FROM zutritte JOIN mitarbeiter ON zutritte.mitarbeiter_id = mitarbeiter.id WHERE zutritte.zeitpunkt &gt;= '2025-11-13 21:00' ORDER BY zutritte.zeitpunkt</code>"] },
   ].map((a) => Object.assign({ extra: [...EXTRA, "GROUP BY", "COUNT(*)"] }, a)) });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  Register(document.getElementById("lernen"), { key: "l11", after: "training", nr: "11" });
 });
 </script>
 </body>

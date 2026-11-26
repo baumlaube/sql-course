@@ -26,8 +26,9 @@
 <link rel="stylesheet" href="../assets/labor.css?v=5eb6de2187">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil4-12-projekt-planen" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
+<script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
-<script src="../assets/labor.js?v=ca2d940769"></script>
+<script src="../assets/labor.js?v=81a83fb334"></script>
 <script src="../assets/labor-extra.js?v=e94bd060f6"></script>
 <script src="../assets/projekt.js?v=35eb603fae"></script>
 <script src="../assets/daten/pfoten.js?v=7b482f3862"></script>
@@ -77,11 +78,6 @@
       eine gute Planung spart sie.</p>
   </section>
 
-  <section class="card wdh">
-    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
-    <div id="wdh"></div>
-  </section>
-
   <details class="card woerter">
     <summary>📖 Wörter für diese Lektion</summary>
     <p class="note">Die Fachwörter links bleiben deutsch – so heißen sie im Unterricht.</p>
@@ -93,7 +89,6 @@
       <tr><th class="wort">das Muster <small>die Muster</small></th><td>Ein Beispiel, an dem man sich orientiert.</td></tr>
     </table></div>
   </details>
-
   <section class="card szenario">
     <h2><span class="step-no">🐾</span> Der Auftrag</h2>
     <p>Die Firmenleitung von <strong>Pfotenglück</strong> beauftragt dich: Baue eine <strong>Partnerbörse für Tiere</strong>. Besitzer melden ihre Tiere an,
@@ -102,8 +97,15 @@
       Arbeite allein oder zu zweit.</p>
   </section>
 
+  <!-- ===== Lernblock: Reiter, immer nur ein Schritt offen (register.js) ===== -->
+  <div id="lernen">
+  <section class="card wdh" id="wdh-s" data-tab="Weißt du noch?">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
   <!-- 1 · Muster erkunden -->
-  <section class="card">
+  <section class="card" id="s1" data-tab="Muster-Börse">
     <h2><span class="step-no">1</span> Die Muster-Börse erkunden <span class="chip">7 Minuten</span></h2>
     <p>So könnte es aussehen. Schau dir die drei Tabellen an:</p>
     <div id="tabs1"></div>
@@ -114,7 +116,7 @@
   </section>
 
   <!-- 2 · Planungsfehler -->
-  <section class="card">
+  <section class="card" id="s2" data-tab="Überleg">
     <h2><span class="step-no">2</span> Überleg: Was ist schlecht an diesem Plan? <span class="chip">4 Minuten</span></h2>
     <p>Kathi hat ihre Börse in <strong>einer</strong> Tabelle geplant:</p>
     <pre class="sql">tiere (id, name, art, besitzer_name, besitzer_wohnort, besitzer_telefon, hobby)</pre>
@@ -122,7 +124,7 @@
   </section>
 
   <!-- 3 · Regeln -->
-  <section class="card">
+  <section class="card" id="s3" data-tab="Regeln">
     <h2><span class="step-no">3</span> Die Regeln für einen guten Plan <span class="chip">3 Minuten</span></h2>
     <ul class="tasks">
       <li><span class="badge basis">Tabellen</span><span>Jede Sache bekommt ihre eigene Tabelle (Tiere, Besitzer, Arten). Namen klein, ohne Leerzeichen und Umlaute: <code>tiere</code>, <code>besitzer</code>.</span></li>
@@ -133,7 +135,7 @@
   </section>
 
   <!-- 4 · Planer -->
-  <section class="card">
+  <section class="card" id="s4" data-tab="Jetzt du">
     <h2><span class="step-no">4</span> Jetzt du: Plane deine Börse <span class="chip">15 Minuten</span></h2>
     <p>Plane mindestens <strong>drei Tabellen</strong>, die über Fremdschlüssel zusammenhängen. Gib den Tieren <strong>eigene, lustige Eigenschaften</strong> –
       deine Börse soll anders sein als das Muster. Fang leer an oder lade den Vorschlag und bau ihn um.</p>
@@ -143,12 +145,30 @@
   </section>
 
   <!-- Kurz-Check -->
-  <section class="card">
+  <section class="card" id="check" data-tab="Kurz-Check">
     <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
     <div id="quiz"></div>
   </section>
+  </div>
 
-  <section class="card merke">
+  <!-- Training -->
+  <section class="card ueben-block" id="training">
+    <h2><span class="step-no">🏋</span> Üben</h2>
+    <p class="lead">Hier kommt nichts Neues – nur Übung.</p>
+    <div class="stufe-box st2">
+    <h3 class="sub"><span class="badge plus">●● Sicher</span> Andere Datenbanken planen</h3>
+    <div id="tr2"></div>
+    </div>
+    <div class="stufe-box st3">
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Das Match</h3>
+    <p>Die Firmenleitung will speichern, <strong>welches Tier welches mag</strong>. Ein Tier mag viele, und viele mögen es. Ein <strong>Match</strong> ist,
+      wenn zwei Tiere sich gegenseitig mögen. Ergänze deinen Plan um eine Tabelle <code>likes</code> mit zwei Fremdschlüsseln
+      (<code>von_tier_id</code> und <code>an_tier_id</code>), die beide auf <code>tiere</code> zeigen.</p>
+    <div id="tr3"></div>
+    </div>
+  </section>
+
+  <section class="card merke" id="merke">
     <h2>Merke</h2>
     <ul>
       <li>Erst planen, dann bauen: Tabellen, Spalten, Datentypen, Schlüssel – und das ER-Diagramm dazu.</li>
@@ -156,18 +176,6 @@
       <li>Jede Tabelle hat einen Primärschlüssel; Fremdschlüssel (<code>…_id</code>) stehen auf der n-Seite.</li>
       <li>Aus dem Plan wird SQL: <code>CREATE TABLE</code> – das lernst du in Lektion 13.</li>
     </ul>
-  </section>
-
-  <!-- Training -->
-  <section class="card frei" id="training">
-    <h2><span class="step-no">🏋</span> Training</h2>
-    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Andere Datenbanken planen</h3>
-    <div id="tr2"></div>
-    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Das Match</h3>
-    <p>Die Firmenleitung will speichern, <strong>welches Tier welches mag</strong>. Ein Tier mag viele, und viele mögen es. Ein <strong>Match</strong> ist,
-      wenn zwei Tiere sich gegenseitig mögen. Ergänze deinen Plan um eine Tabelle <code>likes</code> mit zwei Fremdschlüsseln
-      (<code>von_tier_id</code> und <code>an_tier_id</code>), die beide auf <code>tiere</code> zeigen.</p>
-    <div id="tr3"></div>
   </section>
 
   <nav class="pager">
@@ -254,6 +262,11 @@ document.addEventListener("DOMContentLoaded", () => {
     { q: "Wann ist es ein Match?", options: ["Wenn A B mag", "Wenn A B mag <strong>und</strong> B A mag – zwei Zeilen in <code>likes</code>", "Wenn beide dieselbe Art haben"], right: 1,
       miss: ["Das ist nur ein Like.", null, "Die Art ist egal – es zählt, ob sie sich mögen."], why: "Gegenseitig: Es gibt eine Zeile (A, B) und eine Zeile (B, A)." },
   ]);
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  Register(document.getElementById("lernen"), { key: "l12", after: "training", nr: "12" });
 });
 </script>
 </body>

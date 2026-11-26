@@ -26,8 +26,9 @@
 <link rel="stylesheet" href="../assets/labor.css?v=5eb6de2187">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil4-13-tabellen-anlegen" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
+<script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
-<script src="../assets/labor.js?v=ca2d940769"></script>
+<script src="../assets/labor.js?v=81a83fb334"></script>
 <script src="../assets/labor-extra.js?v=e94bd060f6"></script>
 <script src="../assets/projekt.js?v=35eb603fae"></script>
 <script src="../assets/daten/pfoten.js?v=7b482f3862"></script>
@@ -76,11 +77,6 @@
       Genau so entsteht jede Datenbank – auch die von großen Apps. Wenn du dich bei einer App registrierst, läuft im Hintergrund ein <code>INSERT</code>.</p>
   </section>
 
-  <section class="card wdh">
-    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
-    <div id="wdh"></div>
-  </section>
-
   <details class="card woerter">
     <summary>📖 Wörter für diese Lektion</summary>
     <p class="note">Die SQL-Befehle bleiben englisch – so heißen sie in jeder Datenbank der Welt.</p>
@@ -92,14 +88,20 @@
       <tr><th class="wort">speichern <small>die Datei</small></th><td>Deine Datenbank als <code>.db</code>-Datei herunterladen, damit sie nicht verloren geht.</td></tr>
     </table></div>
   </details>
-
   <section class="card szenario">
     <h2><span class="step-no">🐾</span> Szenario</h2>
     <p>Dein Plan für <strong>Pfotenglück</strong> steht. Heute wird daraus eine echte Datenbank. Erst übst du an einer Kopie der Muster-Börse, dann baust du deine eigene.</p>
   </section>
 
+  <!-- ===== Lernblock: Reiter, immer nur ein Schritt offen (register.js) ===== -->
+  <div id="lernen">
+  <section class="card wdh" id="wdh-s" data-tab="Weißt du noch?">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
   <!-- 1 · CREATE TABLE -->
-  <section class="card">
+  <section class="card" id="s1" data-tab="CREATE TABLE">
     <h2><span class="step-no">1</span> CREATE TABLE: eine Tabelle anlegen <span class="chip">7 Minuten</span></h2>
     <p>So legt man die Tabelle <code>besitzer</code> an. Jede Spalte: Name und Datentyp, durch Komma getrennt.</p>
     <pre class="sql" data-farbe>CREATE TABLE besitzer (
@@ -114,7 +116,7 @@
   </section>
 
   <!-- 2 · Fremdschlüssel -->
-  <section class="card">
+  <section class="card" id="s2" data-tab="REFERENCES">
     <h2><span class="step-no">2</span> Fremdschlüssel anlegen: REFERENCES <span class="chip">5 Minuten</span></h2>
     <p>Bei <code>tiere</code> zeigen zwei Spalten auf andere Tabellen. Das schreibt man mit <code>REFERENCES</code> dazu:</p>
     <pre class="sql" data-farbe>CREATE TABLE tiere (
@@ -128,7 +130,7 @@
   </section>
 
   <!-- 3 · INSERT -->
-  <section class="card">
+  <section class="card" id="s3" data-tab="INSERT">
     <h2><span class="step-no">3</span> INSERT INTO: eine Zeile einfügen <span class="chip">7 Minuten</span></h2>
     <p>In Klammern die Spalten, nach <code>VALUES</code> die Werte – in <strong>derselben Reihenfolge</strong>. Text in Anführungszeichen, Zahlen ohne. Die <code>id</code> lässt man weg.</p>
     <pre class="sql" data-farbe>INSERT INTO besitzer (vorname, wohnort) VALUES ('Mia', 'Augsburg');</pre>
@@ -142,7 +144,7 @@
   </section>
 
   <!-- 4 · Projekt -->
-  <section class="card">
+  <section class="card" id="s4" data-tab="Deine Börse">
     <h2><span class="step-no">4</span> Deine Börse bauen <span class="chip">12 Minuten</span></h2>
     <ol class="howto">
       <li>Öffne deinen Plan (<code>.sql</code> aus Lektion 12) mit „Datei öffnen“ – oder schreib die <code>CREATE TABLE</code>-Befehle selbst.</li>
@@ -153,12 +155,31 @@
   </section>
 
   <!-- Kurz-Check -->
-  <section class="card">
+  <section class="card" id="check" data-tab="Kurz-Check">
     <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
     <div id="quiz"></div>
   </section>
+  </div>
 
-  <section class="card merke">
+  <!-- Training -->
+  <section class="card ueben-block" id="training">
+    <h2><span class="step-no">🏋</span> Üben</h2>
+    <p class="lead">Hier kommt nichts Neues – nur Übung. Geübt wird an einer Kopie der Muster-Börse – jede Ausführung beginnt wieder mit dem Original.</p>
+    <div class="stufe-box st1">
+    <h3 class="sub"><span class="badge basis">● Basis</span> Neue Einträge</h3>
+    <div id="tr1"></div>
+    </div>
+    <div class="stufe-box st2">
+    <h3 class="sub"><span class="badge plus">●● Sicher</span> Tabellen anlegen</h3>
+    <div id="tr2"></div>
+    </div>
+    <div class="stufe-box st3">
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Mehrere Zeilen auf einmal</h3>
+    <div id="tr3"></div>
+    </div>
+  </section>
+
+  <section class="card merke" id="merke">
     <h2>Merke</h2>
     <ul>
       <li><code>CREATE TABLE name (spalte TYP, …)</code> legt eine Tabelle an. Primärschlüssel: <code>id INTEGER PRIMARY KEY</code>.</li>
@@ -167,18 +188,6 @@
       <li>Reihenfolge beim Füllen: erst die Tabellen, auf die verwiesen wird (Besitzer, Arten), dann die Tiere.</li>
       <li>Speichere dein Projekt als <code>.db</code>-Datei – der Browser allein ist kein sicherer Ort.</li>
     </ul>
-  </section>
-
-  <!-- Training -->
-  <section class="card frei" id="training">
-    <h2><span class="step-no">🏋</span> Training</h2>
-    <p class="lead">Geübt wird an einer Kopie der Muster-Börse – jede Ausführung beginnt wieder mit dem Original.</p>
-    <h3 class="sub"><span class="badge ueben">● Basis</span> Neue Einträge</h3>
-    <div id="tr1"></div>
-    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Tabellen anlegen</h3>
-    <div id="tr2"></div>
-    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Mehrere Zeilen auf einmal</h3>
-    <div id="tr3"></div>
   </section>
 
   <nav class="pager">
@@ -313,6 +322,11 @@ document.addEventListener("DOMContentLoaded", () => {
       loesung: "INSERT INTO arten (name, fell, kann_fliegen, lebt_im_wasser) VALUES ('Frettchen', 'ja', 'nein', 'nein'), ('Ente', 'nein', 'ja', 'ja')",
       hints: ["Lösung: <code>INSERT INTO arten (name, fell, kann_fliegen, lebt_im_wasser) VALUES ('Frettchen', 'ja', 'nein', 'nein'), ('Ente', 'nein', 'ja', 'ja')</code>"] }),
   ] });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  Register(document.getElementById("lernen"), { key: "l13", after: "training", nr: "13" });
 });
 </script>
 </body>

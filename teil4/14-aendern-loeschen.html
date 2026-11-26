@@ -26,8 +26,9 @@
 <link rel="stylesheet" href="../assets/labor.css?v=5eb6de2187">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil4-14-aendern-loeschen" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
+<script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
-<script src="../assets/labor.js?v=ca2d940769"></script>
+<script src="../assets/labor.js?v=81a83fb334"></script>
 <script src="../assets/labor-extra.js?v=e94bd060f6"></script>
 <script src="../assets/projekt.js?v=35eb603fae"></script>
 <script src="../assets/daten/pfoten.js?v=7b482f3862"></script>
@@ -77,11 +78,6 @@
       Das ist in echten Firmen schon passiert.</p>
   </section>
 
-  <section class="card wdh">
-    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
-    <div id="wdh"></div>
-  </section>
-
   <details class="card woerter">
     <summary>📖 Wörter für diese Lektion</summary>
     <p class="note">Die SQL-Befehle bleiben englisch – so heißen sie in jeder Datenbank der Welt.</p>
@@ -93,15 +89,21 @@
       <tr><th class="wort">die Sicherung <small>das Backup</small></th><td>Eine Kopie der Daten, falls etwas schiefgeht – z. B. deine <code>.db</code>-Datei.</td></tr>
     </table></div>
   </details>
-
   <section class="card szenario">
     <h2><span class="step-no">🐾</span> Szenario</h2>
     <p>Bei <strong>Pfotenglück</strong> ist Betrieb: Steckbriefe ändern sich, Tiere finden Partner. Du übst an einer <strong>Kopie</strong> der Muster-Börse –
       jede Ausführung beginnt wieder mit dem Original. Danach pflegst und testest du deine eigene Börse.</p>
   </section>
 
+  <!-- ===== Lernblock: Reiter, immer nur ein Schritt offen (register.js) ===== -->
+  <div id="lernen">
+  <section class="card wdh" id="wdh-s" data-tab="Weißt du noch?">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
   <!-- 1 · Überleg -->
-  <section class="card">
+  <section class="card" id="s1" data-tab="Überleg">
     <h2><span class="step-no">1</span> Überleg: Was passiert? <span class="chip">4 Minuten</span></h2>
     <div id="tabs1"></div>
     <p>Bello hatte Geburtstag. Jemand tippt schnell:</p>
@@ -119,7 +121,7 @@
   </section>
 
   <!-- 2 · UPDATE -->
-  <section class="card">
+  <section class="card" id="s2" data-tab="UPDATE">
     <h2><span class="step-no">2</span> UPDATE: richtig ändern <span class="chip">6 Minuten</span></h2>
     <pre class="sql" data-farbe>UPDATE tabelle SET spalte = neuer_wert WHERE bedingung</pre>
     <p><strong>a)</strong> Bello (<code>id</code> 1) ist jetzt <strong>6</strong> Jahre alt. Am sichersten triffst du genau eine Zeile über ihre <code>id</code>.</p>
@@ -130,7 +132,7 @@
   </section>
 
   <!-- 3 · DELETE -->
-  <section class="card">
+  <section class="card" id="s3" data-tab="DELETE">
     <h2><span class="step-no">3</span> DELETE: eine Zeile löschen <span class="chip">4 Minuten</span></h2>
     <pre class="sql" data-farbe>DELETE FROM tabelle WHERE bedingung</pre>
     <p>Goldi hat einen Partner gefunden und verlässt die Börse. Lösche Goldi aus <code>tiere</code>.</p>
@@ -138,7 +140,7 @@
   </section>
 
   <!-- 4 · Fehlerdetektiv -->
-  <section class="card">
+  <section class="card" id="s4" data-tab="Detektiv">
     <h2><span class="step-no">4</span> Fehlerdetektiv: Wo sind alle hin? <span class="chip">4 Minuten</span></h2>
     <p>Jonas sollte nur den Goldfisch <strong>Blub</strong> löschen. Führ seinen Befehl aus (keine Sorge – es ist nur die Kopie).</p>
     <ol class="howto">
@@ -153,7 +155,7 @@
   </section>
 
   <!-- 5 · Projekt testen -->
-  <section class="card">
+  <section class="card" id="s5" data-tab="Deine Börse">
     <h2><span class="step-no">5</span> Deine Börse pflegen und testen <span class="chip">10 Minuten</span></h2>
     <p>Öffne deine <code>.db</code>-Datei aus Lektion 13. Ändere zwei Steckbriefe, lösche ein Testtier – und teste, ob alles zusammenpasst.
       Probier auch, ein Tier mit einer Besitzer-ID einzutragen, die es nicht gibt: Deine Datenbank sollte das ablehnen.</p>
@@ -162,12 +164,31 @@
   </section>
 
   <!-- Kurz-Check -->
-  <section class="card">
+  <section class="card" id="check" data-tab="Kurz-Check">
     <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
     <div id="quiz"></div>
   </section>
+  </div>
 
-  <section class="card merke">
+  <!-- Training -->
+  <section class="card ueben-block" id="training">
+    <h2><span class="step-no">🏋</span> Üben</h2>
+    <p class="lead">Hier kommt nichts Neues – nur Übung. Alles an einer Kopie der Muster-Börse – jede Ausführung beginnt wieder mit dem Original.</p>
+    <div class="stufe-box st1">
+    <h3 class="sub"><span class="badge basis">● Basis</span> Steckbriefe pflegen</h3>
+    <div id="tr1"></div>
+    </div>
+    <div class="stufe-box st2">
+    <h3 class="sub"><span class="badge plus">●● Sicher</span> Aufräumen</h3>
+    <div id="tr2"></div>
+    </div>
+    <div class="stufe-box st3">
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Viele auf einmal</h3>
+    <div id="tr3"></div>
+    </div>
+  </section>
+
+  <section class="card merke" id="merke">
     <h2>Merke</h2>
     <ul>
       <li><code>UPDATE tabelle SET spalte = wert, spalte2 = wert2 WHERE …</code> ändert vorhandene Zeilen.</li>
@@ -175,18 +196,6 @@
       <li>Ohne <code>WHERE</code> trifft es alle Zeilen. Am sichersten: <code>WHERE id = …</code></li>
       <li>Erst mit <code>SELECT</code> und demselben <code>WHERE</code> prüfen, dann ändern oder löschen. Und vorher eine Sicherung speichern.</li>
     </ul>
-  </section>
-
-  <!-- Training -->
-  <section class="card frei" id="training">
-    <h2><span class="step-no">🏋</span> Training</h2>
-    <p class="lead">Alles an einer Kopie der Muster-Börse – jede Ausführung beginnt wieder mit dem Original.</p>
-    <h3 class="sub"><span class="badge ueben">● Basis</span> Steckbriefe pflegen</h3>
-    <div id="tr1"></div>
-    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Aufräumen</h3>
-    <div id="tr2"></div>
-    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Viele auf einmal</h3>
-    <div id="tr3"></div>
   </section>
 
   <nav class="pager">
@@ -298,6 +307,11 @@ document.addEventListener("DOMContentLoaded", () => {
     opt({ text: "Alle Tiere, die <strong>älter als 10</strong> sind, suchen ab jetzt <strong>Freundschaft</strong>.",
       loesung: "UPDATE tiere SET sucht = 'Freundschaft' WHERE alter_jahre > 10", hints: ["Lösung: <code>UPDATE tiere SET sucht = 'Freundschaft' WHERE alter_jahre &gt; 10</code>"] }),
   ] });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  Register(document.getElementById("lernen"), { key: "l14", after: "training", nr: "14" });
 });
 </script>
 </body>

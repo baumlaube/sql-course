@@ -26,8 +26,9 @@
 <link rel="stylesheet" href="../assets/labor.css?v=5eb6de2187">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil5-15-suchformular" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
+<script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
-<script src="../assets/labor.js?v=ca2d940769"></script>
+<script src="../assets/labor.js?v=81a83fb334"></script>
 <script src="../assets/labor-extra.js?v=e94bd060f6"></script>
 <script src="../assets/projekt.js?v=35eb603fae"></script>
 <script src="../assets/daten/pfoten.js?v=7b482f3862"></script>
@@ -77,11 +78,6 @@
       an eine bestimmte Stelle nach <code>WHERE</code>: Das nennt man eine <strong>parametrisierte Abfrage</strong>. Heute baust du so ein Formular für deine Partnerbörse.</p>
   </section>
 
-  <section class="card wdh">
-    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
-    <div id="wdh"></div>
-  </section>
-
   <details class="card woerter">
     <summary>📖 Wörter für diese Lektion</summary>
     <p class="note">Die Fachwörter links bleiben deutsch – so heißen sie im Unterricht.</p>
@@ -93,14 +89,20 @@
       <tr><th class="wort">parametrisiert</th><td>Die Abfrage hat Platzhalter, die mit den Eingaben gefüllt werden.</td></tr>
     </table></div>
   </details>
-
   <section class="card szenario">
     <h2><span class="step-no">🐾</span> Szenario</h2>
     <p>Die Partnerbörse <strong>Pfotenglück</strong> geht online. Besucher sollen passende Tiere finden – ohne SQL zu können. Dafür brauchst du ein <strong>Suchformular</strong>.</p>
   </section>
 
+  <!-- ===== Lernblock: Reiter, immer nur ein Schritt offen (register.js) ===== -->
+  <div id="lernen">
+  <section class="card wdh" id="wdh-s" data-tab="Weißt du noch?">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
   <!-- 1 · Überleg -->
-  <section class="card">
+  <section class="card" id="s1" data-tab="Überleg">
     <h2><span class="step-no">1</span> Überleg: Welche Abfrage steckt dahinter? <span class="chip">5 Minuten</span></h2>
     <div class="fb-form" style="max-width:360px;margin:10px 0">
       <label class="fb-feld"><span class="t">Tier sucht …</span><select disabled><option>Kuschelpartner</option></select></label>
@@ -112,7 +114,7 @@
   </section>
 
   <!-- 2 · Platzhalter -->
-  <section class="card">
+  <section class="card" id="s2" data-tab="Platzhalter">
     <h2><span class="step-no">2</span> Platzhalter: die Abfrage mit Lücken <span class="chip">4 Minuten</span></h2>
     <p>Der Programmierer schreibt die Abfrage einmal – mit <strong>Platzhaltern</strong> statt fester Werte:</p>
     <pre class="sql" data-farbe>SELECT name, hobby FROM tiere
@@ -124,7 +126,7 @@ WHERE sucht = :sucht
   </section>
 
   <!-- 3 · Baukasten -->
-  <section class="card">
+  <section class="card" id="s3" data-tab="Jetzt du">
     <h2><span class="step-no">3</span> Jetzt du: das Formular „Partner finden“ <span class="chip">17 Minuten</span></h2>
     <ol class="howto">
       <li>Öffne deine <code>.db</code>-Datei (oder lade die Muster-Börse).</li>
@@ -137,12 +139,30 @@ WHERE sucht = :sucht
   </section>
 
   <!-- Kurz-Check -->
-  <section class="card">
+  <section class="card" id="check" data-tab="Kurz-Check">
     <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
     <div id="quiz"></div>
   </section>
+  </div>
 
-  <section class="card merke">
+  <!-- Training -->
+  <section class="card ueben-block" id="training">
+    <h2><span class="step-no">🏋</span> Üben</h2>
+    <p class="lead">Hier kommt nichts Neues – nur Übung.</p>
+    <div class="stufe-box st1">
+    <h3 class="sub"><span class="badge basis">● Basis</span> Formular → SQL</h3>
+    <div id="tr1"></div>
+    </div>
+    <div class="stufe-box st3">
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Expedition: SQL-Injection</h3>
+    <p>Ein schlecht programmiertes Login klebt die Eingabe einfach in die Abfrage:
+      <code>"SELECT * FROM nutzer WHERE benutzername = '" + eingabe + "'"</code>. Jemand tippt als Benutzernamen: <code>' OR '1'='1</code></p>
+    <div id="inj"></div>
+    <div id="tr3"></div>
+    </div>
+  </section>
+
+  <section class="card merke" id="merke">
     <h2>Merke</h2>
     <ul>
       <li>Hinter jedem Suchformular steht eine Abfrage mit <strong>Platzhaltern</strong> nach <code>WHERE</code> – eine parametrisierte Abfrage.</li>
@@ -150,18 +170,6 @@ WHERE sucht = :sucht
       <li>Eine Auswahlliste verhindert Tippfehler – man kann nur wählen, was es gibt.</li>
       <li>Eingaben dürfen nie einfach in den SQL-Text geklebt werden (siehe Expedition).</li>
     </ul>
-  </section>
-
-  <!-- Training -->
-  <section class="card frei" id="training">
-    <h2><span class="step-no">🏋</span> Training</h2>
-    <h3 class="sub"><span class="badge ueben">● Basis</span> Formular → SQL</h3>
-    <div id="tr1"></div>
-    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Expedition: SQL-Injection</h3>
-    <p>Ein schlecht programmiertes Login klebt die Eingabe einfach in die Abfrage:
-      <code>"SELECT * FROM nutzer WHERE benutzername = '" + eingabe + "'"</code>. Jemand tippt als Benutzernamen: <code>' OR '1'='1</code></p>
-    <div id="inj"></div>
-    <div id="tr3"></div>
   </section>
 
   <nav class="pager">
@@ -233,6 +241,11 @@ document.addEventListener("DOMContentLoaded", () => {
     { q: "Wie verhindert man das?", options: ["Kürzere Passwörter", "Eingaben nie in den SQL-Text kleben, sondern über Platzhalter (Parameter) übergeben", "Großbuchstaben verbieten"], right: 1,
       miss: ["Das hilft nicht.", null, "Das hilft nicht."], why: "Mit Platzhaltern bleibt die Eingabe immer nur ein Wert – nie Teil des Befehls. Dein Baukasten setzt Anführungszeichen in Eingaben deshalb sicher." },
   ]);
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  Register(document.getElementById("lernen"), { key: "l15", after: "training", nr: "15" });
 });
 </script>
 </body>

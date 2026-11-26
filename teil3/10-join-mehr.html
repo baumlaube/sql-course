@@ -26,8 +26,9 @@
 <link rel="stylesheet" href="../assets/labor.css?v=5eb6de2187">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil3-10-join-mehr" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
+<script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
-<script src="../assets/labor.js?v=ca2d940769"></script>
+<script src="../assets/labor.js?v=81a83fb334"></script>
 <script src="../assets/labor-extra.js?v=e94bd060f6"></script>
 <script src="../assets/daten/musik.js?v=c1bfd9240c"></script>
 <script src="../assets/daten/buecherei.js?v=c99f5e2d8a"></script>
@@ -78,11 +79,6 @@
       So beantwortet man echte Fragen – zum Beispiel: Welche Plattenfirma hat die meisten Likes?</p>
   </section>
 
-  <section class="card wdh">
-    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
-    <div id="wdh"></div>
-  </section>
-
   <details class="card woerter">
     <summary>📖 Wörter für diese Lektion</summary>
     <p class="note">Die SQL-Befehle bleiben englisch – so heißen sie in jeder Datenbank der Welt.</p>
@@ -93,14 +89,20 @@
       <tr><th class="wort">der Namensvetter <small>die Namensvettern</small></th><td>Zwei Menschen mit demselben Namen – wie die zwei Leon Müller.</td></tr>
     </table></div>
   </details>
-
   <section class="card szenario">
     <h2><span class="step-no">🎧</span> Szenario</h2>
     <p><strong>Tonspur</strong> verhandelt mit den Plattenfirmen. Die Chefin braucht Zahlen – aus den drei Tabellen <code>songs</code>, <code>kuenstler</code> und <code>labels</code>.</p>
   </section>
 
+  <!-- ===== Lernblock: Reiter, immer nur ein Schritt offen (register.js) ===== -->
+  <div id="lernen">
+  <section class="card wdh" id="wdh-s" data-tab="Weißt du noch?">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
   <!-- 1 · Überleg: WHERE -->
-  <section class="card">
+  <section class="card" id="s1" data-tab="Überleg">
     <h2><span class="step-no">1</span> Überleg: JOIN und WHERE <span class="chip">4 Minuten</span></h2>
     <div id="tabs1"></div>
     <pre class="sql" data-farbe>SELECT songs.titel, kuenstler.name FROM songs JOIN kuenstler ON songs.kuenstler_id = kuenstler.id WHERE kuenstler.herkunft = 'Schweden'</pre>
@@ -117,7 +119,7 @@
   </section>
 
   <!-- 2 · Selbst: WHERE -->
-  <section class="card">
+  <section class="card" id="s2" data-tab="Jetzt du">
     <h2><span class="step-no">2</span> Jetzt du: Songs aus dem Ausland <span class="chip">5 Minuten</span></h2>
     <p>Für eine Playlist „International“: alle Songs von Künstlern, die <strong>nicht aus Deutschland</strong> kommen. Zeig Titel, Künstlername und Herkunft.</p>
     <div id="l2"></div>
@@ -125,7 +127,7 @@
   </section>
 
   <!-- 3 · GROUP BY -->
-  <section class="card">
+  <section class="card" id="s3" data-tab="JOIN + GROUP BY">
     <h2><span class="step-no">3</span> JOIN und GROUP BY: Songs je Künstler <span class="chip">5 Minuten</span></h2>
     <p>In Lektion 8 hast du nach <code>kuenstler</code> gruppiert – da stand der Name noch in <code>songs</code>. Jetzt steht dort nur die Nummer.
       Mit <code>JOIN</code> holst du den Namen dazu und gruppierst nach ihm. Wähle in den Lücken.</p>
@@ -133,7 +135,7 @@
   </section>
 
   <!-- 4 · Drei Tabellen -->
-  <section class="card">
+  <section class="card" id="s4" data-tab="Drei Tabellen">
     <h2><span class="step-no">4</span> Drei Tabellen hintereinander <span class="chip">6 Minuten</span></h2>
     <div id="er"></div>
     <p>Ein Song kennt seinen Künstler, ein Künstler kennt sein Label. Für „Songs mit Label“ verbindest du <strong>zweimal</strong>:</p>
@@ -148,7 +150,7 @@ JOIN labels ON kuenstler.label_id = labels.id</pre>
   </section>
 
   <!-- 5 · Fehlerdetektiv -->
-  <section class="card">
+  <section class="card" id="s5" data-tab="Detektiv">
     <h2><span class="step-no">5</span> Fehlerdetektiv: das falsche Label <span class="chip">4 Minuten</span></h2>
     <p>Jonas wollte <strong>alle 36 Songs</strong> mit ihrem Label. Seine Abfrage läuft ohne Fehler – aber es fehlen Songs.
       Führ sie aus und vergleich mit dem ER-Diagramm oben.</p>
@@ -161,22 +163,44 @@ JOIN labels ON kuenstler.label_id = labels.id</pre>
     <div id="hints5"></div>
   </section>
 
-  <!-- Plus -->
-  <section class="card">
-    <h2><span class="badge plus">Plus</span> Noch nicht zurück: IS NULL <span class="chip">für Schnelle</span></h2>
+  <!-- Kurz-Check -->
+  <section class="card" id="check" data-tab="Kurz-Check">
+    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
+    <div id="quiz"></div>
+  </section>
+  </div>
+
+  <!-- Training -->
+  <section class="card ueben-block" id="training">
+    <h2><span class="step-no">🏋</span> Üben</h2>
+    <p class="lead">Hier kommt nichts Neues – nur Übung. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
+
+    <div class="stufe-box st1">
+    <h3 class="sub"><span class="badge basis">● Basis</span> Tonspur: Songs, Künstler, Labels</h3>
+    <div id="tr1"></div>
+    </div>
+    <div class="stufe-box st2">
+    <h3 class="sub"><span class="badge plus">●● Sicher</span> Die Schülerbücherei</h3>
+    <p>Tabellen <code>ausleihen</code>, <code>leser</code>, <code>buecher</code>. Achtung: Es gibt zwei Leon Müller!</p>
+    <div id="tr2"></div>
+    </div>
+    <div class="stufe-box st3">
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Pfotenglück: die Partnersuche</h3>
+    <p><code>tiere</code>, <code>besitzer</code>, <code>arten</code>.</p>
+    <div id="tr3"></div>
+    </div>
+
+    <!-- Freiwillig: das frühere „Plus für Schnelle“ – ein Stück Neues, darum ganz am Ende -->
+    <div class="frei-box" id="freiwillig">
+    <h3 class="frei-titel"><span class="badge expedition">★ Freiwillig</span> Noch nicht zurück: IS NULL</h3>
     <p>In der Bücherei ist <code>zurueck</code> leer (<code>NULL</code>), solange ein Buch noch ausgeliehen ist. Leere Werte findet man nicht mit <code>= NULL</code>,
       sondern mit <code>IS NULL</code>. Zeig <strong>Vorname, Nachname und Buchtitel</strong> aller Bücher, die noch nicht zurück sind – drei Tabellen!</p>
     <div id="lplus"></div>
     <div id="hintsplus"></div>
+    </div>
   </section>
 
-  <!-- Kurz-Check -->
-  <section class="card">
-    <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
-    <div id="quiz"></div>
-  </section>
-
-  <section class="card merke">
+  <section class="card merke" id="merke">
     <h2>Merke</h2>
     <ul>
       <li>Nach dem <code>JOIN</code> funktionieren <code>WHERE</code>, <code>GROUP BY</code>, <code>ORDER BY</code> wie gewohnt – mit allen Spalten beider Tabellen.</li>
@@ -184,23 +208,6 @@ JOIN labels ON kuenstler.label_id = labels.id</pre>
       <li>Gleiche Namen sind nicht dieselbe Person: Gruppiere nach der <code>id</code>, wenn Namen doppelt sein können.</li>
       <li>Leere Werte: <code>IS NULL</code> bzw. <code>IS NOT NULL</code> – nie <code>= NULL</code>.</li>
     </ul>
-  </section>
-
-  <!-- Training -->
-  <section class="card frei" id="training">
-    <h2><span class="step-no">🏋</span> Training</h2>
-    <p class="lead">Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
-
-    <h3 class="sub"><span class="badge ueben">● Basis</span> Tonspur: Songs, Künstler, Labels</h3>
-    <div id="tr1"></div>
-
-    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Die Schülerbücherei</h3>
-    <p>Tabellen <code>ausleihen</code>, <code>leser</code>, <code>buecher</code>. Achtung: Es gibt zwei Leon Müller!</p>
-    <div id="tr2"></div>
-
-    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Pfotenglück: die Partnersuche</h3>
-    <p><code>tiere</code>, <code>besitzer</code>, <code>arten</code>.</p>
-    <div id="tr3"></div>
   </section>
 
   <nav class="pager">
@@ -361,6 +368,11 @@ document.addEventListener("DOMContentLoaded", () => {
       loesung: "SELECT tiere.name, arten.name, besitzer.wohnort FROM tiere JOIN arten ON tiere.art_id = arten.id JOIN besitzer ON tiere.besitzer_id = besitzer.id WHERE tiere.sucht = 'Kuschelpartner' AND arten.fell = 'ja'",
       hints: ["Zwei JOINs von <code>tiere</code> aus, dann zwei Bedingungen mit <code>AND</code>.", "Lösung: <code>SELECT tiere.name, arten.name, besitzer.wohnort FROM tiere JOIN arten ON tiere.art_id = arten.id JOIN besitzer ON tiere.besitzer_id = besitzer.id WHERE tiere.sucht = 'Kuschelpartner' AND arten.fell = 'ja'</code>"] },
   ]) });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  Register(document.getElementById("lernen"), { key: "l10", after: "training", nr: "10" });
 });
 </script>
 </body>

@@ -26,8 +26,9 @@
 <link rel="stylesheet" href="../assets/labor.css?v=5eb6de2187">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil1-02-ids" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
+<script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
-<script src="../assets/labor.js?v=ca2d940769"></script>
+<script src="../assets/labor.js?v=81a83fb334"></script>
 <script src="../assets/labor-extra.js?v=e94bd060f6"></script>
 <script src="../assets/daten/buecherei.js?v=c99f5e2d8a"></script>
 <script src="../assets/daten/musik.js?v=c1bfd9240c"></script>
@@ -78,11 +79,6 @@
       Und statt Namen immer wieder abzuschreiben, verweist man einfach auf diese Nummer – so hängen Tabellen zusammen.</p>
   </section>
 
-  <section class="card wdh">
-    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
-    <div id="wdh"></div>
-  </section>
-
   <details class="card woerter">
     <summary>📖 Wörter für diese Lektion</summary>
     <p class="note">Die Fachwörter links bleiben deutsch – so heißen sie im Unterricht.</p>
@@ -95,14 +91,20 @@
       <tr><th class="wort">die Beziehung <small>die Beziehungen</small></th><td>Wie zwei Tabellen zusammenhängen, z. B. „ein Leser leiht viele Bücher aus“.</td></tr>
     </table></div>
   </details>
-
   <section class="card szenario">
     <h2><span class="step-no">📚</span> Szenario</h2>
     <p>Die <strong>Schülerbücherei</strong> deiner Schule wird digital. Bisher stand alles in einer langen Liste. Die Bücherei-AG baut daraus eine richtige Datenbank – und du hilfst mit.</p>
   </section>
 
+  <!-- ===== Lernblock: Reiter, immer nur ein Schritt offen (register.js) ===== -->
+  <div id="lernen">
+  <section class="card wdh" id="wdh-s" data-tab="Weißt du noch?">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
   <!-- 1 · Überleg -->
-  <section class="card">
+  <section class="card" id="s1" data-tab="Überleg">
     <h2><span class="step-no">1</span> Überleg: Welcher Leon? <span class="chip">4 Minuten</span></h2>
     <p>So sah die alte Ausleihliste aus:</p>
     <div class="tbl-scroll"><table class="labor-tab">
@@ -125,7 +127,7 @@
   </section>
 
   <!-- 2 · Primärschlüssel -->
-  <section class="card">
+  <section class="card" id="s2" data-tab="Primärschlüssel">
     <h2><span class="step-no">2</span> Der Primärschlüssel <span class="chip">4 Minuten</span></h2>
     <p>Namen können doppelt sein, Klassen wechseln jedes Jahr, Tippfehler passieren. Darum bekommt jede Zeile eine <strong>ID</strong>:
       eine Nummer, die es in dieser Tabelle nur einmal gibt. Sie heißt <strong>Primärschlüssel</strong>.</p>
@@ -135,7 +137,7 @@
   </section>
 
   <!-- 3 · Warum mehrere Tabellen -->
-  <section class="card">
+  <section class="card" id="s3" data-tab="Mehrere Tabellen">
     <h2><span class="step-no">3</span> Warum mehrere Tabellen? <span class="chip">5 Minuten</span></h2>
     <p>Mia Schuster leiht gern aus. In der alten Liste steht sie so:</p>
     <div class="tbl-scroll"><table class="labor-tab">
@@ -154,7 +156,7 @@
   </section>
 
   <!-- 4 · ID-Faden -->
-  <section class="card">
+  <section class="card" id="s4" data-tab="Faden">
     <h2><span class="step-no">4</span> Folge dem Faden <span class="chip">8 Minuten</span></h2>
     <p>So sieht die Bücherei jetzt aus: drei Tabellen. In <code>ausleihen</code> stehen keine Namen und keine Titel mehr – nur Nummern.
       <strong>Tipp eine blaue Nummer an</strong> und schau, wohin sie zeigt.</p>
@@ -167,7 +169,7 @@
   </section>
 
   <!-- 5 · ER-Diagramm -->
-  <section class="card">
+  <section class="card" id="s5" data-tab="ER-Diagramm">
     <h2><span class="step-no">5</span> Das ER-Diagramm <span class="chip">5 Minuten</span></h2>
     <p>Wie Tabellen zusammenhängen, zeichnet man in einem <strong>ER-Diagramm</strong> (Entity-Relationship-Diagramm). Jeder Kasten ist eine Tabelle,
       die Linien sind Beziehungen. <strong>1</strong> und <strong>n</strong> sagen, wie viele zusammengehören.</p>
@@ -175,21 +177,47 @@
     <div id="q5"></div>
   </section>
 
-  <!-- Plus -->
-  <section class="card">
-    <h2><span class="badge plus">Plus</span> Ein Faden ins Nichts <span class="chip">für Schnelle</span></h2>
-    <p>In dieser kaputten Bücherei-Datenbank stimmt etwas nicht. Tipp alle blauen Nummern an. Was fällt dir auf?</p>
-    <div id="kaputt"></div>
-    <div id="qplus"></div>
-  </section>
-
   <!-- Kurz-Check -->
-  <section class="card">
+  <section class="card" id="check" data-tab="Kurz-Check">
     <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
     <div id="quiz"></div>
   </section>
+  </div>
 
-  <section class="card merke">
+  <!-- Training -->
+  <section class="card ueben-block" id="training">
+    <h2><span class="step-no">🏋</span> Üben</h2>
+    <p class="lead">Hier kommt nichts Neues – nur Übung. Folge den Fäden. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
+
+    <div class="stufe-box st1">
+    <h3 class="sub"><span class="badge basis">● Basis</span> Noch mehr Fäden in der Bücherei</h3>
+    <p>Benutze die drei Tabellen von Schritt 4.</p>
+    <div id="tr1"></div>
+    </div>
+    <div class="stufe-box st2">
+    <h3 class="sub"><span class="badge plus">●● Sicher</span> Tonspur: Songs, Künstler, Labels</h3>
+    <p>Bei Tonspur stehen die Songs, die Künstler und ihre Plattenfirmen (Labels) in drei Tabellen. Hier zeigt <code>songs.kuenstler_id</code> auf <code>kuenstler</code>
+      und <code>kuenstler.label_id</code> auf <code>labels</code> – ein Faden über zwei Stationen.</p>
+    <div id="faden2"></div>
+    <div id="tr2"></div>
+    </div>
+    <div class="stufe-box st3">
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Ein ER-Diagramm lesen und weiterdenken</h3>
+    <p>So ist die Partnerbörse für Tiere „Pfotenglück“ aufgebaut – die baust du in Teil 4 selbst.</p>
+    <div id="er2"></div>
+    <div id="tr3"></div>
+    </div>
+
+    <!-- Freiwillig: das frühere „Plus für Schnelle“ – ein Stück Neues, darum ganz am Ende -->
+    <div class="frei-box" id="freiwillig">
+    <h3 class="frei-titel"><span class="badge expedition">★ Freiwillig</span> Ein Faden ins Nichts</h3>
+    <p>In dieser kaputten Bücherei-Datenbank stimmt etwas nicht. Tipp alle blauen Nummern an. Was fällt dir auf?</p>
+    <div id="kaputt"></div>
+    <div id="qplus"></div>
+    </div>
+  </section>
+
+  <section class="card merke" id="merke">
     <h2>Merke</h2>
     <ul>
       <li>Jede Tabelle hat einen <strong>Primärschlüssel</strong> (meist <code>id</code>): eindeutig, nie leer, ändert sich nie.</li>
@@ -197,27 +225,6 @@
       <li>Ein <strong>Fremdschlüssel</strong> (z. B. <code>leser_id</code>) zeigt auf die <code>id</code> einer anderen Tabelle.</li>
       <li>Im <strong>ER-Diagramm</strong>: Kästen = Tabellen, Linien = Beziehungen, 1 und n = eins und viele. Der Fremdschlüssel steht auf der n-Seite.</li>
     </ul>
-  </section>
-
-  <!-- Training -->
-  <section class="card frei" id="training">
-    <h2><span class="step-no">🏋</span> Training</h2>
-    <p class="lead">Folge den Fäden. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
-
-    <h3 class="sub"><span class="badge ueben">● Basis</span> Noch mehr Fäden in der Bücherei</h3>
-    <p>Benutze die drei Tabellen von Schritt 4.</p>
-    <div id="tr1"></div>
-
-    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Tonspur: Songs, Künstler, Labels</h3>
-    <p>Bei Tonspur stehen die Songs, die Künstler und ihre Plattenfirmen (Labels) in drei Tabellen. Hier zeigt <code>songs.kuenstler_id</code> auf <code>kuenstler</code>
-      und <code>kuenstler.label_id</code> auf <code>labels</code> – ein Faden über zwei Stationen.</p>
-    <div id="faden2"></div>
-    <div id="tr2"></div>
-
-    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Ein ER-Diagramm lesen und weiterdenken</h3>
-    <p>So ist die Partnerbörse für Tiere „Pfotenglück“ aufgebaut – die baust du in Teil 4 selbst.</p>
-    <div id="er2"></div>
-    <div id="tr3"></div>
   </section>
 
   <nav class="pager">
@@ -387,6 +394,11 @@ document.addEventListener("DOMContentLoaded", () => {
       miss: ["Eine Spalte hat nur Platz für <strong>ein</strong> gemochtes Tier.", null],
       why: "Viele zu viele (n:m) braucht eine Zwischentabelle. Genau wie <code>ausleihen</code> zwischen Lesern und Büchern!" },
   ]);
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  Register(document.getElementById("lernen"), { key: "l02", after: "training", nr: "2" });
 });
 </script>
 </body>

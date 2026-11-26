@@ -18,7 +18,14 @@
     const store = window.Kurs.store;
     const key = "register:" + (opts.key || location.pathname);
     const panels = Array.from(box.children).filter((e) => e.matches("section"));
-    const wait = new Set(panels.filter((p) => p.hasAttribute("data-wait")).map((p) => p.id));
+    // Wartende Schritte: ausdrücklich (data-wait) oder automatisch erkannt – ein Schritt mit prüfbarem Labor,
+    // Auswahlfragen oder einem Training ist erst fertig, wenn alles davon gelöst bzw. beantwortet ist.
+    const aufgabeDrin = (p) => p.querySelector(".labor.pruefbar, .choices, .training");
+    const auto = new Set(panels.filter((p) => !p.hasAttribute("data-wait") && !p.hasAttribute("data-frei") && aufgabeDrin(p)).map((p) => p.id));
+    const wait = new Set(panels.filter((p) => p.hasAttribute("data-wait") || auto.has(p.id)).map((p) => p.id));
+    const erledigt = (p) => [...p.querySelectorAll(".labor.pruefbar")].every((l) => l.classList.contains("geloest") || l.closest(".training"))
+      && [...p.querySelectorAll(".choices")].every((c) => [...c.querySelectorAll(".choice")].every((b) => b.disabled))
+      && [...p.querySelectorAll(".training")].every((t) => t.classList.contains("fertig"));
     let saved = {};
     try { saved = JSON.parse(store.get(key) || "{}"); } catch (e) { saved = {}; }
     const done = new Set((saved.done || []).filter((id) => wait.has(id)));
@@ -118,6 +125,13 @@
       done.add(id);
       save();
       refresh();
+    });
+
+    // Automatisch erkannte Schritte beobachten
+    panels.filter((p) => auto.has(p.id)).forEach((p) => {
+      const pruefen = () => { if (!done.has(p.id) && erledigt(p)) Register.done(p.id); };
+      new MutationObserver(pruefen).observe(p, { subtree: true, childList: true, attributes: true, attributeFilter: ["class", "disabled"] });
+      setTimeout(pruefen, 0);
     });
 
     show(cur, false);

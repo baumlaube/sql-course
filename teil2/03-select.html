@@ -26,8 +26,9 @@
 <link rel="stylesheet" href="../assets/labor.css?v=5eb6de2187">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil2-03-select" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
+<script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
-<script src="../assets/labor.js?v=ca2d940769"></script>
+<script src="../assets/labor.js?v=81a83fb334"></script>
 <script src="../assets/film.js?v=ab570a52ca"></script>
 <script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
 <script src="../assets/daten/nutzer.js?v=533561c012"></script>
@@ -78,11 +79,6 @@
       Wer nur die Titel braucht, bekommt auch nur die Titel.</p>
   </section>
 
-  <section class="card wdh">
-    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
-    <div id="wdh"></div>
-  </section>
-
   <details class="card woerter">
     <summary>📖 Wörter für diese Lektion</summary>
     <p class="note">Die SQL-Befehle bleiben englisch – so heißen sie in jeder Datenbank der Welt.</p>
@@ -95,15 +91,21 @@
       <tr><th class="wort">das Komma <small>die Kommas</small></th><td>Das Zeichen <code>,</code>. Es trennt die Spalten nach <code>SELECT</code>.</td></tr>
     </table></div>
   </details>
-
   <section class="card szenario">
     <h2><span class="step-no">🎧</span> Szenario</h2>
     <p>Erster Tag im Praktikum bei <strong>Tonspur</strong>, einer Musik-App. Alle Songs stehen in der Tabelle <code>songs</code>.
       Heute sollst du Listen für verschiedene Abteilungen ziehen – jede will andere Spalten.</p>
   </section>
 
+  <!-- ===== Lernblock: Reiter, immer nur ein Schritt offen (register.js) ===== -->
+  <div id="lernen">
+  <section class="card wdh" id="wdh-s" data-tab="Weißt du noch?">
+    <h2><span class="step-no">↺</span> Weißt du noch? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
   <!-- 1 · Überleg -->
-  <section class="card">
+  <section class="card" id="s1" data-tab="Überleg">
     <h2><span class="step-no">1</span> Überleg: Was zeigt die Abfrage? <span class="chip">4 Minuten</span></h2>
     <div id="film1"></div>
     <div id="tab-songs"></div>
@@ -131,7 +133,7 @@
   </section>
 
   <!-- 2 · Puzzle -->
-  <section class="card">
+  <section class="card" id="s2" data-tab="Puzzle">
     <h2><span class="step-no">2</span> Puzzle: die Startseite der App <span class="chip">4 Minuten</span></h2>
     <p>Die Startseite soll <strong>Titel und Jahr aller Songs</strong> aus der Tabelle <code>songs</code> zeigen.
       Leg die Abfrage aus den Bausteinen. Zwei Bausteine brauchst du nicht.</p>
@@ -139,7 +141,7 @@
   </section>
 
   <!-- 3 · Lücken -->
-  <section class="card">
+  <section class="card" id="s3" data-tab="Lücken">
     <h2><span class="step-no">3</span> Lücken: die Rechtsabteilung <span class="chip">5 Minuten</span></h2>
     <p>Die Rechtsabteilung prüft Verträge. Sie braucht aus der Tabelle <code>songs</code> nur <strong>Künstler und Genre</strong> aller Songs.
       Schreib in die gelben Lücken, was fehlt – die beiden Spalten in die erste Lücke, die Tabelle in die zweite.</p>
@@ -148,7 +150,7 @@
   </section>
 
   <!-- 4 · Datenschutz -->
-  <section class="card">
+  <section class="card" id="s4" data-tab="Alles oder nötig?">
     <h2><span class="step-no">4</span> Alles oder nur das Nötige? <span class="chip">5 Minuten</span></h2>
     <p>Mit <code>*</code> bekommst du <strong>alle</strong> Spalten: <code>SELECT * FROM nutzer</code>. Bequem – aber nicht immer erlaubt.</p>
     <p>Tonspur hat auch eine Tabelle <code>nutzer</code> mit den Konten der App. Eine Werbeagentur will wissen, <strong>aus welchen Orten</strong> die Nutzer kommen.
@@ -159,7 +161,7 @@
   </section>
 
   <!-- 5 · DISTINCT -->
-  <section class="card">
+  <section class="card" id="s5" data-tab="DISTINCT">
     <h2><span class="step-no">5</span> Jeden Wert nur einmal: DISTINCT <span class="chip">6 Minuten</span></h2>
     <p>Die Chefin fragt: <em>„Welche Genres haben wir eigentlich?“</em> Ein Kollege führt diese Abfrage aus:</p>
     <div id="l5a"></div>
@@ -181,7 +183,7 @@
   </section>
 
   <!-- 6 · Fehlerdetektiv -->
-  <section class="card">
+  <section class="card" id="s6" data-tab="Detektiv">
     <h2><span class="step-no">6</span> Fehlerdetektiv: die seltsame Spalte <span class="chip">5 Minuten</span></h2>
     <p>Jonas wollte <strong>Titel und Jahr</strong> aller Songs. Seine Abfrage meldet keinen Fehler – aber das Ergebnis ist komisch.
       Führ sie aus und schau genau hin.</p>
@@ -194,20 +196,43 @@
     <div id="hints6"></div>
   </section>
 
-  <!-- Plus -->
-  <section class="card">
-    <h2><span class="badge plus">Plus</span> Die Reihenfolge der Spalten <span class="chip">für Schnelle</span></h2>
-    <p>Für eine Liste zum Ausdrucken will die Chefin <strong>zuerst den Künstler, dann den Titel</strong> – für alle Songs.</p>
-    <div id="lplus"></div>
-  </section>
-
   <!-- Kurz-Check -->
-  <section class="card">
+  <section class="card" id="check" data-tab="Kurz-Check">
     <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">4 Minuten</span></h2>
     <div id="quiz"></div>
   </section>
+  </div>
 
-  <section class="card merke">
+  <!-- Training -->
+  <section class="card ueben-block" id="training">
+    <h2><span class="step-no">🏋</span> Üben</h2>
+    <p class="lead">Hier kommt nichts Neues – nur Übung. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
+
+    <div class="stufe-box st1">
+    <h3 class="sub"><span class="badge basis">● Basis</span> Listen für Tonspur</h3>
+    <div id="tr1"></div>
+    </div>
+    <div class="stufe-box st2">
+    <h3 class="sub"><span class="badge plus">●● Sicher</span> Azubi-Börse</h3>
+    <p>Eine Webseite sammelt Ausbildungsstellen in Bayern. Die Redaktion braucht verschiedene Übersichten aus der Tabelle <code>stellen</code>.</p>
+    <div id="tr2"></div>
+    </div>
+    <div class="stufe-box st3">
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Die Datenschutz-Abteilung</h3>
+    <p>Du arbeitest jetzt mit den Nutzerkonten von Tonspur (Tabelle <code>nutzer</code>). Jede Abteilung bekommt <strong>genau</strong> die Spalten,
+      die sie braucht – keine mehr.</p>
+    <div id="tr3"></div>
+    </div>
+
+    <!-- Freiwillig: das frühere „Plus für Schnelle“ – ein Stück Neues, darum ganz am Ende -->
+    <div class="frei-box" id="freiwillig">
+    <h3 class="frei-titel"><span class="badge expedition">★ Freiwillig</span> Die Reihenfolge der Spalten</h3>
+    <p>Für eine Liste zum Ausdrucken will die Chefin <strong>zuerst den Künstler, dann den Titel</strong> – für alle Songs.</p>
+    <div id="lplus"></div>
+    </div>
+  </section>
+
+  <section class="card merke" id="merke">
     <h2>Merke</h2>
     <ul>
       <li>Jede Abfrage beginnt so: <code>SELECT spalten FROM tabelle</code></li>
@@ -216,24 +241,6 @@
       <li><code>*</code> heißt: alle Spalten. Nur benutzen, wenn du wirklich alles brauchst.</li>
       <li><code>DISTINCT</code> zeigt jeden Wert nur einmal: <code>SELECT DISTINCT genre FROM songs</code></li>
     </ul>
-  </section>
-
-  <!-- Training -->
-  <section class="card frei" id="training">
-    <h2><span class="step-no">🏋</span> Training</h2>
-    <p class="lead">Je mehr Abfragen du schreibst, desto sicherer wirst du. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
-
-    <h3 class="sub"><span class="badge ueben">● Basis</span> Listen für Tonspur</h3>
-    <div id="tr1"></div>
-
-    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Azubi-Börse</h3>
-    <p>Eine Webseite sammelt Ausbildungsstellen in Bayern. Die Redaktion braucht verschiedene Übersichten aus der Tabelle <code>stellen</code>.</p>
-    <div id="tr2"></div>
-
-    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Die Datenschutz-Abteilung</h3>
-    <p>Du arbeitest jetzt mit den Nutzerkonten von Tonspur (Tabelle <code>nutzer</code>). Jede Abteilung bekommt <strong>genau</strong> die Spalten,
-      die sie braucht – keine mehr.</p>
-    <div id="tr3"></div>
   </section>
 
   <nav class="pager">
@@ -502,6 +509,11 @@ document.addEventListener("DOMContentLoaded", () => {
       pruefe: spaltenFolge(["id", "benutzername", "abo"]),
       hints: ["Lösung: <code>SELECT id, benutzername, abo FROM nutzer</code>"] },
   ]});
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  Register(document.getElementById("lernen"), { key: "l03", after: "training", nr: "3" });
 });
 </script>
 </body>

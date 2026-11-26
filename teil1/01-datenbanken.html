@@ -26,8 +26,9 @@
 <link rel="stylesheet" href="../assets/labor.css?v=5eb6de2187">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil1-01-datenbanken" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
+<script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
-<script src="../assets/labor.js?v=ca2d940769"></script>
+<script src="../assets/labor.js?v=81a83fb334"></script>
 <script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
 <script src="../assets/daten/streaming.js?v=20b07067fa"></script>
 <style>
@@ -89,11 +90,6 @@
       In diesem Kurs benutzt du eines der meistgenutzten der Welt: SQLite. Es steckt in fast jedem Handy.</p>
   </section>
 
-  <section class="card wdh">
-    <h2><span class="step-no">↺</span> Was weißt du schon? <span class="chip">2 Minuten</span></h2>
-    <div id="wdh"></div>
-  </section>
-
   <details class="card woerter">
     <summary>📖 Wörter für diese Lektion</summary>
     <p class="note">Die Fachwörter links bleiben deutsch – so heißen sie im Unterricht.</p>
@@ -106,14 +102,20 @@
       <tr><th class="wort">der Datentyp <small>die Datentypen</small></th><td>Die Art der Werte in einer Spalte: Text, ganze Zahl, Kommazahl, Datum.</td></tr>
     </table></div>
   </details>
-
   <section class="card szenario">
     <h2><span class="step-no">🎧</span> Szenario</h2>
     <p>Erster Tag im Praktikum bei <strong>Tonspur</strong>, einer Musik-App. Bevor du selbst Daten abfragst, zeigt dir das Team, wie die App ihre Daten speichert.</p>
   </section>
 
+  <!-- ===== Lernblock: Reiter, immer nur ein Schritt offen (register.js) ===== -->
+  <div id="lernen">
+  <section class="card wdh" id="wdh-s" data-tab="Was weißt du?">
+    <h2><span class="step-no">↺</span> Was weißt du schon? <span class="chip">2 Minuten</span></h2>
+    <div id="wdh"></div>
+  </section>
+
   <!-- 1 · Überleg -->
-  <section class="card">
+  <section class="card" id="s1" data-tab="Überleg">
     <h2><span class="step-no">1</span> Überleg: Was passiert beim Suchen? <span class="chip">4 Minuten</span></h2>
     <p>Du tippst in der Tonspur-App „Juna“ ins Suchfeld. Nach einem Wimpernschlag siehst du alle Songs von Juna.</p>
     <p><strong>Überleg:</strong> Woher kommen die Ergebnisse?</p>
@@ -127,7 +129,7 @@
   </section>
 
   <!-- 2 · Aufbau einer Tabelle -->
-  <section class="card">
+  <section class="card" id="s2" data-tab="Tabelle">
     <h2><span class="step-no">2</span> So ist eine Tabelle aufgebaut <span class="chip">6 Minuten</span></h2>
     <p>Das ist ein Ausschnitt aus der Tabelle <code>songs</code>. Drei Stellen sind farbig markiert.</p>
     <div class="tbl-scroll"><table class="labor-tab begriffe-tab" id="begriffe">
@@ -152,7 +154,7 @@
   </section>
 
   <!-- 3 · Datentypen -->
-  <section class="card">
+  <section class="card" id="s3" data-tab="Datentypen">
     <h2><span class="step-no">3</span> Jede Spalte hat einen Datentyp <span class="chip">6 Minuten</span></h2>
     <p>In einer Datenbank legt man für jede Spalte fest, <strong>welche Art von Werten</strong> hinein darf. Die wichtigsten Datentypen in SQLite:</p>
     <div class="tbl-scroll"><table class="plain">
@@ -176,7 +178,7 @@
   </section>
 
   <!-- 4 · Datenbank oder Tabellenkalkulation -->
-  <section class="card">
+  <section class="card" id="s4" data-tab="DB oder Calc?">
     <h2><span class="step-no">4</span> Datenbank oder Tabellenkalkulation? <span class="chip">6 Minuten</span></h2>
     <p>Tabellen gibt es auch in LibreOffice Calc. Wann nimmt man was?</p>
     <div class="tbl-scroll"><table class="plain vergleich-tab">
@@ -192,7 +194,7 @@
   </section>
 
   <!-- 5 · Schnell -->
-  <section class="card">
+  <section class="card" id="s5" data-tab="Tempo">
     <h2><span class="step-no">5</span> 50 000 Zeilen in einem Augenblick <span class="chip">4 Minuten</span></h2>
     <p>Jeder Abruf eines Songs bei Tonspur wird gespeichert – in der Tabelle <code>abrufe</code> stehen 50 000 Zeilen.
       Diese Abfrage zählt, wie oft in Augsburg gehört wurde. Führ sie aus und schau auf die Zeit.</p>
@@ -202,12 +204,31 @@
   </section>
 
   <!-- Kurz-Check -->
-  <section class="card">
+  <section class="card" id="check" data-tab="Kurz-Check">
     <h2><span class="step-no">✓</span> Kurz-Check <span class="chip">3 Minuten</span></h2>
     <div id="quiz"></div>
   </section>
+  </div>
 
-  <section class="card merke">
+  <!-- Training -->
+  <section class="card ueben-block" id="training">
+    <h2><span class="step-no">🏋</span> Üben</h2>
+    <p class="lead">Hier kommt nichts Neues – nur Übung. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
+    <div class="stufe-box st1">
+    <h3 class="sub"><span class="badge basis">● Basis</span> Die Fachwörter</h3>
+    <div id="tr1"></div>
+    </div>
+    <div class="stufe-box st2">
+    <h3 class="sub"><span class="badge plus">●● Sicher</span> Datentypen</h3>
+    <div id="tr2"></div>
+    </div>
+    <div class="stufe-box st3">
+    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Datenbanken im Alltag</h3>
+    <div id="tr3"></div>
+    </div>
+  </section>
+
+  <section class="card merke" id="merke">
     <h2>Merke</h2>
     <ul>
       <li>Eine <strong>Datenbank</strong> speichert zusammengehörige Daten in Tabellen. Verwaltet wird sie von einem <strong>DBMS</strong>.</li>
@@ -215,18 +236,6 @@
       <li>Jede Spalte hat einen <strong>Datentyp</strong>: <code>TEXT</code>, <code>INTEGER</code>, <code>REAL</code>. Datum als Text: <code>'JJJJ-MM-TT'</code>.</li>
       <li>Datenbank statt Tabellenkalkulation: viele Daten, viele Nutzer gleichzeitig, Abfragen über mehrere Tabellen.</li>
     </ul>
-  </section>
-
-  <!-- Training -->
-  <section class="card frei" id="training">
-    <h2><span class="step-no">🏋</span> Training</h2>
-    <p class="lead">Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.</p>
-    <h3 class="sub"><span class="badge ueben">● Basis</span> Die Fachwörter</h3>
-    <div id="tr1"></div>
-    <h3 class="sub"><span class="badge ueben">●● Sicher</span> Datentypen</h3>
-    <div id="tr2"></div>
-    <h3 class="sub"><span class="badge expedition">●●● Profi</span> Datenbanken im Alltag</h3>
-    <div id="tr3"></div>
   </section>
 
   <nav class="pager">
@@ -359,6 +368,11 @@ document.addEventListener("DOMContentLoaded", () => {
     { q: "Viele Menschen ändern gleichzeitig Daten (z. B. Kinokarten buchen). Was muss das DBMS verhindern?", options: ["Dass zwei denselben Platz bekommen", "Dass jemand Popcorn kauft", "Dass das Kino Werbung zeigt"], right: 0,
       miss: [null, "Das ist nicht Sache der Datenbank.", "Das ist nicht Sache der Datenbank."], why: "Ein DBMS sorgt dafür, dass gleichzeitige Änderungen sich nicht in die Quere kommen." },
   ]);
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  Register(document.getElementById("lernen"), { key: "l01", after: "training", nr: "1" });
 });
 </script>
 </body>

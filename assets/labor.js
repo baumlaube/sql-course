@@ -344,6 +344,7 @@
 
   function create(el, o) {
     el.classList.add("labor");
+    if (o.loesung || o.pruefe) el.classList.add("pruefbar");   // für register.js: Dieser Schritt ist erst fertig, wenn das Labor gelöst ist
     const modus = o.modus || "frei";
     const api = { el, sql: () => holeSQL(), setzeSQL: (s) => setzeSQL(s), loesen: false };
     let SQL = null, m = null, geloest = false;
@@ -813,6 +814,7 @@
     }
 
     function punkte() {
+      el.classList.toggle("fertig", fertig.length >= o.aufgaben.length);   // für register.js
       $(".tr-punkte").innerHTML = o.aufgaben.map((_, i) =>
         `<li><button type="button" class="tr-p${fertig.includes(i) ? " ok" : ""}${i === akt ? " akt" : ""}" data-i="${i}" data-tipp="${fertig.includes(i) ? T(`Aufgabe ${i + 1} – gelöst`) : T(`Aufgabe ${i + 1}`)}" data-tipp-einmal="punkte" aria-label="${T(`Aufgabe ${i + 1}`)}">${fertig.includes(i) ? "✔" : i + 1}</button></li>`).join("");
       $(".tr-punkte").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => zeige(+b.dataset.i)));
