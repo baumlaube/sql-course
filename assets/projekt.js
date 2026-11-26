@@ -80,7 +80,7 @@
       <label class="btn secondary pj-oeffnen" data-tipp="${esc(T("Öffnet eine gespeicherte .db-Datei (oder eine .sql-Datei aus dem Planer)."))}">📂 ${T("Datei öffnen")}<input type="file" accept=".db,.sqlite,.sql" hidden></label>
       <button type="button" class="btn secondary pj-muster" data-tipp="${esc(T("Ersetzt deine Datenbank durch die fertige Muster-Börse Pfotenglück."))}">🐾 ${T("Muster-Börse laden")}</button>
       <button type="button" class="btn secondary pj-neu" data-tipp="${esc(T("Löscht alles und beginnt mit einer leeren Datenbank."))}">🗑 ${T("Leer anfangen")}</button>
-      <span class="pj-meldung muted" aria-live="polite"></span>`;
+      <span class="pj-meldung" aria-live="polite"></span>`;
     el.prepend(box);
     const meld = (t) => { box.querySelector(".pj-meldung").textContent = t; };
     box.querySelector(".pj-speichern").addEventListener("click", async () => { await Projekt.db(); Projekt.herunterladen(); meld(T("Gespeichert – die Datei liegt bei deinen Downloads.")); });
@@ -126,7 +126,7 @@
       <div class="labor-code"><textarea class="labor-eingabe" rows="${o.zeilen || 5}" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="${esc(T("SQL für dein Projekt"))}"></textarea>
         <div class="labor-bausteine"></div></div>
       <div class="labor-ctrl"><button type="button" class="btn labor-run" data-tipp="${esc(T("Führt die Befehle in deiner Projekt-Datenbank aus. Änderungen bleiben gespeichert."))}">▶ ${T("Ausführen")}</button>
-        <span class="muted">${T("Mehrere Befehle mit ; trennen")}</span></div>
+        <span class="pj-tipp">💡 ${T("Mehrere Befehle mit ; trennen")}</span></div>
       <div class="fb labor-fb" aria-live="polite"></div>
       <div class="labor-erg" hidden></div>
       ${o.aufgaben ? `<div class="pj-pruefliste"><p class="labor-erg-t">${T("Prüfliste")}</p><ul class="pj-liste"></ul></div>` : ""}`;

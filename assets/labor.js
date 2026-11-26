@@ -328,14 +328,14 @@
   function spickerHTML() {
     const st = kursStand();
     const zeilen = BAUPLAN().filter((z) => z.ab <= st).map((z) =>
-      `<li><code><span class="kw">${z.kw}</span> ${z.was}</code> <span>${z.frage} <em class="muted">${z.satz}</em></span></li>`).join("");
+      `<li><code><span class="kw">${z.kw}</span> ${z.was}</code> <span>${z.frage} <em class="spicker-satz">${z.satz}</em></span></li>`).join("");
     const bsp = st >= 4
       ? [`SELECT titel FROM songs WHERE jahr = 2024`, T("„Zeig mir den Titel aus der Tabelle songs – aber nur, wenn das Jahr 2024 ist.“")]
       : [`SELECT titel, jahr FROM songs`, T("„Zeig mir Titel und Jahr aus der Tabelle songs.“")];
     return `<p class="spicker-t">${T("🧩 So ist jede Abfrage gebaut – immer in dieser Reihenfolge:")}</p>
       <ol class="spicker-liste">${zeilen}</ol>
       <p>${T("Beispiel:")} <code>${sqlHTML(bsp[0])}</code><br>${bsp[1]}</p>
-      <p class="muted">${T("Tabellen heißen meist in der <strong>Mehrzahl</strong> (<code>songs</code>, <code>filme</code>), Spalten in der <strong>Einzahl</strong> (<code>titel</code>, <code>preis</code>). Sicher erkennst du die Tabelle an der Farbe: <span class='baustein tab mini'>📋</span>")}<br>
+      <p>${T("Tabellen heißen meist in der <strong>Mehrzahl</strong> (<code>songs</code>, <code>filme</code>), Spalten in der <strong>Einzahl</strong> (<code>titel</code>, <code>preis</code>). Sicher erkennst du die Tabelle an der Farbe: <span class='baustein tab mini'>📋</span>")}<br>
       ${T("Text steht in einfachen Anführungszeichen: <code>'Pop'</code>. Zahlen ohne.")}</p>`;
   }
 
@@ -435,7 +435,7 @@
     }
 
     function bauePuzzle() {
-      codeBox.innerHTML = `<div class="labor-zeile" aria-label="${T("Deine Abfrage")}"><span class="muted platzhalter">${T("Tippe die Bausteine unten in der richtigen Reihenfolge an.")}</span></div>
+      codeBox.innerHTML = `<div class="labor-zeile" aria-label="${T("Deine Abfrage")}"><span class="platzhalter">${T("Tippe die Bausteine unten in der richtigen Reihenfolge an.")}</span></div>
         <div class="labor-bausteine labor-vorrat"></div>`;
       const zeile = codeBox.querySelector(".labor-zeile"), vorrat = codeBox.querySelector(".labor-vorrat");
       const leg = (b, wohin) => { wohin.appendChild(b); zeile.querySelector(".platzhalter").hidden = zeile.querySelectorAll(".baustein").length > 0; };

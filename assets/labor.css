@@ -311,3 +311,9 @@ th.film-pfeil::before { color: var(--sp-rand); }
 .film-ctrl { position: sticky; bottom: 0; z-index: 5; background: var(--surface); padding: 8px 0 4px; border-top: 1px solid var(--line); }
 /* Kinomodus während des Films: der Rest der Seite tritt zurück */
 body.film-kino main > :not(:has(.film)), body.film-kino .card:has(.film) > :not(.film):not(h2) { opacity: .2; transition: opacity .4s; }
+
+/* Hinweise im Labor nicht grau: Satz im Spicker, Puzzle-Anweisung, Meldungen im Projekt-Labor */
+.spicker-satz { color: var(--accent); font-weight: 600; }
+.labor-zeile .platzhalter { color: var(--text); font-weight: 600; }
+.pj-meldung { font-weight: 700; }
+.pj-tipp { font-size: 15px; font-weight: 600; color: var(--text); }

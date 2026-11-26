@@ -114,7 +114,8 @@ kbd {
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px; margin: 22px 0; }
 .card > h2 { margin: 0 0 6px; font-size: 24px; color: var(--navy); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .step-no { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--navy); color: var(--surface); font-size: 18px; flex: none; }
-.lead { color: var(--muted); margin-top: 0; }
+/* Einleitungssätze sind Arbeitsanweisungen: normale Schriftfarbe, nicht grau (Wunsch der Lehrkraft, 26.11.2026) */
+.lead { color: var(--text); font-size: 1.05em; font-weight: 500; margin-top: 0; }
 .goals { margin: 0; padding-left: 0; list-style: none; }
 .goals li { padding: 6px 0 6px 30px; position: relative; }
 .goals li::before { content: "🎯"; position: absolute; left: 0; }
@@ -214,7 +215,12 @@ kbd {
 .rows .calc { grid-column: 1 / -1; }
 .rows code .ref-move, .rows code .ref-fix { padding: 0 1px; }
 .rows .calc b { font-weight: 700; }
-.note { color: var(--muted); font-size: 15px; margin: 6px 0; }
+/* Hinweise deutlich absetzen, damit sie im Informationsüberfluss nicht untergehen: Kasten mit blauem Rand links */
+.note { color: var(--text); font-size: 16px; margin: 10px 0; padding: 8px 12px; background: var(--fix-bg); border-left: 5px solid var(--fix-line); border-radius: 8px; }
+.note::before { content: "💡 "; }
+/* Ausnahme: der Satz in „Wörter für diese Lektion“ ist nur eine Randbemerkung */
+details.woerter .note { color: var(--muted); font-size: 15px; padding: 0; background: none; border: 0; }
+details.woerter .note::before { content: none; }
 h3.sub { font-size: 18px; margin: 18px 0 6px; color: var(--navy); }
 .howto { margin: 0; padding: 0; list-style: none; counter-reset: s; }
 .howto li { counter-increment: s; position: relative; padding: 5px 0; padding-inline-start: 38px; min-height: 38px; line-height: 28px; font-size: 18px; }
