@@ -245,7 +245,23 @@ tr.faden-ziel td { background: var(--zl-ja); font-weight: 700; }
 
 /* ---------- Erklärfilm (film.js) ---------- */
 .film { margin: 6px 0 14px; padding: 12px; border-radius: 12px; border: 2px solid var(--accent); background: var(--surface); }
-.film-start { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+/* Vor dem Start: großes Feld wie ein Video mit Play-Knopf in der Mitte */
+.film:has(.film-start:not([hidden])) { padding: 0; border: 0; background: none; }
+.film-start { position: relative; display: grid; place-items: center; align-content: center; gap: 10px; width: 100%; aspect-ratio: 16 / 9;
+  max-height: 420px; overflow: hidden; border: 0; border-radius: 12px; cursor: pointer; color: #fff; font: inherit;
+  background: linear-gradient(135deg, #12424f, #0b2a33); box-shadow: var(--shadow); }
+.film-poster { position: absolute; inset: 0; padding: 18px; opacity: .22; filter: blur(1px); pointer-events: none; text-align: left; }
+.film-poster .labor-anzahl { display: none; }
+.film-poster table { color: #fff; }
+.film-play { position: relative; width: 92px; height: 92px; border-radius: 50%; background: rgba(0, 0, 0, .55); box-shadow: 0 0 0 4px rgba(255, 255, 255, .85);
+  transition: transform .2s, background .2s; }
+.film-play::after { content: ""; position: absolute; left: 36px; top: 26px; border-style: solid; border-width: 20px 0 20px 32px;
+  border-color: transparent transparent transparent #fff; }
+.film-start:hover .film-play, .film-start:focus-visible .film-play { transform: scale(1.08); background: var(--accent); }
+.film-start:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.film-titel { position: relative; font-size: clamp(20px, 4vw, 28px); font-weight: 800; text-shadow: 0 1px 4px rgba(0, 0, 0, .6); }
+.film-dauer { position: relative; font-size: 15px; opacity: .9; }
+@media (max-width: 520px) { .film-play { width: 70px; height: 70px; } .film-play::after { left: 27px; top: 19px; border-width: 16px 0 16px 25px; } }
 .film-text { min-height: 3.4em; display: grid; place-items: center; text-align: center; padding: 12px 14px; margin-bottom: 10px;
   border-radius: 10px; border: 2px solid #5b8ad6; background: #dbe7fb; color: #12233d; font-size: 20px; font-weight: 700; line-height: 1.35; }
 :root[data-theme="dark"] .film-text { background: #1d2f4d; border-color: #5b8ad6; color: #e6efff; }

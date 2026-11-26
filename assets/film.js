@@ -42,10 +42,12 @@
       + (x.bausteine || []).length * (BAUSTEIN_PAUSE + PULS), 0);
     const min = Math.max(1, Math.round(dauer / 60000));
     el.innerHTML = `
-      <div class="film-start">
-        <button type="button" class="btn film-los">▶ ${T("Film ansehen")}</button>
-        <span class="muted">${T(o.titel || "")} · ${min === 1 ? T("ca. 1 Minute") : T(`ca. ${min} Minuten`)}</span>
-      </div>
+      <button type="button" class="film-start film-los" aria-label="${T("Film ansehen")}: ${T(o.titel || "")}">
+        <span class="film-poster" aria-hidden="true"></span>
+        <span class="film-play" aria-hidden="true"></span>
+        <span class="film-titel">${T(o.titel || "")}</span>
+        <span class="film-dauer">▶ ${T("Film ansehen")} · ${min === 1 ? T("ca. 1 Minute") : T(`ca. ${min} Minuten`)}</span>
+      </button>
       <div class="film-buehne" hidden>
         <div class="film-text" aria-live="polite"></div>
         <div class="film-vorschau"></div>
@@ -69,6 +71,7 @@
       const r = db.exec(`SELECT * FROM "${o.vorschau}" LIMIT ${o.zeilen || 4}`)[0];
       const n = db.exec(`SELECT COUNT(*) FROM "${o.vorschau}"`)[0].values[0][0];
       db.close();
+      $(".film-poster").innerHTML = ergebnisHTML({ spalten: r.columns, zeilen: r.values });
       $(".film-vorschau").innerHTML = `<p class="film-tab"><span class="tabname">📋 ${esc(o.vorschau)}</span> <span class="muted">${T(`die ersten ${r.values.length} von ${n} Zeilen`)}</span></p>`
         + ergebnisHTML({ spalten: r.columns, zeilen: r.values });
     });
