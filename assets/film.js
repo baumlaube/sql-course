@@ -127,8 +127,9 @@
     }
     function markiere(art, spalte, pfeil = true, teil = null) {
       el.querySelectorAll(".film-pfeil").forEach((x) => x.classList.remove("film-pfeil"));
-      const wo = teil == null ? ".film-satz" : `.film-satz .film-paar[data-i="${teil}"]`;
-      el.querySelectorAll(`${wo} .art-${art}`).forEach((x) => x.classList.add("an"));
+      // teil: eine Nummer oder eine Liste (z. B. [6, 7]); ohne teil: alle Satzteile dieser Art
+      const wo = teil == null ? [".film-satz"] : [].concat(teil).map((t) => `.film-satz .film-paar[data-i="${t}"]`);
+      el.querySelectorAll(wo.map((w) => `${w} .art-${art}`).join(",")).forEach((x) => x.classList.add("an"));
       if (art === "spalte") spalteMarkieren(spalte, pfeil);
       if (art === "bedingung") spalteMarkieren(spalte, pfeil, "film-bd");
       if (art === "ordnen") spalteMarkieren(spalte, pfeil, "film-so");
@@ -216,6 +217,8 @@
       const wert = ([tab, i]) => [...tab.querySelectorAll("tbody tr")].map((z) => z.children[i]);
       const l = wert(links), r = wert(rechts), rWerte = new Set(r.map((c) => c.textContent.trim()));
       farbe = new Map();
+      // Eine neue Verbindung ersetzt die Farben der vorigen (bei drei Tabellen: erst Song → Künstler, dann Künstler → Label)
+      el.querySelectorAll(".film-vt td.film-gz").forEach((c) => c.className = c.className.replace(/\bfilm-gz\b|\bfilm-g\d\b/g, "").trim());
       l.forEach((c) => { const w = c.textContent.trim(); if (rWerte.has(w) && !farbe.has(w)) farbe.set(w, farbe.size % 6); });
       [...l, ...r].forEach((c) => { const w = c.textContent.trim(); if (farbe.has(w)) c.classList.add("film-gz", "film-g" + farbe.get(w)); });
     }

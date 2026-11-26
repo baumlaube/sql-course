@@ -338,7 +338,7 @@ th.film-gr.film-pfeil::before { color: var(--gr-rand); }
 .film-punkte li.fertig { background: var(--accent); }
 .film-punkte li.jetzt { background: var(--tab-rand); transform: scale(1.3); }
 .film .labor-ctrl .labor-run { pointer-events: auto; }
-@media (max-width: 520px) { .film-ueb { font-size: 16px; gap: 6px 4px; } .film-kopf { display: none; } .film-teil { padding: 3px 5px; } .film-text { font-size: 17px; } .film-punkte { margin: 4px 0 0; flex-basis: 100%; } }
+@media (max-width: 520px) { .film-ueb { font-size: 16px; gap: 6px 4px; } .film-paar { white-space: normal; max-width: 100%; } .film-paar > * { min-width: 0; } .film-ueb code { white-space: normal; overflow-wrap: anywhere; } .film-kopf { display: none; } .film-teil { padding: 3px 5px; } .film-text { font-size: 17px; } .film-punkte { margin: 4px 0 0; flex-basis: 100%; } }
 @media (prefers-reduced-motion: reduce) { .film-puls, .film-text.neu, .film-pfeil::before { animation: none; } .film-puls { outline: 3px solid var(--tab-rand); } }
 .film [hidden] { display: none !important; }
 .film-vorschau .labor-anzahl { display: none; }
