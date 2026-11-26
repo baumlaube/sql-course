@@ -424,7 +424,7 @@
 
     function einfuegen(ta, t, ohneFokus) {
       const a = ta.selectionStart ?? ta.value.length, z = ta.selectionEnd ?? a;
-      const vor = ta.value.slice(0, a), nach = ta.value.slice(z);
+      const vor = t === "," ? ta.value.slice(0, a).replace(/ $/, "") : ta.value.slice(0, a), nach = ta.value.slice(z);   // Komma klebt am Wort davor
       let txt = t === "'…'" ? "''" : t;
       const klebt = t === "%" || t === "_";          // Platzhalter stehen im Text, ohne Leerzeichen
       const davor = !klebt && vor && !/\s$/.test(vor) && t !== "," ? " " : "";

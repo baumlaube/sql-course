@@ -21,7 +21,9 @@
        { text: "…", markiere: "bedingung", teil: 7, spalte: "jahr" },   // nur Satzteil Nr. 7 (ab 0 gezählt) markieren
        { text: "…", pruefe: "jahr = 2024", spalte: "jahr" },            // Zellen der Spalte mit ✓, wo die Bedingung stimmt
        { text: "…", tausche: [6, "oder", "OR"], ersetze: ["AND", "OR"] },  // Satzteil austauschen, im Labor ersetzen
-       { text: "…", muster: "B%", spalte: "titel" },    // LIKE-Muster in der Spalte zeigen: feste Buchstaben grün, das % gestrichelt
+       { text: "…", muster: "B%", spalte: "titel" },
+       { text: "…", markiere: "ordnen", spalte: "dauer_sek", ordnen: "dauer_sek DESC" },  // Spalte türkis, Zeilen gleiten an ihren Platz
+       { text: "…", markiere: "limit", abschneiden: 3 },  // ab Zeile 4: Schnittlinie, Rest blass (spalte darf auch eine Liste sein)    // LIKE-Muster in der Spalte zeigen: feste Buchstaben grün, das % gestrichelt
        { text: "…", zeige: "labor", spalte: "titel", bausteine: ["SELECT", "titel"] },
        { text: "…", nach: "titel", bausteine: [",", "jahr"] },   // hinter „titel“ einsetzen
        { text: "…", tippe: "…" }, { text: "…", ausfuehren: true }, { text: "…", ergebnis: true },
@@ -97,6 +99,7 @@
 
     /* ---- Markierungen ---- */
     function spalteMarkieren(name, pfeil, klasse = "film-sp") {
+      if (Array.isArray(name)) { name.forEach((n) => spalteMarkieren(n, pfeil, klasse)); return; }
       const tab = $(".film-vorschau table");
       if (!tab || !name) return;
       const i = [...tab.querySelectorAll("th")].findIndex((th) => th.textContent.trim() === name);
@@ -110,6 +113,7 @@
       el.querySelectorAll(`${wo} .art-${art}`).forEach((x) => x.classList.add("an"));
       if (art === "spalte") spalteMarkieren(spalte, pfeil);
       if (art === "bedingung") spalteMarkieren(spalte, pfeil, "film-bd");
+      if (art === "ordnen") spalteMarkieren(spalte, pfeil, "film-so");
       if (art === "tabelle") { const t = $(".film-tab .tabname"); if (t) t.classList.add("an"); if (t && pfeil) t.classList.add("film-pfeil"); }
     }
     function zeilenMarkieren(bed) {
@@ -142,10 +146,37 @@
         c.innerHTML = m.slice(1).map((g, k) => !g ? "" : k % 2 ? `<span class="film-rest">${esc(g)}</span>` : `<mark class="film-fix">${esc(g)}</mark>`).join("");
       });
     }
+    /* Sortieren sichtbar machen: Zeilen gleiten an ihren neuen Platz (FLIP). ordnen = "spalte DESC" oder "spalte" */
+    function zeilenOrdnen(ordnen, sofort) {
+      const tab = $(".film-vorschau table");
+      if (!tab) return;
+      const [name, richtung] = ordnen.trim().split(/\s+/), ab = /^desc$/i.test(richtung || "");
+      const i = [...tab.querySelectorAll("th")].findIndex((th) => th.textContent.trim() === name);
+      if (i < 0) return;
+      const body = tab.querySelector("tbody"), zeilen = [...body.children];
+      const vorher = new Map(zeilen.map((z) => [z, z.getBoundingClientRect().top]));
+      const wert = (z) => { const t = z.children[i].textContent.trim(); return t !== "" && !isNaN(t) ? +t : t.toLowerCase(); };
+      zeilen.sort((a, b) => { const x = wert(a), y = wert(b); return (x < y ? -1 : x > y ? 1 : 0) * (ab ? -1 : 1); });
+      zeilen.forEach((z) => body.appendChild(z));
+      if (sofort || ruhig) return;
+      zeilen.forEach((z) => {
+        const d = vorher.get(z) - z.getBoundingClientRect().top;
+        if (!d) return;
+        z.style.transition = "none"; z.style.transform = `translateY(${d}px)`;
+      });
+      void body.offsetWidth;
+      zeilen.forEach((z) => { z.style.transition = "transform 1.6s ease-in-out, opacity .6s"; z.style.transform = ""; });
+    }
+    function abschneiden(n) {
+      el.querySelectorAll(".film-vorschau tbody tr").forEach((z, k) => {
+        z.classList.toggle("film-raus", k >= n); z.classList.toggle("film-schnitt", k === n);
+      });
+    }
     function buehneLeeren() {
       if (vorschauHTML) $(".film-vorschau").innerHTML = vorschauHTML;   // Vorschau frisch (auch Muster-Markierungen weg)
       lab && lab.zuruecksetzen();
-      $(".film-satz").hidden = true; $(".film-satz").innerHTML = uebersetzung(o.paare || []);   // auch Getauschtes zurück $(".film-labor").hidden = true;
+      $(".film-labor").hidden = true;
+      $(".film-satz").hidden = true; $(".film-satz").innerHTML = uebersetzung(o.paare || []);   // auch Getauschtes zurück
       el.querySelectorAll(".an, .film-sp, .film-bd, .film-ok, .film-pfeil, .film-puls, .film-erg, .film-treffer, .film-raus").forEach((x) =>
         x.classList.remove("an", "film-sp", "film-bd", "film-ok", "film-pfeil", "film-puls", "film-erg", "film-treffer", "film-raus"));
       teileZeigen(null);
@@ -183,6 +214,8 @@
         }
       }
       if (s.ersetze && lab) lab.feld.value = lab.feld.value.replace(s.ersetze[0], s.ersetze[1]);
+      if (s.ordnen) { await p(700); if (ab()) return; zeilenOrdnen(s.ordnen, sofort); await p(1800); if (ab()) return; }
+      if (s.abschneiden) { await p(600); if (ab()) return; abschneiden(s.abschneiden); }
       if (s.muster) { await p(600); if (ab()) return; musterZeigen(s.muster, s.spalte); }
       if (s.pruefe) { await p(600); if (ab()) return; zellenPruefen(s.pruefe, s.spalte); }
       else if (s.spalte) spalteMarkieren(s.spalte, !sofort);

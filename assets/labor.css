@@ -1,6 +1,6 @@
-:root { --tab-bg: #fff3d6; --tab-rand: #e0a526; --tab-fg: #7a4b00; --sp-bg: #dbeafe; --sp-rand: #3b82f6; --sp-fg: #1e3a8a; --bd-bg: #dcfce7; --bd-rand: #16a34a; --bd-fg: #14532d; --vk-bg: #f3e8ff; --vk-rand: #9333ea; --vk-fg: #581c87; }
-:root[data-theme="dark"] { --tab-bg: #3a2e12; --tab-rand: #b8861b; --tab-fg: #ffd58a; --sp-bg: #1b2f55; --sp-rand: #5b8ff0; --sp-fg: #cfe0ff; --bd-bg: #143a24; --bd-rand: #2fb36a; --bd-fg: #c4f5d6; --vk-bg: #2e1a47; --vk-rand: #a970f0; --vk-fg: #e9d5ff; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --tab-bg: #3a2e12; --tab-rand: #b8861b; --tab-fg: #ffd58a; --sp-bg: #1b2f55; --sp-rand: #5b8ff0; --sp-fg: #cfe0ff; --bd-bg: #143a24; --bd-rand: #2fb36a; --bd-fg: #c4f5d6; --vk-bg: #2e1a47; --vk-rand: #a970f0; --vk-fg: #e9d5ff; } }
+:root { --tab-bg: #fff3d6; --tab-rand: #e0a526; --tab-fg: #7a4b00; --sp-bg: #dbeafe; --sp-rand: #3b82f6; --sp-fg: #1e3a8a; --bd-bg: #dcfce7; --bd-rand: #16a34a; --bd-fg: #14532d; --vk-bg: #f3e8ff; --vk-rand: #9333ea; --vk-fg: #581c87; --so-bg: #cffafe; --so-rand: #0891b2; --so-fg: #164e63; }
+:root[data-theme="dark"] { --tab-bg: #3a2e12; --tab-rand: #b8861b; --tab-fg: #ffd58a; --sp-bg: #1b2f55; --sp-rand: #5b8ff0; --sp-fg: #cfe0ff; --bd-bg: #143a24; --bd-rand: #2fb36a; --bd-fg: #c4f5d6; --vk-bg: #2e1a47; --vk-rand: #a970f0; --vk-fg: #e9d5ff; --so-bg: #0f3640; --so-rand: #22b8d6; --so-fg: #c5f3fb; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --tab-bg: #3a2e12; --tab-rand: #b8861b; --tab-fg: #ffd58a; --sp-bg: #1b2f55; --sp-rand: #5b8ff0; --sp-fg: #cfe0ff; --bd-bg: #143a24; --bd-rand: #2fb36a; --bd-fg: #c4f5d6; --vk-bg: #2e1a47; --vk-rand: #a970f0; --vk-fg: #e9d5ff; --so-bg: #0f3640; --so-rand: #22b8d6; --so-fg: #c5f3fb; } }
 /* SQL-Kurs · SQL-Labor. Lizenz: CC BY-SA 4.0 · herrseibert.de · Erstellt von der KI Claude von Anthropic. */
 :root {
   --sql-kw: #0b5cad; --sql-s: #a3410f; --sql-n: #6a1b9a;
@@ -301,6 +301,13 @@ th.film-bd.film-pfeil::before { color: var(--bd-rand); }
 .film .film-vorschau td.film-ok::after { content: " ✓"; }
 .film-vorschau mark.film-fix { background: var(--bd-rand); color: #fff; font-weight: 800; padding: 0 2px; border-radius: 3px; }
 .film-vorschau .film-rest { border-bottom: 2px dashed var(--bd-rand); }
+.film-teil.art-ordnen.an { background: var(--so-bg); color: var(--so-fg); box-shadow: 0 0 0 2px var(--so-rand); }
+.film-teil.art-limit.an { background: var(--vk-bg); color: var(--vk-fg); box-shadow: 0 0 0 2px var(--vk-rand); }
+.film .film-so { background: var(--so-bg) !important; color: var(--so-fg); }
+.film th.film-so { box-shadow: inset 0 0 0 2px var(--so-rand); }
+th.film-so.film-pfeil::before { color: var(--so-rand); }
+.film-vorschau tr.film-schnitt td { border-top: 3px dashed var(--vk-rand); }
+.film-vorschau tbody tr { position: relative; }
 .film-vorschau tbody tr { transition: opacity .6s; }
 .film-vorschau tr.film-treffer td { box-shadow: inset 0 2px 0 var(--bd-rand), inset 0 -2px 0 var(--bd-rand); }
 .film-vorschau tr.film-treffer td:not(.film-sp) { background: var(--bd-bg); color: var(--bd-fg); }

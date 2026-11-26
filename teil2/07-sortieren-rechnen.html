@@ -23,12 +23,13 @@
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="stylesheet" href="../assets/kurs.css?v=816a1e20aa">
-<link rel="stylesheet" href="../assets/labor.css?v=5bf069dd5d">
+<link rel="stylesheet" href="../assets/labor.css?v=50495aa17a">
 <script src="../assets/i18n.js?v=418d1ff9a6" data-page="teil2-07-sortieren-rechnen" data-langs="de en"></script>
 <script src="../assets/kurs.js?v=7507fa7b3e"></script>
 <script src="../assets/register.js?v=cf332a7afd"></script>
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
-<script src="../assets/labor.js?v=81a83fb334"></script>
+<script src="../assets/labor.js?v=153ec0279e"></script>
+<script src="../assets/film.js?v=8f1efb73ee"></script>
 <script src="../assets/daten/tonspur.js?v=a2b9168316"></script>
 <script src="../assets/daten/azubi.js?v=5b1356cc35"></script>
 <script src="../assets/daten/konzerte.js?v=51212600cc"></script>
@@ -105,6 +106,7 @@
   <!-- 1 · Überleg -->
   <section class="card" id="s1" data-tab="Überleg">
     <h2><span class="step-no">1</span> Überleg: Wer steht oben? <span class="chip">4 Minuten</span></h2>
+    <div id="film1"></div>
     <div id="tab-songs"></div>
     <pre class="sql" data-farbe>SELECT titel, likes FROM songs ORDER BY likes DESC</pre>
     <p><strong>Überleg:</strong> Welcher Song steht ganz oben im Ergebnis? Führ noch nichts aus!</p>
@@ -251,6 +253,35 @@ document.addEventListener("DOMContentLoaded", () => {
   const L = window.Labor;
   const $ = (id) => document.getElementById(id);
   const EXTRA = ["AND", "OR", "ORDER BY", "ASC", "DESC", "LIMIT", "COUNT(*)", "SUM(", "AVG(", "MIN(", "MAX(", "ROUND(", "(", ")"];
+  /* Erklärfilm: ORDER BY, DESC, LIMIT – mit der Dauer, damit die Überleg-Frage (meiste Likes) offen bleibt */
+  Labor.film(document.getElementById("film1"), {
+    titel: "So funktioniert ORDER BY", db: "tonspur", vorschau: "songs", zeilen: 8, spalten: "id, titel, dauer_sek", extra: EXTRA,
+    paare: [["Zeig mir", "SELECT"], ["die Titel und die Dauer", "titel, dauer_sek", "spalte"], ["aus der Tabelle", "FROM"], ["songs,", "songs", "tabelle"],
+            ["sortiert nach Dauer,", "ORDER BY dauer_sek", "ordnen"], ["die längsten zuerst,", "DESC", "ordnen"], ["nur die ersten 3.", "LIMIT 3", "limit"]],
+    schritte: [
+      // Phase 1: verstehen – noch keine Knöpfe
+      { text: "Das ist wieder die Tabelle <code>songs</code>. Hier siehst du die ersten 8 Songs." },
+      { text: "Sie stehen in der Reihenfolge, in der sie gespeichert sind: nach <code>id</code>." },
+      { text: "Du willst aber die <strong>längsten</strong> Songs sehen – die längsten zuerst." },
+      { text: "Du fragst:", zeige: "satz", bis: 4, markiere: ["spalte", "tabelle"], spalte: ["titel", "dauer_sek"] },
+      { text: "Dann hängst du an: … <strong>sortiert nach</strong> Dauer.", bis: 5, markiere: "ordnen", teil: 4, spalte: "dauer_sek" },
+      { text: "… <strong>die längsten zuerst</strong>. Schau, wie sich die Zeilen ordnen.", bis: 6, markiere: "ordnen", teil: 5, ordnen: "dauer_sek DESC" },
+      { text: "Jetzt steht der längste Song oben. Die <code>id</code> ist durcheinander – das ist egal." },
+      { text: "Du willst nur die <strong>ersten 3</strong>.", bis: 7, markiere: "limit", teil: 6 },
+      { text: "Alles nach Platz 3 fällt weg.", abschneiden: 3 },
+      { text: "In SQL heißt der Satz so:", zeige: "sql" },
+      { text: "<code>ORDER BY</code> heißt „sortiert nach“." },
+      { text: "<code>DESC</code> heißt „absteigend“: das Größte zuerst. Ohne <code>DESC</code> kommt das Kleinste zuerst." },
+      { text: "<code>LIMIT 3</code> heißt „nur die ersten 3“. Es steht ganz am Ende." },
+      // Phase 2: dasselbe im Labor
+      { text: "Jetzt im Labor. Den Anfang kennst du: zwei Spalten, eine Tabelle.", zeige: "labor", bausteine: ["SELECT", "titel", ",", "dauer_sek", "FROM", "songs"] },
+      { text: "Dann <code>ORDER BY</code>, die Spalte <code>dauer_sek</code> und <code>DESC</code>.", bausteine: ["ORDER BY", "dauer_sek", "DESC"] },
+      { text: "Zum Schluss <code>LIMIT</code> und die Zahl 3.", bausteine: ["LIMIT"], tippe: "3" },
+      { text: "Jetzt auf <strong>Ausführen</strong>.", ausfuehren: true },
+      { text: "Das Ergebnis: die 3 längsten Songs aus der ganzen Tabelle. Der längste steht oben.", ergebnis: true },
+      { text: "Jetzt du! Probier es selbst – zum Beispiel die 3 <strong>kürzesten</strong> Songs. Dann ohne <code>DESC</code>.", leeren: true },
+    ],
+  });
   /* Typische Fehler, die in vielen Aufgaben vorkommen */
   const LISTE_STATT_ZAHL = { wenn: ({ res, ref }) => res.ok && ref && ref.zeilen.length === 1 && ref.spalten.length === 1 && res.zeilen.length > 1,
     text: "Du bekommst eine Liste. Gefragt ist <strong>eine Zahl</strong> – lass die Datenbank rechnen, z. B. mit <code>COUNT(*)</code>." };
