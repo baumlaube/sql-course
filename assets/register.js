@@ -57,7 +57,7 @@
       const nb = document.createElement("button");
       nb.type = "button";
       nb.className = "btn";
-      nb.textContent = last ? T(opts.weiterText || "Weiter zum Üben ↓") : T("Weiter →");
+      nb.textContent = last ? (opts.weiterText ? T(opts.weiterText) : T("Weiter zum Üben ↓")) : T("Weiter →");
       nb.addEventListener("click", () => {
         if (last) {
           const after = opts.after && document.getElementById(opts.after);

@@ -203,5 +203,15 @@
  "5 Zeilen": "5 rows",
  "0 Zeilen": "0 rows",
  "SELECT wählt Spalten aus, keine Zeilen. Es kommen alle Songs.": "<code>SELECT</code> chooses columns, not rows. You get all songs.",
- "SELECT titel FROM songs WHERE genre = 'pop' liefert 0 Zeilen. Warum?": "<code>SELECT titel FROM songs WHERE genre = 'pop'</code> returns 0 rows. Why?"
+ "SELECT titel FROM songs WHERE genre = 'pop' liefert 0 Zeilen. Warum?": "<code>SELECT titel FROM songs WHERE genre = 'pop'</code> returns 0 rows. Why?",
+ "Weißt du noch?": "Remember?",
+ "Zeitlupe": "Slow motion",
+ "Puzzle": "Puzzle",
+ "Vergleichen": "Compare",
+ "Detektiv": "Detective",
+ "Jetzt du": "Your turn",
+ "Kurz-Check": "Quick check",
+ "🏋 Üben": "<span class=\"step-no\">🏋</span> Practice",
+ "Hier kommt nichts Neues – nur Übung. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter. Jede Aufgabe hat Tipps – und das Labor sagt dir, was noch nicht stimmt.": "Nothing new here – just practice. Start with ●. When you're done, carry on with ●● and ●●●. Every task has hints – and the lab tells you what isn't right yet.",
+ "★ Freiwillig Alles außer Pop": "<span class=\"badge expedition\">★ Optional</span> Everything except Pop"
 }
