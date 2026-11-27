@@ -60,7 +60,7 @@
   const uebersetzung = (paare, kopf) => `<div class="film-ueb">
       <span class="film-paar film-kopf"><span>${T(kopf ? kopf[0] : "Deutsch")}</span><span class="film-sql">${kopf ? T(kopf[1]) : "SQL"}</span></span>
       ${paare.map(([de, sq, art], i) => { const k = `film-teil${art ? " art-" + art : ""}`;
-        return `<span class="film-paar" data-i="${i}"><span class="${k}">${T(de)}</span><span class="${k} film-sql"><code>${esc(sq)}</code></span></span>`; }).join("")}
+        return `<span class="film-paar" data-i="${i}"><span class="${k}">${T(de)}</span><span class="${k} film-sql"><code>${kopf ? T(sq) : esc(sq)}</code></span></span>`; }).join("")}
     </div>`;
 
   function film(el, o) {
