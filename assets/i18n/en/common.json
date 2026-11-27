@@ -448,5 +448,9 @@
  "neu – noch leer": "new – still empty",
  "noch keine Spalten": "no columns yet",
  "noch keine Zeile": "no row yet",
- "Du sagst der Datenbank:": "You tell the database:"
+ "Du sagst der Datenbank:": "You tell the database:",
+ "titel, kuenstler": "titel, kuenstler",
+ "Datensatz": "Record",
+ "Attribut": "Attribute",
+ "id = 3": "id = 3"
 }

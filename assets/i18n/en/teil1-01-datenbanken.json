@@ -229,5 +229,20 @@
  "Was weißt du?": "What you know",
  "Datentypen": "Data types",
  "DB oder Calc?": "DB or Calc?",
- "Tempo": "Speed"
+ "Tempo": "Speed",
+ "Eine Datenbank speichert Daten in Tabellen. Das ist die Tabelle songs aus der Tonspur-App.": "A database stores data in <strong>tables</strong>. This is the table <code>songs</code> from the Tonspur app.",
+ "Eine Tabelle hat Zeilen und Spalten – wie in der Tabellenkalkulation.": "A table has <strong>rows</strong> and <strong>columns</strong> – like in a spreadsheet.",
+ "Jede Zeile ist ein Song. Hier: „Brezn mit Senf“.": "Each row is <strong>one song</strong>. Here: “Brezn mit Senf”.",
+ "Eine Zeile heißt in der Datenbank Datensatz.": "In a database a row is called a <strong>record</strong>.",
+ "Jede Spalte hat einen Namen. Hier: kuenstler.": "Each column has a <strong>name</strong>. Here: <code>kuenstler</code>.",
+ "Eine Spalte heißt in der Datenbank Attribut.": "In a database a column is called an <strong>attribute</strong>.",
+ "Wo sich Zeile und Spalte kreuzen, steht ein Wert. Hier: MC Brezel.": "Where a row and a column cross, there is <strong>one value</strong>. Here: MC Brezel.",
+ "Ein einzelnes Feld heißt in der Datenbank Wert.": "In a database a single field is called a <strong>value</strong>.",
+ "Also: Datensatz = Zeile. Attribut = Spalte. Wert = ein Feld.": "So: Record = row. Attribute = column. Value = one field.",
+ "Jetzt du! Ordne unten A, B und C zu.": "Your turn! Match A, B and C below.",
+ "Feld": "Field",
+ "So ist eine Tabelle aufgebaut": "How a table is built",
+ "Im Alltag": "In everyday words",
+ "Fachwort": "Technical term",
+ "Wert": "Value"
 }
