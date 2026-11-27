@@ -32,6 +32,7 @@
        { text: "…", verbund: "SELECT s.titel, k.name, k.id FROM … LIMIT 6" },   // verbundenes Ergebnis; letzte Spalte färbt
        // CREATE: Option neu: "besitzer" (leere Tabelle ohne Vorschau) – Schritt spalteNeu: ["vorname", "TEXT"]
        // INSERT: Option ende: true (die letzten Zeilen) – Schritt neueZeile: { vorname: "Tom" } (id kommt von selbst)
+       // Begriffe ohne SQL (L1): Option kopf: ["Im Alltag", "Fachwort"] statt Deutsch/SQL; zelle: { spalte, wo } = ein Feld orange
        // UPDATE: aendere: { spalte: "alter_jahre", wert: 3, wo: "id = 3" } – DELETE: loesche: "id = 4"
        // bausteine: ["CREATE TABLE", "✎besitzer ", "("] – mit ✎ wird getippt statt angetippt; labor: { … } = weitere Labor-Optionen                  // unter der Vorschau: je Gruppe eine Zeile mit der Anzahl  // ab Zeile 4: Schnittlinie, Rest blass (spalte darf auch eine Liste sein)    // LIKE-Muster in der Spalte zeigen: feste Buchstaben grün, das % gestrichelt
        { text: "…", zeige: "labor", spalte: "titel", bausteine: ["SELECT", "titel"] },
@@ -56,8 +57,8 @@
 
   /* Satz und SQL als Übersetzung: Jeder deutsche Teil steht genau über seinem SQL-Teil.
      Jedes Paar ist ein eigenes Kästchen (Deutsch oben, SQL unten) – so bricht ein langer Satz am Handy um. */
-  const uebersetzung = (paare) => `<div class="film-ueb">
-      <span class="film-paar film-kopf"><span>${T("Deutsch")}</span><span class="film-sql">SQL</span></span>
+  const uebersetzung = (paare, kopf) => `<div class="film-ueb">
+      <span class="film-paar film-kopf"><span>${T(kopf ? kopf[0] : "Deutsch")}</span><span class="film-sql">${kopf ? T(kopf[1]) : "SQL"}</span></span>
       ${paare.map(([de, sq, art], i) => { const k = `film-teil${art ? " art-" + art : ""}`;
         return `<span class="film-paar" data-i="${i}"><span class="${k}">${T(de)}</span><span class="${k} film-sql"><code>${esc(sq)}</code></span></span>`; }).join("")}
     </div>`;
@@ -77,7 +78,7 @@
       <div class="film-buehne" hidden>
         <div class="film-text" aria-live="polite"></div>
         <div class="film-vorschau"></div>
-        <div class="film-satz" hidden>${uebersetzung(o.paare || [])}</div>
+        <div class="film-satz" hidden>${uebersetzung(o.paare || [], o.kopf)}</div>
         <div class="film-labor" hidden></div>
         <div class="film-ctrl">
           <button type="button" class="btn secondary film-zurueck" aria-label="${T("Schritt zurück")}" data-tipp="${T("Schritt zurück")}">◀</button>
@@ -99,7 +100,7 @@
     const verbund = {};          // Schritt-SQL → Ergebnis (für „so sieht das zusammen aus“)
     Labor.bereit().then((SQL) => {
       const db = oeffnen(SQL, o.db), v0 = vors[0] || {};
-      if (v0.tabelle) o.schritte.flatMap((x) => [x.zeilen, x.pruefe, x.loesche, x.aendere && x.aendere.wo]).filter(Boolean).forEach((b) => {
+      if (v0.tabelle) o.schritte.flatMap((x) => [x.zeilen, x.pruefe, x.loesche, x.aendere && x.aendere.wo, x.zelle && x.zelle.wo]).filter(Boolean).forEach((b) => {
         treffer[b] = db.exec(`SELECT (${b}) FROM "${v0.tabelle}" LIMIT ${v0.zeilen || 4}`)[0].values.map((v) => !!v[0]);
       });
       o.schritte.filter((x) => x.verbund).forEach((x) => { verbund[x.verbund] = db.exec(x.verbund)[0]; });
@@ -283,6 +284,13 @@
       await p(1500); if (ab()) return;
       weg.forEach((z) => z.classList.add("film-weg"));
     }
+    /* Ein einzelnes Feld markieren (Wert): orange, mit Pfeil. zelle = { spalte: "kuenstler", wo: "id = 3" } */
+    function zelleMarkieren({ spalte, wo }) {
+      const [tab, i] = finde(spalte), ja = treffer[wo] || [];
+      if (i < 0) return;
+      el.querySelectorAll(".film-pfeil").forEach((x) => x.classList.remove("film-pfeil"));
+      tab.querySelectorAll("tbody tr").forEach((z, k) => { if (ja[k]) z.children[i].classList.add("film-zelle", "film-pfeil"); });
+    }
     function abschneiden(n) {
       el.querySelectorAll(".film-vorschau tbody tr").forEach((z, k) => {
         z.classList.toggle("film-raus", k >= n); z.classList.toggle("film-schnitt", k === n);
@@ -292,7 +300,7 @@
       if (vorschauHTML) $(".film-vorschau").innerHTML = vorschauHTML;   // Vorschau frisch (auch Muster-Markierungen weg)
       lab && lab.zuruecksetzen();
       $(".film-labor").hidden = true;
-      $(".film-satz").hidden = true; $(".film-satz").innerHTML = uebersetzung(o.paare || []);   // auch Getauschtes zurück
+      $(".film-satz").hidden = true; $(".film-satz").innerHTML = uebersetzung(o.paare || [], o.kopf);   // auch Getauschtes zurück
       el.querySelectorAll(".an, .film-sp, .film-bd, .film-ok, .film-pfeil, .film-puls, .film-erg, .film-treffer, .film-raus").forEach((x) =>
         x.classList.remove("an", "film-sp", "film-bd", "film-ok", "film-pfeil", "film-puls", "film-erg", "film-treffer", "film-raus"));
       teileZeigen(null);
@@ -332,6 +340,7 @@
       if (s.ersetze && lab) lab.feld.value = lab.feld.value.replace(s.ersetze[0], s.ersetze[1]);
       if (s.ordnen) { await p(700); if (ab()) return; zeilenOrdnen(s.ordnen, sofort); await p(1800); if (ab()) return; }
       if (s.gruppen) { await p(700); if (ab()) return; gruppieren(s.gruppen, sofort); await p(1800); if (ab()) return; }
+      if (s.zelle) { await p(600); if (ab()) return; zelleMarkieren(s.zelle); }
       if (s.aendere) { await p(700); if (ab()) return; aendern(s.aendere); }
       if (s.loesche) { await p(700); if (ab()) return; await loeschen(s.loesche, p, ab); if (ab()) return; }
       if (s.spalteNeu) { await p(600); if (ab()) return; spalteNeu(s.spalteNeu); }

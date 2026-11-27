@@ -329,6 +329,9 @@ th.film-wt.film-pfeil::before { color: var(--gr-rand); }
 .film-vorschau tr.film-loesch td { background: #fde2e2 !important; color: #9b1c1c; text-decoration: line-through; transition: opacity .8s; }
 :root[data-theme="dark"] .film-vorschau tr.film-loesch td { background: #4a1d1d !important; color: #ffc9c9; }
 .film-vorschau tr.film-weg { display: none; }
+.film-teil.art-zeile.an { background: var(--bd-bg); color: var(--bd-fg); box-shadow: 0 0 0 2px var(--bd-rand); }
+.film .film-vorschau td.film-zelle { background: var(--surface) !important; color: var(--gr-fg) !important; box-shadow: inset 0 0 0 3px var(--gr-rand); font-weight: 800; }
+td.film-zelle.film-pfeil::before { color: var(--gr-rand); }
 .film-teil.art-wert.an { background: var(--gr-bg); color: var(--gr-fg); box-shadow: 0 0 0 2px var(--gr-rand); }
 .film-vorschau.film-mehrere > .film-gruppen { flex-basis: 100%; }
 .film-vorschau td.film-gz { background: color-mix(in srgb, var(--g) 35%, transparent) !important; box-shadow: inset 4px 0 0 var(--g); font-weight: 800; }
