@@ -220,5 +220,22 @@
  "Mehrere Tabellen": "Several tables",
  "Faden": "Threads",
  "Hier kommt nichts Neues – nur Übung. Folge den Fäden. Fang bei ● an. Wer fertig ist, macht mit ●● und ●●● weiter.": "Nothing new here – just practice. Follow the threads. Start with ●. When you're done, carry on with ●● and ●●●.",
- "★ Freiwillig Ein Faden ins Nichts": "<span class=\"badge expedition\">★ Optional</span> A thread into nowhere"
+ "★ Freiwillig Ein Faden ins Nichts": "<span class=\"badge expedition\">★ Optional</span> A thread into nowhere",
+ "Die Bücherei hat jetzt eigene Tabellen. Hier: leser und ausleihen.": "The library now has its own tables. Here: <code>leser</code> and <code>ausleihen</code>.",
+ "In leser steht jede Person genau einmal.": "In <code>leser</code> each person appears <strong>exactly once</strong>.",
+ "Zwei Leser heißen Leon Müller. Ihre id unterscheidet sie: 2 und 5.": "Two readers are called Leon Müller. Their <code>id</code> tells them apart: 2 and 5.",
+ "Jede Zeile hat ihre eigene Nummer. Sie heißt Primärschlüssel.": "Each row has its own number. It is called the <strong>primary key</strong>.",
+ "In ausleihen stehen keine Namen. Nur die Nummer des Lesers: leser_id.": "In <code>ausleihen</code> there are no names. Only the reader's number: <code>leser_id</code>.",
+ "Diese Nummer zeigt auf eine Zeile in leser. Sie heißt Fremdschlüssel.": "This number points to a row in <code>leser</code>. It is called a <strong>foreign key</strong>.",
+ "Gleiche Nummer – gleiche Farbe. So findest du zu jeder Ausleihe die Person.": "Same number – same colour. That's how you find the person for each loan.",
+ "Die Ausleihe 4 hat die leser_id 2. Das ist Leon Müller aus der 9b – nicht der aus der 7a.": "Loan 4 has the <code>leser_id</code> 2. That is Leon Müller from 9b – not the one from 7a.",
+ "Also: Primärschlüssel = die eigene Nummer. Fremdschlüssel = eine Nummer, die woanders hinzeigt.": "So: <strong>Primary key</strong> = the row's own number. <strong>Foreign key</strong> = a number that points somewhere else.",
+ "Jetzt du! Tipp unten eine blaue Nummer an und folge dem Faden.": "Your turn! Tap a blue number below and follow the thread.",
+ "die eigene Nummer jeder Zeile": "Each row's own number",
+ "eine Nummer, die auf eine andere Tabelle zeigt": "A number that points to another table",
+ "Wie Nummern Tabellen verbinden": "How numbers connect tables",
+ "id, vorname, nachname, klasse": "id, vorname, nachname, klasse",
+ "id, leser_id": "id, leser_id",
+ "vorname = 'Leon'": "vorname = 'Leon'",
+ "ausleihen.leser_id = leser.id": "ausleihen.leser_id = leser.id"
 }
