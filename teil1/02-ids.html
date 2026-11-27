@@ -30,6 +30,7 @@
 <script src="../assets/sqljs/sql-wasm.js?v=d6a9cc234e"></script>
 <script src="../assets/labor.js?v=a8fd6bb3c7"></script>
 <script src="../assets/labor-extra.js?v=e94bd060f6"></script>
+<script src="../assets/film.js?v=da869f60b8"></script>
 <script src="../assets/daten/buecherei.js?v=c99f5e2d8a"></script>
 <script src="../assets/daten/musik.js?v=c1bfd9240c"></script>
 <script src="../assets/daten/pfoten.js?v=7b482f3862"></script>
@@ -158,6 +159,7 @@
   <!-- 4 · ID-Faden -->
   <section class="card" id="s4" data-tab="Faden">
     <h2><span class="step-no">4</span> Folge dem Faden <span class="chip">8 Minuten</span></h2>
+    <div id="film4"></div>
     <p>So sieht die Bücherei jetzt aus: drei Tabellen. In <code>ausleihen</code> stehen keine Namen und keine Titel mehr – nur Nummern.
       <strong>Tipp eine blaue Nummer an</strong> und schau, wohin sie zeigt.</p>
     <div id="faden"></div>
@@ -251,6 +253,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const { pick, quiz } = window.Kurs;
   const L = window.Labor;
   const $ = (id) => document.getElementById(id);
+  /* Erklärfilm: Primärschlüssel und Fremdschlüssel – ohne SQL. Steht oben im Reiter „Faden“, vor dem Faden-Werkzeug. */
+  Labor.film(document.getElementById("film4"), {
+    titel: "Wie Nummern Tabellen verbinden", db: "buecherei", kopf: ["Im Alltag", "Fachwort"],
+    vorschau: [{ tabelle: "leser", spalten: "id, vorname, nachname, klasse", zeilen: 8 }, { tabelle: "ausleihen", spalten: "id, leser_id", zeilen: 6 }],
+    paare: [["die eigene Nummer jeder Zeile", "Primärschlüssel", "bedingung"], ["eine Nummer, die auf eine andere Tabelle zeigt", "Fremdschlüssel", "wert"]],
+    schritte: [
+      { text: "Die Bücherei hat jetzt eigene Tabellen. Hier: <code>leser</code> und <code>ausleihen</code>." },
+      { text: "In <code>leser</code> steht jede Person <strong>genau einmal</strong>." },
+      { text: "Zwei Leser heißen Leon Müller. Ihre <code>id</code> unterscheidet sie: 2 und 5.", zeilen: "vorname = 'Leon'" },
+      { text: "Jede Zeile hat ihre eigene Nummer. Sie heißt <strong>Primärschlüssel</strong>.", zeige: "sql", bis: 1, markiere: "bedingung", teil: 0, spalte: "leser.id" },
+      { text: "In <code>ausleihen</code> stehen keine Namen. Nur die Nummer des Lesers: <code>leser_id</code>.", markiere: "wert", teil: -1, spalte: "ausleihen.leser_id" },
+      { text: "Diese Nummer zeigt auf eine Zeile in <code>leser</code>. Sie heißt <strong>Fremdschlüssel</strong>.", bis: 2, markiere: "wert", teil: 1 },
+      { text: "Gleiche Nummer – gleiche Farbe. So findest du zu jeder Ausleihe die Person.", verbinde: "ausleihen.leser_id = leser.id" },
+      { text: "Die Ausleihe 4 hat die <code>leser_id</code> 2. Das ist Leon Müller aus der 9b – nicht der aus der 7a." },
+      { text: "Also: <strong>Primärschlüssel</strong> = die eigene Nummer. <strong>Fremdschlüssel</strong> = eine Nummer, die woanders hinzeigt." },
+      { text: "Jetzt du! Tipp unten eine blaue Nummer an und folge dem Faden." },
+    ],
+  });
   const BUECHEREI_VERWEISE = { "ausleihen.leser_id": "leser", "ausleihen.buch_id": "buecher" };
 
   quiz($("wdh"), [
